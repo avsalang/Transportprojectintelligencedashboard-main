@@ -1,0 +1,82 @@
+Transport Projects Cross-MDB Dataset Profile
+Main file: transport_projects_cross_mdb_shareable_v3.csv
+
+Headline metrics
+- Total projects: 6372
+- Mapped projects with coordinates: 2018
+- Standardized countries/economies represented: 165
+- Total financing amount (nominal, mostly USD): $626.92B
+
+Source breakdown
+- World Bank: 4617
+- ADB: 1657
+- AIIB: 98
+
+Geo status breakdown
+- hold: 4313
+- already_geocoded: 1408
+- matched: 609
+- low_precision: 40
+- review: 1
+- zero_results: 1
+
+Top countries/economies
+- People's Republic of China: 431
+- India: 418
+- Brazil: 188
+- Bangladesh: 174
+- Pakistan: 174
+- Viet Nam: 163
+- Indonesia: 162
+- Philippines: 129
+- Sri Lanka: 99
+- Nepal: 87
+
+Top transport modes
+- Roads: 3035
+- Other transport: 885
+- Rail: 821
+- Maritime: 574
+- Unknown: 378
+- Urban transit: 279
+- Aviation: 182
+- Logistics: 112
+- Multimodal: 106
+
+Top sectors
+- Roads: 3035
+- Other transport: 1079
+- Rail: 821
+- Maritime: 574
+- Urban transit: 279
+- Policy financing: 184
+- Aviation: 182
+- Logistics: 112
+- Multimodal: 106
+
+Recommended global filters
+- funding_source
+- country
+- region
+- approval_year
+- project_status
+- sector_standardized
+- transport_mode_standardized
+- financing_type
+- has_final_coordinates
+- geo_monitor_status
+
+Important field notes
+- country is standardized where possible against economy_name from economies_v1.xlsx
+- country_original preserves the source label
+- amount_original is suitable for nominal portfolio rollups
+- has_final_coordinates = TRUE means the project can be shown on a point map
+- geo_low_precision_flag = TRUE means the mapped location should be visually flagged
+- source_locator points back to the original source record
+
+Suggested dashboard views
+- Overview
+- Geography
+- MDB Comparison
+- Project Explorer
+- Project Detail Drawer

@@ -1,0 +1,20 @@
+:root {
+  --app-font-family: "TW Cen MT", "Tw Cen MT", "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+html,
+body,
+#root,
+button,
+input,
+select,
+textarea,
+.maplibregl-map,
+.maplibregl-popup,
+.maplibregl-ctrl,
+.recharts-wrapper,
+.recharts-surface,
+.recharts-layer text,
+svg text {
+  font-family: var(--app-font-family);
+}

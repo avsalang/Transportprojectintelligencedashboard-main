@@ -1,0 +1,165 @@
+Design a professional web dashboard for a transport project intelligence database covering ADB, AIIB, and World Bank projects.
+
+Primary reference files:
+- transport_projects_cross_mdb_figma_profile.txt
+- transport_projects_cross_mdb_figma_sample_86.csv
+
+Goal:
+Create a clean, modern, executive-friendly dashboard that showcases what the data can do: locations, amounts, recipients, dates, sectors, and project profiles. This is not a data engineering or QA dashboard. It should feel like a transport finance intelligence explorer.
+
+Tone:
+Professional, analytical, map-forward, portfolio/profile oriented. Avoid generic startup SaaS visuals. Use strong information hierarchy, restrained color, clear typography, and a polished institutional feel.
+
+Primary user tasks:
+1. Understand the overall transport project portfolio
+2. Compare ADB, AIIB, and World Bank
+3. Explore recipient countries and regions
+4. See project distribution over time
+5. Filter by transport mode, geography, status, and financing type
+6. Open a project detail view with traceability back to the source record
+
+Main dataset in production:
+- transport_projects_cross_mdb_shareable_v3.csv
+
+Important data facts:
+- 6,372 transport projects
+- Sources:
+  - World Bank: 4,617
+  - ADB: 1,657
+  - AIIB: 98
+- Mapped projects with coordinates: 2,018
+- Geo statuses:
+  - hold: 4,313
+  - already_geocoded: 1,408
+  - matched: 609
+  - low_precision: 40
+  - review: 1
+  - zero_results: 1
+
+Core fields available:
+- funding_source
+- project_id
+- project_name
+- country
+- country_original
+- country_standardized
+- country_standardization_status
+- region
+- project_status
+- approval_year
+- approval_date
+- sector_standardized
+- subsector_standardized
+- transport_mode_standardized
+- transport_function
+- transport_context
+- infrastructure_type
+- financing_type
+- amount_original
+- currency
+- description
+- final_geo_status
+- final_location_name
+- final_latitude
+- final_longitude
+- has_final_coordinates
+- geo_low_precision_flag
+- geo_monitor_status
+- source_locator
+
+Recommended IA:
+1. Overview
+2. Geography
+3. MDB Comparison
+4. Project Explorer
+5. Project Detail Drawer
+
+Page guidance:
+
+Overview
+- KPI cards:
+  - Total projects
+  - Total financing
+  - Countries/economies covered
+  - Mapped projects
+- Hero map with clustered points
+- Projects by approval year
+- Projects by MDB
+- Projects by transport mode
+- Top recipient countries
+- Financing by MDB or by mode
+
+Geography
+- Map-forward page
+- Country ranking
+- Country profile summary when selected
+- Country profile should show:
+  - project count
+  - financing amount
+  - source split
+  - mode split
+  - timeline
+  - notable projects
+
+MDB Comparison
+- ADB vs AIIB vs World Bank
+- counts
+- financing
+- mapped share
+- mode mix
+- top countries
+- time trend
+
+Project Explorer
+- filterable searchable table
+- global filters in sidebar or top filter rail
+- row click opens detail drawer
+
+Project Detail Drawer
+- project title
+- MDB/source
+- project ID
+- country
+- region
+- project status
+- approval date/year
+- amount and currency
+- sector / subsector / mode
+- transport function / context
+- description
+- location name
+- coordinates if available
+- source provenance:
+  - source_locator
+
+Recommended global filters:
+- funding_source
+- country
+- region
+- approval_year range
+- project_status
+- sector_standardized
+- transport_mode_standardized
+- financing_type
+- has_final_coordinates
+- geo_monitor_status
+
+Visual guidance:
+- Use a major map panel as a signature element
+- Use horizontal bars for top countries and sectors
+- Use stacked bars for status and source composition
+- Use a timeline chart for approval years
+- Use a dense but polished explorer table
+- Use a right-side drawer for project details
+- Use small visual indicators for mapped vs unmapped and low-precision locations
+
+Important UX rules:
+- Render blanks as Unknown
+- Mark low-precision mapped rows visually
+- Allow a Mapped only toggle
+- Keep unmapped projects visible in tables and totals, but not on the point map
+- Use standardized country values where available
+- Preserve original labels and source traceability in the project detail view
+
+Design outcome:
+Produce a desktop-first responsive dashboard design system and page layouts suitable for quick implementation in Streamlit or a lightweight web app.

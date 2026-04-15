@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.vite/
+
+dashboard-full.zip
+
+public/data/crs-records.json
