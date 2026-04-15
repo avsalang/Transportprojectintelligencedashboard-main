@@ -79,12 +79,12 @@ const ENTITY_META: Record<CRSEntityType, { label: string; description: string }>
     description: 'Top-level regional rollup from the standardized CRS geography layer.',
   },
   donor: {
-    label: 'Donor organization',
-    description: 'Standardized donor names in the current filter state.',
+    label: 'Funding source',
+    description: 'Top-level donor or funding institution names in the current filter state.',
   },
   agency: {
-    label: 'Agency organization',
-    description: 'Standardized reporting agencies in the current filter state.',
+    label: 'Agency / financing window',
+    description: 'Reported agency labels, windows, funds, ministries, and implementing bodies in the current filter state.',
   },
 };
 
@@ -134,6 +134,7 @@ export function CRSProfiles() {
   const [measure, setMeasure] = useState<CRSMeasure>('commitment');
   const [entityType, setEntityType] = useState<CRSEntityType>('country');
   const [selectedEntity, setSelectedEntity] = useState<string>('');
+  const [entitySearch, setEntitySearch] = useState<string>('');
   const [rowsPerPage, setRowsPerPage] = useState<number>(25);
   const [page, setPage] = useState<number>(1);
   const [recordIndex, setRecordIndex] = useState<CRSRecordIndex | null>(null);
@@ -168,8 +169,14 @@ export function CRSProfiles() {
   const entityOptions = useMemo(() => {
     return aggregateFacts(filteredFacts, (fact) => entityLabelForFact(entityType, fact))
       .filter((item) => item.label)
-      .slice(0, 160);
+      .slice(0, 240);
   }, [entityType, filteredFacts]);
+
+  const filteredEntityOptions = useMemo(() => {
+    const query = entitySearch.trim().toLowerCase();
+    if (!query) return entityOptions;
+    return entityOptions.filter((item) => item.label.toLowerCase().includes(query));
+  }, [entityOptions, entitySearch]);
 
   useEffect(() => {
     if (!selectedEntity && entityOptions[0]) setSelectedEntity(entityOptions[0].label);
@@ -184,6 +191,10 @@ export function CRSProfiles() {
   useEffect(() => {
     setPage(1);
   }, [entityType, selectedEntity, rowsPerPage, measure, filters]);
+
+  useEffect(() => {
+    setEntitySearch('');
+  }, [entityType]);
 
   const subset = useMemo(
     () => filteredFacts.filter((fact) => entityLabelForFact(entityType, fact) === selectedEntity),
@@ -203,6 +214,18 @@ export function CRSProfiles() {
 
   const modeRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.mode).slice(0, 8), [subset]);
   const flowRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.flow).slice(0, 8), [subset]);
+  const relationshipRanking = useMemo(() => {
+    if (entityType === 'donor') {
+      return aggregateFacts(subset, (fact) => fact.agency || 'Unknown').slice(0, 10);
+    }
+    if (entityType === 'agency') {
+      return aggregateFacts(subset, (fact) => fact.donor || 'Unknown').slice(0, 10);
+    }
+    if (entityType === 'country' || entityType === 'regionalRecipient' || entityType === 'broadRegion') {
+      return aggregateFacts(subset, (fact) => fact.agency || 'Unknown').slice(0, 10);
+    }
+    return [];
+  }, [entityType, subset]);
 
   const counterpartLabel =
     entityType === 'donor' || entityType === 'agency' ? 'Top recipients' : 'Top donors';
@@ -210,8 +233,22 @@ export function CRSProfiles() {
     () => estimateCategoryAxisWidth(counterpartRanking.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 248 }),
     [counterpartRanking],
   );
+  const relationshipLabel =
+    entityType === 'donor'
+      ? 'Top agencies / windows'
+      : entityType === 'agency'
+        ? 'Top funding sources'
+        : 'Top agencies / windows';
+  const relationshipAxisWidth = useMemo(
+    () => estimateCategoryAxisWidth(relationshipRanking.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 248 }),
+    [relationshipRanking],
+  );
 
   const selectedMeta = ENTITY_META[entityType];
+  const selectedEntityMetrics = useMemo(
+    () => entityOptions.find((option) => option.label === selectedEntity) ?? null,
+    [entityOptions, selectedEntity],
+  );
   const activeShardIds = useMemo(
     () => recordIndex?.entityShardMap?.[entityType]?.[selectedEntity] ?? [],
     [entityType, recordIndex, selectedEntity],
@@ -323,14 +360,20 @@ export function CRSProfiles() {
               </option>
             ))}
           </select>
+          <input
+            value={entitySearch}
+            onChange={(event) => setEntitySearch(event.target.value)}
+            placeholder={`Search ${selectedMeta.label.toLowerCase()}...`}
+            className="px-3 py-2 rounded-lg border border-slate-200 text-sm min-w-[240px] bg-white"
+          />
           <select
             value={selectedEntity}
             onChange={(event) => setSelectedEntity(event.target.value)}
             className="px-3 py-2 rounded-lg border border-slate-200 text-sm min-w-[280px] bg-white"
           >
-            {entityOptions.map((option) => (
+            {filteredEntityOptions.map((option) => (
               <option key={option.label} value={option.label}>
-                {option.label}
+                {option.label} · {crsFmt.usdM(option[measure])} · {crsFmt.num(option.count)} records
               </option>
             ))}
           </select>
@@ -351,6 +394,19 @@ export function CRSProfiles() {
         </div>
       </div>
 
+      {(entityType === 'donor' || entityType === 'agency') ? (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+          <p className="text-amber-900 text-sm font-semibold">
+            {entityType === 'donor' ? 'Funding source view' : 'Agency / financing window view'}
+          </p>
+          <p className="text-amber-800 text-sm mt-1">
+            {entityType === 'donor'
+              ? 'This view groups records by the top-level donor or institution. A single funding source can contain many reported agencies, windows, funds, or ministries underneath it.'
+              : 'This view groups records by the reported agency label in CRS. These labels can include true agencies, financing windows, trust funds, ministries, or other reporting buckets, so they may look more mixed than donor names.'}
+          </p>
+        </div>
+      ) : null}
+
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-500 text-xs uppercase tracking-wider">Selected entity</p>
@@ -362,6 +418,11 @@ export function CRSProfiles() {
             <div>
               <p className="text-slate-900 text-lg font-semibold">{selectedEntity || '—'}</p>
               <p className="text-slate-500 text-xs mt-0.5">{selectedMeta.label}</p>
+              {selectedEntityMetrics ? (
+                <p className="text-slate-400 text-xs mt-1">
+                  {crsFmt.num(selectedEntityMetrics.count)} records in current filtered view
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -380,7 +441,7 @@ export function CRSProfiles() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">{counterpartLabel}</p>
           <p className="text-slate-400 text-xs mb-4">Largest connected entities under the current selection</p>
@@ -393,6 +454,30 @@ export function CRSProfiles() {
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {counterpartRanking.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.84} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <p className="text-slate-800 text-sm font-semibold mb-1">{relationshipLabel}</p>
+          <p className="text-slate-400 text-xs mb-4">
+            {entityType === 'donor'
+              ? 'How this funding source breaks down across reported agencies and financing windows'
+              : entityType === 'agency'
+                ? 'Which funding sources are using this agency / financing window label'
+                : 'Agencies and financing windows most associated with this selection'}
+          </p>
+          <ResponsiveContainer width="100%" height={280}>
+            <BarChart data={relationshipRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={relationshipAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+                {relationshipRanking.map((row) => (
+                  <Cell key={row.label} fill="#2563EB" fillOpacity={0.78} />
                 ))}
               </Bar>
             </BarChart>
@@ -447,7 +532,11 @@ export function CRSProfiles() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap justify-end">
+            <div className="text-right">
+              <p className="text-[11px] uppercase tracking-wide text-slate-400">Exploring by</p>
+              <p className="text-sm text-slate-700 font-medium">{selectedMeta.label}</p>
+            </div>
             <label className="text-xs text-slate-500">Rows per page</label>
             <select
               value={rowsPerPage}
@@ -570,6 +659,7 @@ export function CRSProfiles() {
                   <div>
                     <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Donor</p>
                     <p className="text-slate-900">{activeRecord.donor}</p>
+                    <p className="text-slate-500 text-xs mt-1">Top-level funding source</p>
                     {activeRecord.donor_original && activeRecord.donor_original !== activeRecord.donor ? (
                       <p className="text-slate-500 text-xs mt-1">Original: {activeRecord.donor_original}</p>
                     ) : null}
@@ -577,6 +667,7 @@ export function CRSProfiles() {
                   <div>
                     <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Agency</p>
                     <p className="text-slate-900">{activeRecord.agency}</p>
+                    <p className="text-slate-500 text-xs mt-1">Reported agency / financing window label</p>
                     {activeRecord.agency_original && activeRecord.agency_original !== activeRecord.agency ? (
                       <p className="text-slate-500 text-xs mt-1">Original: {activeRecord.agency_original}</p>
                     ) : null}
