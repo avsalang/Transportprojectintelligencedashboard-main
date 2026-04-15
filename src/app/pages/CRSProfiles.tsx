@@ -204,35 +204,6 @@ export function CRSProfiles() {
   const modeRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.mode).slice(0, 8), [subset]);
   const flowRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.flow).slice(0, 8), [subset]);
 
-  const filteredRecords = useMemo(() => {
-    return records
-      .filter((record) => {
-        if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
-        if (filters.regions.length && !filters.regions.includes(record.region || 'Unknown')) return false;
-        if (filters.regionDetails.length && !filters.regionDetails.includes(record.recipient_region_detail || '')) return false;
-        if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
-        if (filters.scopes.length && !filters.scopes.includes(record.recipient_scope || 'unknown')) return false;
-        if (filters.yearMin) {
-          const minYear = parseInt(filters.yearMin, 10);
-          if (!Number.isNaN(minYear) && (record.year ?? 0) < minYear) return false;
-        }
-        if (filters.yearMax) {
-          const maxYear = parseInt(filters.yearMax, 10);
-          if (!Number.isNaN(maxYear) && (record.year ?? 0) > maxYear) return false;
-        }
-        return recordMatchesEntity(record, entityType, selectedEntity);
-      })
-      .sort((a, b) => {
-        const measureDiff = (b[measure] ?? 0) - (a[measure] ?? 0);
-        if (measureDiff !== 0) return measureDiff;
-        return (b.year ?? 0) - (a.year ?? 0);
-      });
-  }, [entityType, filters, measure, records, selectedEntity]);
-
-  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / rowsPerPage));
-  const currentPage = Math.min(page, totalPages);
-  const pagedRecords = filteredRecords.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
-
   const counterpartLabel =
     entityType === 'donor' || entityType === 'agency' ? 'Top recipients' : 'Top donors';
   const counterpartAxisWidth = useMemo(
@@ -301,6 +272,35 @@ export function CRSProfiles() {
     () => activeShardIds.flatMap((id) => recordChunks[String(id)] ?? []),
     [activeShardIds, recordChunks],
   );
+
+  const filteredRecords = useMemo(() => {
+    return records
+      .filter((record) => {
+        if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
+        if (filters.regions.length && !filters.regions.includes(record.region || 'Unknown')) return false;
+        if (filters.regionDetails.length && !filters.regionDetails.includes(record.recipient_region_detail || '')) return false;
+        if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
+        if (filters.scopes.length && !filters.scopes.includes(record.recipient_scope || 'unknown')) return false;
+        if (filters.yearMin) {
+          const minYear = parseInt(filters.yearMin, 10);
+          if (!Number.isNaN(minYear) && (record.year ?? 0) < minYear) return false;
+        }
+        if (filters.yearMax) {
+          const maxYear = parseInt(filters.yearMax, 10);
+          if (!Number.isNaN(maxYear) && (record.year ?? 0) > maxYear) return false;
+        }
+        return recordMatchesEntity(record, entityType, selectedEntity);
+      })
+      .sort((a, b) => {
+        const measureDiff = (b[measure] ?? 0) - (a[measure] ?? 0);
+        if (measureDiff !== 0) return measureDiff;
+        return (b.year ?? 0) - (a.year ?? 0);
+      });
+  }, [entityType, filters, measure, records, selectedEntity]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / rowsPerPage));
+  const currentPage = Math.min(page, totalPages);
+  const pagedRecords = filteredRecords.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
 
   return (
     <div className="p-6 space-y-6">
