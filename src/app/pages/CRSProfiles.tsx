@@ -10,7 +10,7 @@ import {
   YAxis,
 } from 'recharts';
 import { Building2, Globe2, Layers3, MapPinned, Table2 } from 'lucide-react';
-import { estimateCategoryAxisWidth, WrappedAxisTick, WrappedCategoryTick } from '../components/ChartTicks';
+import { estimateCategoryAxisWidth, WrappedCategoryTick } from '../components/ChartTicks';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
@@ -243,6 +243,14 @@ export function CRSProfiles() {
     () => estimateCategoryAxisWidth(relationshipRanking.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 248 }),
     [relationshipRanking],
   );
+  const modeAxisWidth = useMemo(
+    () => estimateCategoryAxisWidth(modeRanking.map((item) => item.label), { maxChars: 16, minWidth: 110, maxWidth: 170 }),
+    [modeRanking],
+  );
+  const flowAxisWidth = useMemo(
+    () => estimateCategoryAxisWidth(flowRanking.map((item) => item.label), { maxChars: 18, minWidth: 130, maxWidth: 200 }),
+    [flowRanking],
+  );
 
   const selectedMeta = ENTITY_META[entityType];
   const selectedEntityMetrics = useMemo(
@@ -341,55 +349,66 @@ export function CRSProfiles() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
+      <div className="flex items-start justify-between gap-6">
+        <div className="max-w-2xl">
           <h1 className="text-slate-900 text-xl font-semibold">Entity Deep Dive</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
+          <p className="text-slate-500 text-sm mt-1 leading-6">
             Drill into countries, regional recipients, broad regions, and organizations with the current global CRS filters applied.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <select
-            value={entityType}
-            onChange={(event) => setEntityType(event.target.value as CRSEntityType)}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm min-w-[210px] bg-white"
-          >
-            {Object.entries(ENTITY_META).map(([value, meta]) => (
-              <option key={value} value={value}>
-                {meta.label}
-              </option>
-            ))}
-          </select>
-          <input
-            value={entitySearch}
-            onChange={(event) => setEntitySearch(event.target.value)}
-            placeholder={`Search ${selectedMeta.label.toLowerCase()}...`}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm min-w-[240px] bg-white"
-          />
-          <select
-            value={selectedEntity}
-            onChange={(event) => setSelectedEntity(event.target.value)}
-            className="px-3 py-2 rounded-lg border border-slate-200 text-sm min-w-[280px] bg-white"
-          >
-            {filteredEntityOptions.map((option) => (
-              <option key={option.label} value={option.label}>
-                {option.label} · {crsFmt.usdM(option[measure])} · {crsFmt.num(option.count)} records
-              </option>
-            ))}
-          </select>
-          <div className="inline-flex rounded-lg bg-slate-100 p-1">
-            <button
-              onClick={() => setMeasure('commitment')}
-              className={`px-3 py-1.5 text-xs rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
-            >
-              Commitments
-            </button>
-            <button
-              onClick={() => setMeasure('disbursement')}
-              className={`px-3 py-1.5 text-xs rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
-            >
-              Disbursements
-            </button>
+        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm min-w-[860px]">
+          <div className="grid grid-cols-[200px_260px_minmax(320px,1fr)_auto] gap-3 items-end">
+            <label className="block">
+              <span className="text-[11px] uppercase tracking-wide text-slate-400">Explore by</span>
+              <select
+                value={entityType}
+                onChange={(event) => setEntityType(event.target.value as CRSEntityType)}
+                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
+              >
+                {Object.entries(ENTITY_META).map(([value, meta]) => (
+                  <option key={value} value={value}>
+                    {meta.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="block">
+              <span className="text-[11px] uppercase tracking-wide text-slate-400">Search</span>
+              <input
+                value={entitySearch}
+                onChange={(event) => setEntitySearch(event.target.value)}
+                placeholder={`Search ${selectedMeta.label.toLowerCase()}...`}
+                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
+              />
+            </label>
+            <label className="block">
+              <span className="text-[11px] uppercase tracking-wide text-slate-400">Selection</span>
+              <select
+                value={selectedEntity}
+                onChange={(event) => setSelectedEntity(event.target.value)}
+                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
+              >
+                {filteredEntityOptions.map((option) => (
+                  <option key={option.label} value={option.label}>
+                    {option.label} · {crsFmt.usdM(option[measure])} · {crsFmt.num(option.count)} records
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="inline-flex rounded-xl bg-slate-100 p-1 self-end">
+              <button
+                onClick={() => setMeasure('commitment')}
+                className={`px-3 py-2 text-xs rounded-lg ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              >
+                Commitments
+              </button>
+              <button
+                onClick={() => setMeasure('disbursement')}
+                className={`px-3 py-2 text-xs rounded-lg ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              >
+                Disbursements
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -407,16 +426,16 @@ export function CRSProfiles() {
         </div>
       ) : null}
 
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] gap-4">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-500 text-xs uppercase tracking-wider">Selected entity</p>
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-start gap-3 mt-4">
             {entityType === 'country' ? <MapPinned size={16} className="text-emerald-600" /> : null}
             {entityType === 'regionalRecipient' ? <Layers3 size={16} className="text-emerald-600" /> : null}
             {entityType === 'broadRegion' ? <Globe2 size={16} className="text-emerald-600" /> : null}
             {(entityType === 'donor' || entityType === 'agency') ? <Building2 size={16} className="text-emerald-600" /> : null}
-            <div>
-              <p className="text-slate-900 text-lg font-semibold">{selectedEntity || '—'}</p>
+            <div className="min-w-0">
+              <p className="text-slate-900 text-[28px] leading-tight font-semibold">{selectedEntity || '—'}</p>
               <p className="text-slate-500 text-xs mt-0.5">{selectedMeta.label}</p>
               {selectedEntityMetrics ? (
                 <p className="text-slate-400 text-xs mt-1">
@@ -426,32 +445,32 @@ export function CRSProfiles() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-500 text-xs uppercase tracking-wider">Commitments</p>
-          <p className="text-slate-900 text-2xl font-semibold mt-3">{crsFmt.usdM(stats.commitment)}</p>
+          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{crsFmt.usdM(stats.commitment)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-500 text-xs uppercase tracking-wider">Disbursements</p>
-          <p className="text-slate-900 text-2xl font-semibold mt-3">{crsFmt.usdM(stats.disbursement)}</p>
+          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{crsFmt.usdM(stats.disbursement)}</p>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-500 text-xs uppercase tracking-wider">Underlying records</p>
-          <p className="text-slate-900 text-2xl font-semibold mt-3">{indexLoading || recordsLoading ? '…' : crsFmt.num(filteredRecords.length)}</p>
-          <p className="text-slate-500 text-xs mt-1">{selectedMeta.description}</p>
+          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{indexLoading || recordsLoading ? '…' : crsFmt.num(filteredRecords.length)}</p>
+          <p className="text-slate-500 text-xs mt-3 leading-5">{selectedMeta.description}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-800 text-sm font-semibold mb-1">{counterpartLabel}</p>
           <p className="text-slate-400 text-xs mb-4">Largest connected entities under the current selection</p>
-          <ResponsiveContainer width="100%" height={280}>
+          <ResponsiveContainer width="100%" height={360}>
             <BarChart data={counterpartRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={counterpartAxisWidth} interval={0} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
                 {counterpartRanking.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.84} />
                 ))}
@@ -460,7 +479,7 @@ export function CRSProfiles() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-800 text-sm font-semibold mb-1">{relationshipLabel}</p>
           <p className="text-slate-400 text-xs mb-4">
             {entityType === 'donor'
@@ -469,13 +488,13 @@ export function CRSProfiles() {
                 ? 'Which funding sources are using this agency / financing window label'
                 : 'Agencies and financing windows most associated with this selection'}
           </p>
-          <ResponsiveContainer width="100%" height={280}>
+          <ResponsiveContainer width="100%" height={360}>
             <BarChart data={relationshipRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={relationshipAxisWidth} interval={0} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
                 {relationshipRanking.map((row) => (
                   <Cell key={row.label} fill="#2563EB" fillOpacity={0.78} />
                 ))}
@@ -484,16 +503,16 @@ export function CRSProfiles() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-800 text-sm font-semibold mb-1">Mode Mix</p>
           <p className="text-slate-400 text-xs mb-4">Transport composition inside the selected entity</p>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={modeRanking}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
-              <XAxis dataKey="label" tick={<WrappedAxisTick maxChars={12} />} tickLine={false} axisLine={false} height={78} interval={0} />
-              <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={modeRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={16} />} tickLine={false} axisLine={false} width={modeAxisWidth} interval={0} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[6, 6, 0, 0]}>
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
                 {modeRanking.map((row) => (
                   <Cell key={row.label} fill="#059669" fillOpacity={0.84} />
                 ))}
@@ -502,16 +521,16 @@ export function CRSProfiles() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <p className="text-slate-800 text-sm font-semibold mb-1">Financing Mix</p>
           <p className="text-slate-400 text-xs mb-4">How support is delivered into this selected entity</p>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={flowRanking}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
-              <XAxis dataKey="label" tick={<WrappedAxisTick maxChars={12} />} tickLine={false} axisLine={false} height={78} interval={0} />
-              <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={flowRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={flowAxisWidth} interval={0} />
               <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[6, 6, 0, 0]}>
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
                 {flowRanking.map((row) => (
                   <Cell key={row.label} fill="#10B981" fillOpacity={0.84} />
                 ))}
