@@ -3,10 +3,6 @@ import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
-const githubRepository = process.env.GITHUB_REPOSITORY
-const githubRepoName = githubRepository?.split('/')[1]
-const pagesBase = githubRepoName ? `/${githubRepoName}/` : '/'
-
 function figmaAssetResolver() {
   return {
     name: 'figma-asset-resolver',
@@ -20,7 +16,9 @@ function figmaAssetResolver() {
 }
 
 export default defineConfig({
-  base: pagesBase,
+  // Relative asset paths are the most robust option for GitHub Pages when
+  // the app is served from a repository subpath and uses hash routing.
+  base: './',
   plugins: [
     figmaAssetResolver(),
     // The React and Tailwind plugins are both required for Make, even if
