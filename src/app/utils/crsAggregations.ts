@@ -133,28 +133,23 @@ export function buildCountryMapPoints(facts: CRSFact[]) {
 export function buildFlowSankeyData(
   facts: CRSFact[],
   measure: CRSMeasure,
-  topDonors = 8,
-  topAgencies = 16,
-  topRecipients = 12,
+  topDonors = 6,
+  topAgencies = 8,
+  topRecipients = 10,
 ) {
-  const donorTotals = aggregateFacts(facts, (fact) => fact.donor).slice(0, topDonors);
-  const agencyTotals = aggregateFacts(
-    facts.filter((fact) => fact.recipient_scope === 'economy'),
-    (fact) => fact.agency,
-  ).slice(0, topAgencies);
-  const recipientTotals = aggregateFacts(
-    facts.filter((fact) => fact.recipient_scope === 'economy'),
-    (fact) => fact.recipient,
-  ).slice(0, topRecipients);
+  const economyFacts = facts.filter((fact) => fact.recipient_scope === 'economy');
+  const donorTotals = aggregateFacts(economyFacts, (fact) => fact.donor).slice(0, topDonors);
+  const recipientTotals = aggregateFacts(economyFacts, (fact) => fact.recipient).slice(0, topRecipients);
 
   const donorSet = new Set(donorTotals.map((item) => item.label));
-  const agencySet = new Set(agencyTotals.map((item) => item.label));
   const recipientSet = new Set(recipientTotals.map((item) => item.label));
+  const constrainedFacts = economyFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
+  const agencyTotals = aggregateFacts(constrainedFacts, (fact) => fact.agency).slice(0, topAgencies);
+  const agencySet = new Set(agencyTotals.map((item) => item.label));
   const donorAgencyLinkMap = new Map<string, number>();
   const agencyRecipientLinkMap = new Map<string, number>();
 
-  facts.forEach((fact) => {
-    if (fact.recipient_scope !== 'economy') return;
+  constrainedFacts.forEach((fact) => {
     if (!donorSet.has(fact.donor) || !agencySet.has(fact.agency) || !recipientSet.has(fact.recipient)) return;
 
     const donorAgencyKey = `${fact.donor}|||${fact.agency}`;
@@ -193,8 +188,7 @@ export function buildFlowSankeyData(
     .filter((link) => link.value > 0);
 
   const links = [...donorAgencyLinks, ...agencyRecipientLinks]
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 72);
+    .sort((a, b) => b.value - a.value);
 
   const donorLinkTotals = donorTotals
     .map((item) => ({

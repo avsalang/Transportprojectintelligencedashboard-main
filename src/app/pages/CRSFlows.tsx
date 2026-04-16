@@ -42,9 +42,9 @@ function FlowNode(props: any) {
   const { x, y, width, height, index, payload, onSelect, isDimmed, isActive } = props;
   const isDonor = payload?.role === 'donor';
   const isAgency = payload?.role === 'agency';
-  const labelX = isDonor ? x - 12 : isAgency ? x + width / 2 : x + width + 12;
-  const anchor = isDonor ? 'end' : isAgency ? 'middle' : 'start';
-  const lines = wrapLabel(payload?.name ?? `Node ${index + 1}`);
+  const labelX = isDonor ? x - 12 : isAgency ? x + width + 10 : x + width + 12;
+  const anchor = isDonor ? 'end' : 'start';
+  const lines = wrapLabel(payload?.name ?? `Node ${index + 1}`, isAgency ? 14 : 18);
   return (
     <g
       onClick={() => onSelect?.(payload?.name, payload?.role)}
@@ -63,7 +63,7 @@ function FlowNode(props: any) {
       />
       <text
         x={labelX}
-        y={isAgency ? y - 8 : y + height / 2 - ((lines.length - 1) * 6)}
+        y={y + height / 2 - ((lines.length - 1) * 6)}
         textAnchor={anchor}
         fontSize={11}
         fill={isDimmed ? '#94A3B8' : '#334155'}
@@ -246,9 +246,9 @@ export function CRSFlows() {
           <ResponsiveContainer width="100%" height={460}>
             <Sankey
               data={coloredSankeyData}
-              nodePadding={30}
+              nodePadding={26}
               nodeWidth={14}
-              margin={{ top: 26, right: 220, left: 220, bottom: 12 }}
+              margin={{ top: 18, right: 240, left: 220, bottom: 18 }}
               node={nodeRenderer}
               link={<FlowLink />}
             >
