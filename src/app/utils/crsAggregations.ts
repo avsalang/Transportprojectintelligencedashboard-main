@@ -137,57 +137,122 @@ export function buildFlowSankeyData(
   topAgencies = 8,
   topRecipients = 10,
 ) {
+  const MIN_VISIBLE_FLOW_VALUE = 0.05;
   const economyFacts = facts.filter((fact) => fact.recipient_scope === 'economy');
-  const donorTotals = aggregateFacts(economyFacts, (fact) => fact.donor).slice(0, topDonors);
-  const recipientTotals = aggregateFacts(economyFacts, (fact) => fact.recipient).slice(0, topRecipients);
+  const uniqueDonors = new Set(economyFacts.map((fact) => fact.donor));
+  const uniqueRecipients = new Set(economyFacts.map((fact) => fact.recipient));
+  const isRecipientFocus = uniqueRecipients.size === 1;
+  const isDonorFocus = uniqueDonors.size === 1;
+  const donorLimit = isRecipientFocus ? 7 : isDonorFocus ? 1 : Math.min(topDonors, 5);
+  const agencyLimit = isRecipientFocus ? 6 : isDonorFocus ? 5 : Math.min(topAgencies, 6);
+  const recipientLimit = isRecipientFocus ? 1 : isDonorFocus ? 7 : Math.min(topRecipients, 8);
+  const donorTotals = aggregateFacts(economyFacts, (fact) => fact.donor).slice(0, donorLimit);
+  const recipientTotals = aggregateFacts(economyFacts, (fact) => fact.recipient).slice(0, recipientLimit);
 
   const donorSet = new Set(donorTotals.map((item) => item.label));
   const recipientSet = new Set(recipientTotals.map((item) => item.label));
   const constrainedFacts = economyFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
-  const agencyTotals = aggregateFacts(constrainedFacts, (fact) => fact.agency).slice(0, topAgencies);
+  const donorAgencyTotals = aggregateFacts(constrainedFacts, (fact) => `${fact.donor}|||${fact.agency}`);
+  const donorAgencyByDonor = new Map<string, typeof donorAgencyTotals>();
+  donorAgencyTotals.forEach((item) => {
+    const [donor] = item.label.split('|||');
+    donorAgencyByDonor.set(donor, [...(donorAgencyByDonor.get(donor) ?? []), item]);
+  });
+
+  const maxAgenciesPerDonor = isRecipientFocus ? 2 : isDonorFocus ? agencyLimit : 2;
+  const selectedDonorAgencyPairs = new Set<string>();
+  donorSet.forEach((donor) => {
+    (donorAgencyByDonor.get(donor) ?? [])
+      .sort((a, b) => b.value - a.value)
+      .slice(0, maxAgenciesPerDonor)
+      .forEach((item) => selectedDonorAgencyPairs.add(item.label));
+  });
+
+  const shortlistedFacts = constrainedFacts.filter((fact) => selectedDonorAgencyPairs.has(`${fact.donor}|||${fact.agency}`));
+  const agencyTotals = aggregateFacts(shortlistedFacts, (fact) => fact.agency).slice(0, agencyLimit);
   const agencySet = new Set(agencyTotals.map((item) => item.label));
+  const agencyRecipientTotals = aggregateFacts(
+    shortlistedFacts.filter((fact) => agencySet.has(fact.agency)),
+    (fact) => `${fact.agency}|||${fact.recipient}`,
+  );
+  const agencyRecipientByAgency = new Map<string, typeof agencyRecipientTotals>();
+  agencyRecipientTotals.forEach((item) => {
+    const [agency] = item.label.split('|||');
+    agencyRecipientByAgency.set(agency, [...(agencyRecipientByAgency.get(agency) ?? []), item]);
+  });
+
+  const maxRecipientsPerAgency = isRecipientFocus ? 1 : isDonorFocus ? 2 : 2;
+  const selectedAgencyRecipientPairs = new Set<string>();
+  agencySet.forEach((agency) => {
+    (agencyRecipientByAgency.get(agency) ?? [])
+      .sort((a, b) => b.value - a.value)
+      .slice(0, maxRecipientsPerAgency)
+      .forEach((item) => selectedAgencyRecipientPairs.add(item.label));
+  });
+
   const donorAgencyLinkMap = new Map<string, number>();
   const agencyRecipientLinkMap = new Map<string, number>();
 
-  constrainedFacts.forEach((fact) => {
-    if (!donorSet.has(fact.donor) || !agencySet.has(fact.agency) || !recipientSet.has(fact.recipient)) return;
-
+  shortlistedFacts.forEach((fact) => {
     const donorAgencyKey = `${fact.donor}|||${fact.agency}`;
-    donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + fact[measure]);
-
     const agencyRecipientKey = `${fact.agency}|||${fact.recipient}`;
+    if (
+      !donorSet.has(fact.donor) ||
+      !agencySet.has(fact.agency) ||
+      !recipientSet.has(fact.recipient) ||
+      !selectedDonorAgencyPairs.has(donorAgencyKey) ||
+      !selectedAgencyRecipientPairs.has(agencyRecipientKey)
+    ) {
+      return;
+    }
+
+    donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + fact[measure]);
     agencyRecipientLinkMap.set(agencyRecipientKey, (agencyRecipientLinkMap.get(agencyRecipientKey) ?? 0) + fact[measure]);
   });
 
-  const nodes = [
-    ...donorTotals.map((item) => ({ name: item.label, role: 'donor' })),
-    ...agencyTotals.map((item) => ({ name: item.label, role: 'agency' })),
-    ...recipientTotals.map((item) => ({ name: item.label, role: 'recipient' })),
-  ];
-  const nodeIndex = new Map(nodes.map((node, index) => [node.name, index]));
   const donorAgencyLinks = [...donorAgencyLinkMap.entries()]
     .map(([key, value]) => {
       const [donor, agency] = key.split('|||');
       return {
-        source: nodeIndex.get(donor)!,
-        target: nodeIndex.get(agency)!,
+        sourceName: donor,
+        targetName: agency,
         value,
       };
     })
-    .filter((link) => link.value > 0);
+    .filter((link) => link.value >= MIN_VISIBLE_FLOW_VALUE);
 
   const agencyRecipientLinks = [...agencyRecipientLinkMap.entries()]
     .map(([key, value]) => {
       const [agency, recipient] = key.split('|||');
       return {
-        source: nodeIndex.get(agency)!,
-        target: nodeIndex.get(recipient)!,
+        sourceName: agency,
+        targetName: recipient,
         value,
       };
     })
-    .filter((link) => link.value > 0);
+    .filter((link) => link.value >= MIN_VISIBLE_FLOW_VALUE);
+
+  const activeDonors = new Set(donorAgencyLinks.map((link) => link.sourceName));
+  const activeAgencies = new Set([
+    ...donorAgencyLinks.map((link) => link.targetName),
+    ...agencyRecipientLinks.map((link) => link.sourceName),
+  ]);
+  const activeRecipients = new Set(agencyRecipientLinks.map((link) => link.targetName));
+
+  const nodes = [
+    ...donorTotals.filter((item) => activeDonors.has(item.label)).map((item) => ({ name: item.label, role: 'donor' })),
+    ...agencyTotals.filter((item) => activeAgencies.has(item.label)).map((item) => ({ name: item.label, role: 'agency' })),
+    ...recipientTotals.filter((item) => activeRecipients.has(item.label)).map((item) => ({ name: item.label, role: 'recipient' })),
+  ];
+  const nodeIndex = new Map(nodes.map((node, index) => [node.name, index]));
 
   const links = [...donorAgencyLinks, ...agencyRecipientLinks]
+    .filter((link) => nodeIndex.has(link.sourceName) && nodeIndex.has(link.targetName))
+    .map((link) => ({
+      source: nodeIndex.get(link.sourceName)!,
+      target: nodeIndex.get(link.targetName)!,
+      value: link.value,
+    }))
     .sort((a, b) => b.value - a.value);
 
   const donorLinkTotals = donorTotals
