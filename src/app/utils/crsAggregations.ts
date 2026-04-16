@@ -134,39 +134,67 @@ export function buildFlowSankeyData(
   facts: CRSFact[],
   measure: CRSMeasure,
   topDonors = 8,
+  topAgencies = 16,
   topRecipients = 12,
 ) {
   const donorTotals = aggregateFacts(facts, (fact) => fact.donor).slice(0, topDonors);
+  const agencyTotals = aggregateFacts(
+    facts.filter((fact) => fact.recipient_scope === 'economy'),
+    (fact) => fact.agency,
+  ).slice(0, topAgencies);
   const recipientTotals = aggregateFacts(
     facts.filter((fact) => fact.recipient_scope === 'economy'),
     (fact) => fact.recipient,
   ).slice(0, topRecipients);
 
   const donorSet = new Set(donorTotals.map((item) => item.label));
+  const agencySet = new Set(agencyTotals.map((item) => item.label));
   const recipientSet = new Set(recipientTotals.map((item) => item.label));
-  const linkMap = new Map<string, number>();
+  const donorAgencyLinkMap = new Map<string, number>();
+  const agencyRecipientLinkMap = new Map<string, number>();
 
   facts.forEach((fact) => {
-    if (!donorSet.has(fact.donor) || !recipientSet.has(fact.recipient)) return;
     if (fact.recipient_scope !== 'economy') return;
-    const key = `${fact.donor}|||${fact.recipient}`;
-    linkMap.set(key, (linkMap.get(key) ?? 0) + fact[measure]);
+    if (!donorSet.has(fact.donor) || !agencySet.has(fact.agency) || !recipientSet.has(fact.recipient)) return;
+
+    const donorAgencyKey = `${fact.donor}|||${fact.agency}`;
+    donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + fact[measure]);
+
+    const agencyRecipientKey = `${fact.agency}|||${fact.recipient}`;
+    agencyRecipientLinkMap.set(agencyRecipientKey, (agencyRecipientLinkMap.get(agencyRecipientKey) ?? 0) + fact[measure]);
   });
 
-  const nodes = [...donorTotals.map((item) => ({ name: item.label })), ...recipientTotals.map((item) => ({ name: item.label }))];
+  const nodes = [
+    ...donorTotals.map((item) => ({ name: item.label, role: 'donor' })),
+    ...agencyTotals.map((item) => ({ name: item.label, role: 'agency' })),
+    ...recipientTotals.map((item) => ({ name: item.label, role: 'recipient' })),
+  ];
   const nodeIndex = new Map(nodes.map((node, index) => [node.name, index]));
-  const links = [...linkMap.entries()]
+  const donorAgencyLinks = [...donorAgencyLinkMap.entries()]
     .map(([key, value]) => {
-      const [donor, recipient] = key.split('|||');
+      const [donor, agency] = key.split('|||');
       return {
         source: nodeIndex.get(donor)!,
+        target: nodeIndex.get(agency)!,
+        value,
+      };
+    })
+    .filter((link) => link.value > 0);
+
+  const agencyRecipientLinks = [...agencyRecipientLinkMap.entries()]
+    .map(([key, value]) => {
+      const [agency, recipient] = key.split('|||');
+      return {
+        source: nodeIndex.get(agency)!,
         target: nodeIndex.get(recipient)!,
         value,
       };
     })
-    .filter((link) => link.value > 0)
+    .filter((link) => link.value > 0);
+
+  const links = [...donorAgencyLinks, ...agencyRecipientLinks]
     .sort((a, b) => b.value - a.value)
-    .slice(0, 36);
+    .slice(0, 72);
 
   const donorLinkTotals = donorTotals
     .map((item) => ({
@@ -175,6 +203,30 @@ export function buildFlowSankeyData(
         .filter((link) => link.source === nodeIndex.get(item.label))
         .reduce((sum, link) => sum + link.value, 0),
     }))
+    .filter((item) => item.visibleValue > 0)
+    .map((item) => ({
+      label: item.label,
+      commitment: measure === 'commitment' ? item.visibleValue : 0,
+      disbursement: measure === 'disbursement' ? item.visibleValue : 0,
+      count: item.count,
+      value: item.visibleValue,
+    }))
+    .sort((a, b) => b.value - a.value);
+
+  const agencyLinkTotals = agencyTotals
+    .map((item) => {
+      const nodeIdx = nodeIndex.get(item.label);
+      const outgoing = links
+        .filter((link) => link.source === nodeIdx)
+        .reduce((sum, link) => sum + link.value, 0);
+      const incoming = links
+        .filter((link) => link.target === nodeIdx)
+        .reduce((sum, link) => sum + link.value, 0);
+      return {
+        ...item,
+        visibleValue: Math.max(outgoing, incoming),
+      };
+    })
     .filter((item) => item.visibleValue > 0)
     .map((item) => ({
       label: item.label,
@@ -202,7 +254,7 @@ export function buildFlowSankeyData(
     }))
     .sort((a, b) => b.value - a.value);
 
-  return { nodes, links, donorLinkTotals, recipientLinkTotals };
+  return { nodes, links, donorLinkTotals, agencyLinkTotals, recipientLinkTotals };
 }
 
 export function getLatestYearFromFacts(facts: CRSFact[]) {

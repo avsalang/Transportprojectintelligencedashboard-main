@@ -1,10 +1,10 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import { CRS_DONOR_OPTIONS, CRS_FACTS, CRS_MODE_OPTIONS, CRS_REGION_DETAIL_OPTIONS, CRS_REGION_OPTIONS, CRSFact } from '../data/crsData';
+import { CRS_DONOR_OPTIONS, CRS_FACTS, CRS_MODE_OPTIONS, CRS_REGION_OPTIONS, CRSFact } from '../data/crsData';
 
 export type CRSFilters = {
   donors: string[];
   regions: string[];
-  regionDetails: string[];
+  recipients: string[];
   modes: string[];
   scopes: string[];
   yearMin: string;
@@ -18,14 +18,14 @@ type CRSFilterContextValue = {
   filteredFacts: CRSFact[];
   donorOptions: string[];
   regionOptions: string[];
-  regionDetailOptions: string[];
+  recipientOptions: string[];
   modeOptions: string[];
 };
 
 const DEFAULT_FILTERS: CRSFilters = {
   donors: [],
   regions: [],
-  regionDetails: [],
+  recipients: [],
   modes: [],
   scopes: [],
   yearMin: '',
@@ -38,7 +38,7 @@ function applyFilters(facts: CRSFact[], filters: CRSFilters): CRSFact[] {
   return facts.filter((fact) => {
     if (filters.donors.length && !filters.donors.includes(fact.donor)) return false;
     if (filters.regions.length && !filters.regions.includes(fact.region || 'Unknown')) return false;
-    if (filters.regionDetails.length && !filters.regionDetails.includes(fact.recipient_region_detail || '')) return false;
+    if (filters.recipients.length && !filters.recipients.includes(fact.recipient || 'Unknown')) return false;
     if (filters.modes.length && !filters.modes.includes(fact.mode || 'Other')) return false;
     if (filters.scopes.length && !filters.scopes.includes(fact.recipient_scope || 'unknown')) return false;
     if (filters.yearMin) {
@@ -58,6 +58,14 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CRSFilterContextValue>(() => {
     const filteredFacts = applyFilters(CRS_FACTS, filters);
+    const recipientOptionSource = CRS_FACTS.filter((fact) => {
+      if (fact.recipient_scope !== 'economy') return false;
+      if (filters.regions.length && !filters.regions.includes(fact.region || 'Unknown')) return false;
+      return true;
+    });
+    const recipientOptions = [...new Set(recipientOptionSource.map((fact) => fact.recipient).filter(Boolean))].sort((a, b) =>
+      a.localeCompare(b),
+    );
 
     return {
       filters,
@@ -66,7 +74,7 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
       filteredFacts,
       donorOptions: CRS_DONOR_OPTIONS,
       regionOptions: CRS_REGION_OPTIONS,
-      regionDetailOptions: CRS_REGION_DETAIL_OPTIONS,
+      recipientOptions,
       modeOptions: CRS_MODE_OPTIONS,
     };
   }, [filters]);

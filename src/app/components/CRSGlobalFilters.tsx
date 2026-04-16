@@ -6,12 +6,12 @@ function toggleValue<T>(values: T[], value: T) {
 }
 
 export function CRSGlobalFilters() {
-  const { filters, setFilters, resetFilters, donorOptions, regionOptions, regionDetailOptions, modeOptions, filteredFacts } = useCRSFilters();
+  const { filters, setFilters, resetFilters, donorOptions, regionOptions, recipientOptions, modeOptions, filteredFacts } = useCRSFilters();
 
   const activeCount =
     filters.donors.length +
     filters.regions.length +
-    filters.regionDetails.length +
+    filters.recipients.length +
     filters.modes.length +
     filters.scopes.length +
     (filters.yearMin ? 1 : 0) +
@@ -100,28 +100,28 @@ export function CRSGlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Regional recipient</p>
+          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Country recipient</p>
           <select
             value=""
             onChange={(e) => {
               const value = e.target.value;
               if (!value) return;
-              setFilters((prev) => ({ ...prev, regionDetails: toggleValue(prev.regionDetails, value) }));
+              setFilters((prev) => ({ ...prev, recipients: toggleValue(prev.recipients, value) }));
               e.target.value = '';
             }}
             className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
           >
-            <option value="">Add regional recipient…</option>
-            {regionDetailOptions.map((region) => (
-              <option key={region} value={region}>
-                {region}
+            <option value="">Add country recipient…</option>
+            {recipientOptions.map((recipient) => (
+              <option key={recipient} value={recipient}>
+                {recipient}
               </option>
             ))}
           </select>
           <div className="flex flex-wrap gap-1 mt-2">
-            {filters.regionDetails.map((region) => (
-              <button key={region} onClick={() => setFilters((prev) => ({ ...prev, regionDetails: prev.regionDetails.filter((r) => r !== region) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
-                {region}
+            {filters.recipients.map((recipient) => (
+              <button key={recipient} onClick={() => setFilters((prev) => ({ ...prev, recipients: prev.recipients.filter((r) => r !== recipient) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
+                {recipient}
               </button>
             ))}
           </div>

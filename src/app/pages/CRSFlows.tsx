@@ -16,6 +16,7 @@ import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, buildFlowSankeyData, type CRSMeasure } from '../utils/crsAggregations';
 
 const DONOR_COLORS = ['#0F766E', '#0EA5E9', '#2563EB', '#7C3AED', '#DB2777', '#EA580C', '#65A30D', '#0891B2'];
+const AGENCY_COLOR = '#60A5FA';
 const RECIPIENT_COLOR = '#10B981';
 
 function wrapLabel(label: string, maxChars = 18) {
@@ -40,8 +41,9 @@ function wrapLabel(label: string, maxChars = 18) {
 function FlowNode(props: any) {
   const { x, y, width, height, index, payload, onSelect, isDimmed, isActive } = props;
   const isDonor = payload?.role === 'donor';
-  const labelX = isDonor ? x - 12 : x + width + 12;
-  const anchor = isDonor ? 'end' : 'start';
+  const isAgency = payload?.role === 'agency';
+  const labelX = isDonor ? x - 12 : isAgency ? x + width / 2 : x + width + 12;
+  const anchor = isDonor ? 'end' : isAgency ? 'middle' : 'start';
   const lines = wrapLabel(payload?.name ?? `Node ${index + 1}`);
   return (
     <g
@@ -53,7 +55,7 @@ function FlowNode(props: any) {
         y={y}
         width={width}
         height={height}
-        fill={payload?.color ?? (isDonor ? '#0F766E' : RECIPIENT_COLOR)}
+        fill={payload?.color ?? (isDonor ? '#0F766E' : isAgency ? AGENCY_COLOR : RECIPIENT_COLOR)}
         fillOpacity={isDimmed ? 0.25 : 0.92}
         stroke={isActive ? '#0F172A' : 'transparent'}
         strokeWidth={isActive ? 1.5 : 0}
@@ -61,7 +63,7 @@ function FlowNode(props: any) {
       />
       <text
         x={labelX}
-        y={y + height / 2 - ((lines.length - 1) * 6)}
+        y={isAgency ? y - 8 : y + height / 2 - ((lines.length - 1) * 6)}
         textAnchor={anchor}
         fontSize={11}
         fill={isDimmed ? '#94A3B8' : '#334155'}
@@ -110,25 +112,32 @@ export function CRSFlows() {
   const { filteredFacts } = useCRSFilters();
   const [measure, setMeasure] = useState<CRSMeasure>('commitment');
   const [selectedDonor, setSelectedDonor] = useState<string | null>(null);
+  const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
 
   const flowFacts = useMemo(() => {
     if (selectedDonor) {
       return filteredFacts.filter((fact) => fact.recipient_scope === 'economy' && fact.donor === selectedDonor);
     }
+    if (selectedAgency) {
+      return filteredFacts.filter((fact) => fact.recipient_scope === 'economy' && fact.agency === selectedAgency);
+    }
     if (selectedRecipient) {
       return filteredFacts.filter((fact) => fact.recipient_scope === 'economy' && fact.recipient === selectedRecipient);
     }
     return filteredFacts;
-  }, [filteredFacts, selectedDonor, selectedRecipient]);
+  }, [filteredFacts, selectedAgency, selectedDonor, selectedRecipient]);
 
   const sankeyData = useMemo(() => buildFlowSankeyData(flowFacts, measure), [flowFacts, measure]);
   const coloredSankeyData = useMemo(() => {
-    const donorCount = sankeyData.donorLinkTotals.length;
     const nodes = sankeyData.nodes.map((node, index) => ({
       ...node,
-      role: index < donorCount ? 'donor' : 'recipient',
-      color: index < donorCount ? DONOR_COLORS[index % DONOR_COLORS.length] : RECIPIENT_COLOR,
+      color:
+        node.role === 'donor'
+          ? DONOR_COLORS[index % DONOR_COLORS.length]
+          : node.role === 'agency'
+            ? AGENCY_COLOR
+            : RECIPIENT_COLOR,
     }));
     const links = sankeyData.links.map((link) => ({
       ...link,
@@ -137,38 +146,41 @@ export function CRSFlows() {
     return { ...sankeyData, nodes, links };
   }, [sankeyData]);
   const topDonors = useMemo(() => sankeyData.donorLinkTotals.slice(0, 12), [sankeyData]);
+  const topAgencies = useMemo(() => sankeyData.agencyLinkTotals.slice(0, 12), [sankeyData]);
   const topRecipients = useMemo(() => sankeyData.recipientLinkTotals.slice(0, 12), [sankeyData]);
   const flowTypes = useMemo(() => aggregateFacts(flowFacts, (fact) => fact.flow).slice(0, 8), [flowFacts]);
   const donorAxisWidth = useMemo(
     () => estimateCategoryAxisWidth(topDonors.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
     [topDonors],
   );
+  const agencyAxisWidth = useMemo(
+    () => estimateCategoryAxisWidth(topAgencies.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
+    [topAgencies],
+  );
   const recipientAxisWidth = useMemo(
     () => estimateCategoryAxisWidth(topRecipients.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
     [topRecipients],
   );
 
-  const activeSelectionLabel = selectedDonor ?? selectedRecipient;
-  const activeSelectionType = selectedDonor ? 'donor' : selectedRecipient ? 'recipient' : null;
-  const activeLinkFill = useMemo(() => {
-    if (selectedDonor) {
-      const donorIndex = coloredSankeyData.nodes.findIndex((node: any) => node.name === selectedDonor);
-      return donorIndex >= 0 ? coloredSankeyData.nodes[donorIndex]?.color ?? '#0F766E' : '#0F766E';
-    }
-    if (selectedRecipient) {
-      return RECIPIENT_COLOR;
-    }
-    return '#D7E1EA';
-  }, [coloredSankeyData.nodes, selectedDonor, selectedRecipient]);
+  const activeSelectionLabel = selectedDonor ?? selectedAgency ?? selectedRecipient;
+  const activeSelectionType = selectedDonor ? 'donor' : selectedAgency ? 'agency' : selectedRecipient ? 'recipient' : null;
 
-  const handleNodeSelect = (name?: string, type?: 'donor' | 'recipient') => {
+  const handleNodeSelect = (name?: string, type?: 'donor' | 'agency' | 'recipient') => {
     if (!name || !type) return;
     if (type === 'donor') {
+      setSelectedAgency(null);
       setSelectedRecipient(null);
       setSelectedDonor((prev) => (prev === name ? null : name));
       return;
     }
+    if (type === 'agency') {
+      setSelectedDonor(null);
+      setSelectedRecipient(null);
+      setSelectedAgency((prev) => (prev === name ? null : name));
+      return;
+    }
     setSelectedDonor(null);
+    setSelectedAgency(null);
     setSelectedRecipient((prev) => (prev === name ? null : name));
   };
 
@@ -195,6 +207,7 @@ export function CRSFlows() {
             <button
               onClick={() => {
                 setSelectedDonor(null);
+                setSelectedAgency(null);
                 setSelectedRecipient(null);
               }}
               className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900"
@@ -222,7 +235,7 @@ export function CRSFlows() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Donor to Recipient Flows</p>
           <p className="text-slate-400 text-xs mb-4">
-            Sankey view limited to the strongest donors and recipient countries in the current filter state. Click a donor or recipient node to isolate it.
+            Sankey view limited to the strongest donor, agency, and recipient pathways in the current filter state. Click a donor, agency, or recipient node to isolate it.
           </p>
         {activeSelectionLabel ? (
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700 border border-emerald-200">
@@ -233,9 +246,9 @@ export function CRSFlows() {
           <ResponsiveContainer width="100%" height={460}>
             <Sankey
               data={coloredSankeyData}
-              nodePadding={34}
+              nodePadding={30}
               nodeWidth={14}
-              margin={{ top: 12, right: 250, left: 250, bottom: 12 }}
+              margin={{ top: 26, right: 220, left: 220, bottom: 12 }}
               node={nodeRenderer}
               link={<FlowLink />}
             >
@@ -249,7 +262,7 @@ export function CRSFlows() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Donors</p>
           <p className="text-slate-400 text-xs mb-4">Visible donor totals represented in the Sankey</p>
@@ -262,6 +275,24 @@ export function CRSFlows() {
               <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topDonors.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.86} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <p className="text-slate-800 text-sm font-semibold mb-1">Top Agencies</p>
+          <p className="text-slate-400 text-xs mb-4">Visible agency totals represented in the Sankey</p>
+          <ResponsiveContainer width="100%" height={310}>
+            <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={15}>
+                {topAgencies.map((row) => (
+                  <Cell key={row.label} fill={AGENCY_COLOR} fillOpacity={0.86} />
                 ))}
               </Bar>
             </BarChart>

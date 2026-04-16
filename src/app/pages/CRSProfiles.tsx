@@ -323,7 +323,7 @@ export function CRSProfiles() {
       .filter((record) => {
         if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
         if (filters.regions.length && !filters.regions.includes(record.region || 'Unknown')) return false;
-        if (filters.regionDetails.length && !filters.regionDetails.includes(record.recipient_region_detail || '')) return false;
+        if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;
         if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
         if (filters.scopes.length && !filters.scopes.includes(record.recipient_scope || 'unknown')) return false;
         if (filters.yearMin) {
