@@ -19,34 +19,52 @@ const DONOR_COLORS = ['#0F766E', '#0EA5E9', '#2563EB', '#7C3AED', '#DB2777', '#E
 const AGENCY_COLOR = '#60A5FA';
 const RECIPIENT_COLOR = '#10B981';
 
-function wrapLabel(label: string, maxChars = 18) {
-  const words = label.split(/\s+/);
-  const lines: string[] = [];
-  let current = '';
+function getHoverCoordinate(entry: any, type: 'node' | 'link') {
+  if (type === 'node') {
+    return {
+      x: entry.x + entry.width / 2,
+      y: entry.y + entry.height / 2,
+    };
+  }
+  return {
+    x: (entry.sourceX + entry.targetX) / 2,
+    y: (entry.sourceY + entry.targetY) / 2,
+  };
+}
 
-  words.forEach((word) => {
-    const next = current ? `${current} ${word}` : word;
-    if (next.length <= maxChars || !current) {
-      current = next;
-      return;
-    }
-    lines.push(current);
-    current = word;
-  });
+function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure) {
+  const coordinate = getHoverCoordinate(entry, type);
+  if (type === 'link') {
+    if (!entry.sourceName || !entry.targetName || !(entry.value >= 0.05)) return null;
+    return {
+      x: coordinate.x,
+      y: coordinate.y,
+      title: `${entry.sourceName} → ${entry.targetName}`,
+      value: crsFmt.usdM(entry.value),
+      subtitle: measure === 'commitment' ? 'Commitments' : 'Disbursements',
+    };
+  }
 
-  if (current) lines.push(current);
-  return lines.slice(0, 3);
+  const node = entry.payload;
+  if (!node?.name || !node?.role || !(node.totalValue >= 0.05)) return null;
+  return {
+    x: coordinate.x,
+    y: coordinate.y,
+    title: node.name,
+    value: crsFmt.usdM(node.totalValue),
+    subtitle: measure === 'commitment' ? `${node.role} commitments in current filters` : `${node.role} disbursements in current filters`,
+  };
 }
 
 function FlowNode(props: any) {
-  const { x, y, width, height, index, payload, onSelect, isDimmed, isActive } = props;
+  const { x, y, width, height, index, payload, onSelect, isDimmed, isActive, ...rest } = props;
   const isDonor = payload?.role === 'donor';
   const isAgency = payload?.role === 'agency';
-  const labelX = isDonor ? x - 12 : isAgency ? x + width + 10 : x + width + 12;
+  const labelX = isDonor ? x - 12 : isAgency ? x + width + 8 : x + width + 12;
   const anchor = isDonor ? 'end' : 'start';
-  const lines = wrapLabel(payload?.name ?? `Node ${index + 1}`, isAgency ? 14 : 18);
   return (
     <g
+      {...rest}
       onClick={() => onSelect?.(payload?.name, payload?.role)}
       style={{ cursor: 'pointer' }}
     >
@@ -63,16 +81,13 @@ function FlowNode(props: any) {
       />
       <text
         x={labelX}
-        y={y + height / 2 - ((lines.length - 1) * 6)}
+        y={y + height / 2}
         textAnchor={anchor}
-        fontSize={11}
+        dominantBaseline="middle"
+        fontSize={10.5}
         fill={isDimmed ? '#94A3B8' : '#334155'}
       >
-        {lines.map((line, lineIndex) => (
-          <tspan key={`${payload?.name}-${lineIndex}`} x={labelX} dy={lineIndex === 0 ? 0 : 13}>
-            {line}
-          </tspan>
-        ))}
+        {payload?.name ?? `Node ${index + 1}`}
       </text>
     </g>
   );
@@ -88,6 +103,7 @@ function FlowLink(props: any) {
     targetControlX,
     linkWidth,
     payload,
+    ...rest
   } = props;
 
   const width = Math.max(linkWidth ?? 0, 1);
@@ -105,7 +121,7 @@ function FlowLink(props: any) {
   ].join(' ');
 
   const fill = payload?.color ?? '#8FB996';
-  return <path d={path} fill={fill} fillOpacity={0.58} stroke="none" />;
+  return <path {...rest} d={path} fill={fill} fillOpacity={0.58} stroke="none" style={{ cursor: 'pointer' }} />;
 }
 
 export function CRSFlows() {
@@ -114,6 +130,7 @@ export function CRSFlows() {
   const [selectedDonor, setSelectedDonor] = useState<string | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
+  const [hoveredItem, setHoveredItem] = useState<{ x: number; y: number; title: string; value: string; subtitle: string } | null>(null);
 
   const flowFacts = useMemo(() => {
     if (selectedDonor) {
@@ -127,11 +144,22 @@ export function CRSFlows() {
     }
     return filteredFacts;
   }, [filteredFacts, selectedAgency, selectedDonor, selectedRecipient]);
+  const sankeyFacts = useMemo(() => flowFacts.filter((fact) => fact.recipient_scope === 'economy'), [flowFacts]);
 
-  const sankeyData = useMemo(() => buildFlowSankeyData(flowFacts, measure), [flowFacts, measure]);
+  const sankeyData = useMemo(() => buildFlowSankeyData(sankeyFacts, measure), [sankeyFacts, measure]);
   const coloredSankeyData = useMemo(() => {
+    const visibleValueByNode = new Map<string, number>();
+    const totalValueByNode = new Map<string, number>();
+    sankeyData.donorLinkTotals.forEach((item) => visibleValueByNode.set(`donor::${item.label}`, item.value));
+    sankeyData.agencyLinkTotals.forEach((item) => visibleValueByNode.set(`agency::${item.label}`, item.value));
+    sankeyData.recipientLinkTotals.forEach((item) => visibleValueByNode.set(`recipient::${item.label}`, item.value));
+    aggregateFacts(sankeyFacts, (fact) => fact.donor).forEach((item) => totalValueByNode.set(`donor::${item.label}`, item[measure]));
+    aggregateFacts(sankeyFacts, (fact) => fact.agency).forEach((item) => totalValueByNode.set(`agency::${item.label}`, item[measure]));
+    aggregateFacts(sankeyFacts, (fact) => fact.recipient).forEach((item) => totalValueByNode.set(`recipient::${item.label}`, item[measure]));
     const nodes = sankeyData.nodes.map((node, index) => ({
       ...node,
+      visibleValue: visibleValueByNode.get(node.id) ?? 0,
+      totalValue: totalValueByNode.get(node.id) ?? 0,
       color:
         node.role === 'donor'
           ? DONOR_COLORS[index % DONOR_COLORS.length]
@@ -145,9 +173,9 @@ export function CRSFlows() {
     }));
     return { ...sankeyData, nodes, links };
   }, [sankeyData]);
-  const topDonors = useMemo(() => sankeyData.donorLinkTotals.slice(0, 12), [sankeyData]);
-  const topAgencies = useMemo(() => sankeyData.agencyLinkTotals.slice(0, 12), [sankeyData]);
-  const topRecipients = useMemo(() => sankeyData.recipientLinkTotals.slice(0, 12), [sankeyData]);
+  const topDonors = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.donor).slice(0, 12), [sankeyFacts]);
+  const topAgencies = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.agency).slice(0, 12), [sankeyFacts]);
+  const topRecipients = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.recipient).slice(0, 12), [sankeyFacts]);
   const flowTypes = useMemo(() => aggregateFacts(flowFacts, (fact) => fact.flow).slice(0, 8), [flowFacts]);
   const donorAxisWidth = useMemo(
     () => estimateCategoryAxisWidth(topDonors.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
@@ -182,6 +210,14 @@ export function CRSFlows() {
     setSelectedDonor(null);
     setSelectedAgency(null);
     setSelectedRecipient((prev) => (prev === name ? null : name));
+  };
+
+  const handleSankeyMouseEnter = (entry: any, type: 'node' | 'link') => {
+    setHoveredItem(buildHoverState(entry, type, measure));
+  };
+
+  const handleSankeyMouseLeave = () => {
+    setHoveredItem(null);
   };
 
   const nodeRenderer = (props: any) => (
@@ -243,18 +279,30 @@ export function CRSFlows() {
           </div>
         ) : null}
         {sankeyData.links.length ? (
-          <ResponsiveContainer width="100%" height={460}>
-            <Sankey
-              data={coloredSankeyData}
-              nodePadding={26}
-              nodeWidth={14}
-              margin={{ top: 18, right: 240, left: 220, bottom: 18 }}
-              node={nodeRenderer}
-              link={<FlowLink />}
-            >
-              <Tooltip formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-            </Sankey>
-          </ResponsiveContainer>
+          <div className="relative">
+            <ResponsiveContainer width="100%" height={460}>
+              <Sankey
+                data={coloredSankeyData}
+                nodePadding={26}
+                nodeWidth={14}
+                margin={{ top: 18, right: 240, left: 220, bottom: 18 }}
+                node={nodeRenderer}
+                link={<FlowLink />}
+                onMouseEnter={handleSankeyMouseEnter}
+                onMouseLeave={handleSankeyMouseLeave}
+              />
+            </ResponsiveContainer>
+            {hoveredItem ? (
+              <div
+                className="pointer-events-none absolute z-10 -translate-y-1/2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm"
+                style={{ left: Math.min(hoveredItem.x + 12, 980), top: hoveredItem.y }}
+              >
+                <div className="font-medium text-slate-700">{hoveredItem.title}</div>
+                <div className="mt-1 text-slate-900">{hoveredItem.value}</div>
+                <div className="mt-0.5 text-slate-500">{hoveredItem.subtitle}</div>
+              </div>
+            ) : null}
+          </div>
         ) : (
           <div className="h-[460px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-sm text-slate-500">
             No donor-recipient flows are available for the current filters.
@@ -265,14 +313,13 @@ export function CRSFlows() {
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Donors</p>
-          <p className="text-slate-400 text-xs mb-4">Visible donor totals represented in the Sankey</p>
+          <p className="text-slate-400 text-xs mb-4">Top donors in the current filtered country-recipient portfolio</p>
           <ResponsiveContainer width="100%" height={310}>
             <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={15}>
+              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topDonors.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.86} />
                 ))}
@@ -283,14 +330,13 @@ export function CRSFlows() {
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Agencies</p>
-          <p className="text-slate-400 text-xs mb-4">Visible agency totals represented in the Sankey</p>
+          <p className="text-slate-400 text-xs mb-4">Top agencies in the current filtered country-recipient portfolio</p>
           <ResponsiveContainer width="100%" height={310}>
             <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={15}>
+              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topAgencies.map((row) => (
                   <Cell key={row.label} fill={AGENCY_COLOR} fillOpacity={0.86} />
                 ))}
@@ -301,14 +347,13 @@ export function CRSFlows() {
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-xs mb-4">Visible recipient totals represented in the Sankey</p>
+          <p className="text-slate-400 text-xs mb-4">Top recipient countries in the current filtered portfolio</p>
           <ResponsiveContainer width="100%" height={310}>
             <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey="value" radius={[0, 3, 3, 0]} maxBarSize={15}>
+              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topRecipients.map((row) => (
                   <Cell key={row.label} fill="#059669" fillOpacity={0.86} />
                 ))}
