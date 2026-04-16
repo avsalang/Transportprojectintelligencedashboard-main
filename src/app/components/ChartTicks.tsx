@@ -28,6 +28,12 @@ export function wrapTickLabel(value: string, maxChars = 16) {
   return lines.slice(0, 4);
 }
 
+export function truncateTickLabel(value: string, maxChars = 22) {
+  if (!value) return '';
+  if (value.length <= maxChars) return value;
+  return `${value.slice(0, Math.max(1, maxChars - 1)).trimEnd()}…`;
+}
+
 export function estimateCategoryAxisWidth(
   labels: Array<string | null | undefined>,
   {
@@ -76,6 +82,27 @@ export function WrappedCategoryTick({
             {line}
           </tspan>
         ))}
+      </text>
+    </g>
+  );
+}
+
+export function TruncatedCategoryTick({
+  x = 0,
+  y = 0,
+  payload,
+  maxChars = 22,
+  fill = '#64748B',
+  fontSize = 10,
+  anchor = 'end',
+}: WrappedTickProps) {
+  const fullLabel = payload?.value ?? '';
+  const label = truncateTickLabel(fullLabel, maxChars);
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} textAnchor={anchor} dominantBaseline="middle" fill={fill} fontSize={fontSize}>
+        <title>{fullLabel}</title>
+        {label}
       </text>
     </g>
   );

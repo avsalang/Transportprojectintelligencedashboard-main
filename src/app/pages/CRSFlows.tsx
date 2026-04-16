@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { estimateCategoryAxisWidth, WrappedAxisTick, WrappedCategoryTick } from '../components/ChartTicks';
+import { estimateCategoryAxisWidth, TruncatedCategoryTick, WrappedAxisTick } from '../components/ChartTicks';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, buildFlowSankeyData, type CRSMeasure } from '../utils/crsAggregations';
@@ -178,17 +178,20 @@ export function CRSFlows() {
   const topRecipients = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.recipient).slice(0, 12), [sankeyFacts]);
   const flowTypes = useMemo(() => aggregateFacts(flowFacts, (fact) => fact.flow).slice(0, 8), [flowFacts]);
   const donorAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(topDonors.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
+    () => estimateCategoryAxisWidth(topDonors.map((item) => item.label), { maxChars: 22, minWidth: 190, maxWidth: 250 }),
     [topDonors],
   );
   const agencyAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(topAgencies.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
+    () => estimateCategoryAxisWidth(topAgencies.map((item) => item.label), { maxChars: 22, minWidth: 200, maxWidth: 260 }),
     [topAgencies],
   );
   const recipientAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(topRecipients.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 246 }),
+    () => estimateCategoryAxisWidth(topRecipients.map((item) => item.label), { maxChars: 22, minWidth: 190, maxWidth: 250 }),
     [topRecipients],
   );
+  const donorChartHeight = useMemo(() => Math.max(310, topDonors.length * 30 + 40), [topDonors.length]);
+  const agencyChartHeight = useMemo(() => Math.max(310, topAgencies.length * 30 + 40), [topAgencies.length]);
+  const recipientChartHeight = useMemo(() => Math.max(310, topRecipients.length * 30 + 40), [topRecipients.length]);
 
   const activeSelectionLabel = selectedDonor ?? selectedAgency ?? selectedRecipient;
   const activeSelectionType = selectedDonor ? 'donor' : selectedAgency ? 'agency' : selectedRecipient ? 'recipient' : null;
@@ -314,11 +317,12 @@ export function CRSFlows() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Donors</p>
           <p className="text-slate-400 text-xs mb-4">Top donors in the current filtered country-recipient portfolio</p>
-          <ResponsiveContainer width="100%" height={310}>
-            <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={donorChartHeight}>
+            <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topDonors.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.86} />
@@ -331,11 +335,12 @@ export function CRSFlows() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Agencies</p>
           <p className="text-slate-400 text-xs mb-4">Top agencies in the current filtered country-recipient portfolio</p>
-          <ResponsiveContainer width="100%" height={310}>
-            <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={agencyChartHeight}>
+            <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topAgencies.map((row) => (
                   <Cell key={row.label} fill={AGENCY_COLOR} fillOpacity={0.86} />
@@ -348,11 +353,12 @@ export function CRSFlows() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
           <p className="text-slate-800 text-sm font-semibold mb-1">Top Recipient Countries</p>
           <p className="text-slate-400 text-xs mb-4">Top recipient countries in the current filtered portfolio</p>
-          <ResponsiveContainer width="100%" height={310}>
-            <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
+          <ResponsiveContainer width="100%" height={recipientChartHeight}>
+            <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topRecipients.map((row) => (
                   <Cell key={row.label} fill="#059669" fillOpacity={0.86} />
