@@ -120,7 +120,7 @@ export function CRSOverview() {
           <KPICard
             label="Sustainability Share"
             value={`${sustainabilityTrend.length > 0 ? sustainabilityTrend.at(-1)?.sustainableShare.toFixed(1) : 0}%`}
-            sub="Tagged for Climate/Mitigation"
+            sub="Full Thematic Alignment"
             icon={<Wind size={15} />}
             accent="green"
           />

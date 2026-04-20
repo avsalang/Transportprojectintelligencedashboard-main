@@ -176,17 +176,32 @@ export function CRSProfiles() {
 
   const stats = useMemo(() => {
     let commitment = 0, disbursement = 0, count = 0;
-    let susCount = 0, mitCount = 0, adpCount = 0, gndCount = 0;
+    let susCount = 0;
+    let markers = {
+      mit: 0,
+      adp: 0,
+      gnd: 0,
+      drr: 0,
+      bio: 0,
+       env: 0
+    };
+
     filteredRecords.forEach(r => {
         commitment += r[isConstant ? 'commitment_defl' : 'commitment'] || 0;
         disbursement += r[isConstant ? 'disbursement_defl' : 'disbursement'] || 0;
         count++;
-        if ((r.climate_mitigation ?? 0) > 0) mitCount++;
-        if ((r.climate_adaptation ?? 0) > 0) adpCount++;
-        if ((r.gender ?? 0) > 0) gndCount++;
-        if ((r.climate_mitigation ?? 0) > 0 || (r.climate_adaptation ?? 0) > 0 || (r.gender ?? 0) > 0) susCount++;
+
+        let isSus = false;
+        if ((r.climate_mitigation ?? 0) > 0) { markers.mit++; isSus = true; }
+        if ((r.climate_adaptation ?? 0) > 0) { markers.adp++; isSus = true; }
+        if ((r.gender ?? 0) > 0) { markers.gnd++; isSus = true; }
+        if ((r.drr ?? 0) > 0) { markers.drr++; isSus = true; }
+        if ((r.biodiversity ?? 0) > 0) { markers.bio++; isSus = true; }
+        if ((r.environment ?? 0) > 0) { markers.env++; isSus = true; }
+
+        if (isSus) susCount++;
     });
-    return { commitment, disbursement, count, susCount, mitCount, adpCount, gndCount };
+    return { commitment, disbursement, count, susCount, ...markers };
   }, [filteredRecords, isConstant]);
 
   const yearlySeries = useMemo(() => {
@@ -249,7 +264,14 @@ export function CRSProfiles() {
       const vol = r[activeMeasure] || 0;
       entry.volume += vol;
       entry.count++;
-      if ((r.climate_mitigation ?? 0) > 0 || (r.climate_adaptation ?? 0) > 0 || (r.gender ?? 0) > 0) {
+      if (
+        (r.climate_mitigation ?? 0) > 0 || 
+        (r.climate_adaptation ?? 0) > 0 || 
+        (r.gender ?? 0) > 0 ||
+        (r.drr ?? 0) > 0 ||
+        (r.biodiversity ?? 0) > 0 ||
+        (r.environment ?? 0) > 0
+      ) {
         entry.susVolume += vol;
       }
     });
@@ -538,19 +560,39 @@ export function CRSProfiles() {
                             <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Direct Match</span>
                          </div>
                       </div>
-                      <div className="text-center px-10">
-                         <div className="grid grid-cols-3 gap-8 mt-4">
-                            <div>
-                               <p className="text-md font-semibold text-slate-900">{stats.mitCount}</p>
-                               <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Climate</p>
+                      <div className="w-full">
+                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.mit}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Mitigation</p>
                             </div>
-                            <div>
-                               <p className="text-md font-semibold text-slate-900">{stats.gndCount}</p>
-                               <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Gender</p>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.adp}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Adaptation</p>
                             </div>
-                            <div>
-                               <p className="text-md font-semibold text-slate-900">{stats.count}</p>
-                               <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Total</p>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.gnd}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Gender</p>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.drr}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">DRR</p>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.bio}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Biodiversity</p>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                               <p className="text-xl font-semibold text-slate-900">{stats.env}</p>
+                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Environment</p>
+                            </div>
+                            <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
+                               <p className="text-xl font-semibold text-emerald-700">{stats.susCount}</p>
+                               <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-widest">Aligned</p>
+                            </div>
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                               <p className="text-xl font-semibold text-blue-700">{stats.count}</p>
+                               <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-widest">Total</p>
                             </div>
                          </div>
                       </div>
