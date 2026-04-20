@@ -73,7 +73,7 @@ export function ProjectExplorer() {
       <div className="flex-shrink-0 px-6 pt-6 pb-4 space-y-4">
         <div>
           <h1 className="text-slate-900 text-xl font-semibold">Project Explorer</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
+          <p className="text-slate-500 text-base mt-0.5">
             Search inside the current portfolio view. Global filters above control the project universe.
           </p>
         </div>
@@ -85,7 +85,7 @@ export function ProjectExplorer() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by project name, country, ID, description, or mode…"
-              className="w-full pl-9 pr-10 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+              className="w-full pl-9 pr-10 py-2 text-base border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -93,7 +93,7 @@ export function ProjectExplorer() {
               </button>
             )}
           </div>
-          <div className="ml-auto flex items-center gap-2 text-sm text-slate-500">
+          <div className="ml-auto flex items-center gap-2 text-base text-slate-500">
             <span className="font-medium text-slate-800">{filtered.length}</span>
             <span>of {filteredProjects.length} projects in current view</span>
           </div>
@@ -102,7 +102,7 @@ export function ProjectExplorer() {
 
       <div className="flex-1 overflow-auto px-6 pb-6">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-base">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
                 {(
@@ -118,7 +118,7 @@ export function ProjectExplorer() {
                 ).map(([key, label]) => (
                   <th
                     key={key}
-                    className="text-left px-4 py-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wide cursor-pointer select-none hover:text-slate-700 whitespace-nowrap"
+                    className="text-left px-4 py-3 text-[15px] font-semibold text-slate-500 uppercase tracking-wide cursor-pointer select-none hover:text-slate-700 whitespace-nowrap"
                     onClick={() => handleSort(key)}
                   >
                     <div className="flex items-center gap-1">
@@ -127,7 +127,7 @@ export function ProjectExplorer() {
                     </div>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wide text-center">
+                <th className="px-4 py-3 text-[15px] font-semibold text-slate-500 uppercase tracking-wide text-center">
                   Map
                 </th>
               </tr>
@@ -135,7 +135,7 @@ export function ProjectExplorer() {
             <tbody className="divide-y divide-slate-50">
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-sm">
+                  <td colSpan={8} className="px-4 py-12 text-center text-slate-400 text-base">
                     No projects match the current filters.
                   </td>
                 </tr>
@@ -150,10 +150,10 @@ export function ProjectExplorer() {
                     <p className="text-slate-800 font-medium leading-snug truncate group-hover:text-blue-700">
                       {project.project_name}
                     </p>
-                    <p className="text-slate-400 text-[11px] mt-0.5 font-mono">{project.id}</p>
+                    <p className="text-slate-400 text-[15px] mt-0.5 font-mono">{project.id}</p>
                   </td>
                   <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
-                    <span className="text-xs">{project.country.replace("People's Republic of ", '')}</span>
+                    <span className="text-[15px]">{project.country.replace("People's Republic of ", '')}</span>
                   </td>
                   <td className="px-4 py-3">
                     <SourceBadge source={project.funding_source} size="sm" />
@@ -161,16 +161,16 @@ export function ProjectExplorer() {
                   <td className="px-4 py-3">
                     <div className="space-y-1">
                       <ModePill mode={project.mode_ato_umbrella || project.transport_mode_category} />
-                      <p className="text-[10px] text-slate-400">{project.mode_ato_detail || project.transport_mode_detail}</p>
+                      <p className="text-[15px] text-slate-400">{project.mode_ato_detail || project.transport_mode_detail}</p>
                     </div>
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={project.project_status} />
                   </td>
-                  <td className="px-4 py-3 text-slate-600 tabular-nums text-xs whitespace-nowrap">
+                  <td className="px-4 py-3 text-slate-600 tabular-nums text-[15px] whitespace-nowrap">
                     {project.approval_year ?? '—'}
                   </td>
-                  <td className="px-4 py-3 text-slate-700 tabular-nums text-xs whitespace-nowrap font-medium">
+                  <td className="px-4 py-3 text-slate-700 tabular-nums text-[15px] whitespace-nowrap font-medium">
                     {fmt.usd(project.amount)}
                   </td>
                   <td className="px-4 py-3 text-center">
@@ -192,7 +192,7 @@ export function ProjectExplorer() {
         </div>
 
         {filtered.length > 0 && (
-          <p className="text-slate-400 text-xs mt-3 text-center">
+          <p className="text-slate-400 text-[15px] mt-3 text-center">
             Showing {filtered.length} projects from the active portfolio view
           </p>
         )}

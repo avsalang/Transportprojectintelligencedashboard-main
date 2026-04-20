@@ -96,14 +96,14 @@ export function CRSOverview() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-slate-900 text-2xl font-bold tracking-tight">Transport Intelligence Overview</h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-base mt-1">
               Global portfolio analytics focusing on <span className="text-slate-900 font-semibold">financial flows</span> and <span className="text-blue-600 font-semibold">sustainability shifts</span>.
             </p>
           </div>
           <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
              <div className="text-right">
-               <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Active Basis</p>
-               <p className="text-blue-600 text-xs font-bold capitalize">{isConstant ? 'Constant USD (Deflated)' : 'Current USD (Nominal)'}</p>
+               <p className="text-slate-400 text-[15px] uppercase font-bold tracking-widest">Active Basis</p>
+               <p className="text-blue-600 text-[15px] font-bold capitalize">{isConstant ? 'Constant USD (Deflated)' : 'Current USD (Nominal)'}</p>
              </div>
              <Activity size={18} className="text-blue-500" />
           </div>
@@ -145,8 +145,8 @@ export function CRSOverview() {
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                  <p className="text-slate-900 text-sm font-bold">Investment Flows (Sankey)</p>
-                  <p className="text-slate-400 text-xs mt-0.5 font-medium">Donor ➔ Mode ➔ Recipient Region</p>
+                  <p className="text-slate-900 text-base font-bold">Investment Flows (Sankey)</p>
+                  <p className="text-slate-400 text-[15px] mt-0.5 font-medium">Donor ➔ Mode ➔ Recipient Region</p>
                 </div>
               </div>
               <div className="h-[460px] p-4">
@@ -157,8 +157,8 @@ export function CRSOverview() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {/* Top Donors */}
                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Donors</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Lending volume by sovereign source</p>
+                  <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Top Donors</p>
+                  <p className="text-[15px] text-slate-400 mb-6 font-medium">Lending volume by sovereign source</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topDonors} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
@@ -195,8 +195,8 @@ export function CRSOverview() {
 
                {/* Top Agencies */}
                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Agencies</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Technical implementing entities</p>
+                  <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Top Agencies</p>
+                  <p className="text-[15px] text-slate-400 mb-6 font-medium">Technical implementing entities</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topAgencies} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
@@ -233,8 +233,8 @@ export function CRSOverview() {
 
                {/* Top Recipients */}
                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Recipients</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Primary destination economies</p>
+                  <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Top Recipients</p>
+                  <p className="text-[15px] text-slate-400 mb-6 font-medium">Primary destination economies</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topRecipients} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
@@ -273,8 +273,8 @@ export function CRSOverview() {
 
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-              <p className="text-slate-900 text-sm font-bold mb-1">Sustainability Trend</p>
-              <p className="text-slate-400 text-xs mb-5 font-medium">Sustainable-tagged finance vs total portfolio volume</p>
+              <p className="text-slate-900 text-base font-bold mb-1">Sustainability Trend</p>
+              <p className="text-slate-400 text-[15px] mb-5 font-medium">Sustainable-tagged finance vs total portfolio volume</p>
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={sustainabilityTrend} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
                   <defs>
@@ -292,15 +292,15 @@ export function CRSOverview() {
                     dataKey="year" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 10, fill: '#64748b' }} 
-                    label={{ value: 'Transaction Year', position: 'insideBottom', offset: -10, fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
+                    tick={{ fontSize: 15, fill: '#64748b' }} 
+                    label={{ value: 'Transaction Year', position: 'insideBottom', offset: -10, fontSize: 15, fontWeight: 700, fill: '#94a3b8' }}
                   />
                   <YAxis 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 10, fill: '#64748b' }} 
+                    tick={{ fontSize: 15, fill: '#64748b' }} 
                     tickFormatter={(v) => crsFmt.usdM(v)} 
-                    label={{ value: 'Volume (USD Millions)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
+                    label={{ value: 'Volume (USD Millions)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 15, fontWeight: 700, fill: '#94a3b8' }}
                   />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
@@ -314,21 +314,21 @@ export function CRSOverview() {
                <div className="mt-4 flex items-center justify-center gap-6">
                   <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-slate-300" />
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Finance</span>
+                      <span className="text-[15px] font-bold text-slate-500 uppercase tracking-wider">Total Finance</span>
                   </div>
                   <div className="flex items-center gap-2">
                       <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sustainable Tagged</span>
+                      <span className="text-[15px] font-bold text-slate-500 uppercase tracking-wider">Sustainable Tagged</span>
                   </div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-              <p className="text-slate-900 text-sm font-bold mb-4 tracking-tight">Transport Mode Mix</p>
+              <p className="text-slate-900 text-base font-bold mb-4 tracking-tight">Transport Mode Mix</p>
               <div className="space-y-4">
                 {modeSeries.map((mode) => (
                   <div key={mode.label}>
-                    <div className="flex justify-between text-xs mb-1.5 px-0.5">
+                    <div className="flex justify-between text-[15px] mb-1.5 px-0.5">
                       <span className="text-slate-700 font-semibold">{mode.label}</span>
                       <span className="text-slate-900 font-bold">{crsFmt.usdM(mode[activeMeasure] ?? mode[measure])}</span>
                     </div>
@@ -351,10 +351,10 @@ export function CRSOverview() {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <p className="text-slate-900 text-sm font-bold">Spatial Concentration</p>
-                <p className="text-slate-400 text-xs mt-0.5 font-medium">Mapped economies standard totals</p>
+                <p className="text-slate-900 text-base font-bold">Spatial Concentration</p>
+                <p className="text-slate-400 text-[15px] mt-0.5 font-medium">Mapped economies standard totals</p>
               </div>
-              <div className="text-slate-400 text-xs font-bold uppercase py-2">
+              <div className="text-slate-400 text-[15px] font-bold uppercase py-2">
                 Viewing: {measure === 'commitment' ? 'COMMITMENTS' : 'DISBURSEMENTS'}
               </div>
             </div>

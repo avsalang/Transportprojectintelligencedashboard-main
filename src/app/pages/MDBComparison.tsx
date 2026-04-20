@@ -29,8 +29,8 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub?: s
   return (
     <div className="text-center">
       <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
-      <p className="text-slate-500 text-xs mt-0.5">{label}</p>
-      {sub && <p className="text-slate-400 text-[10px] mt-0.5">{sub}</p>}
+      <p className="text-slate-500 text-[15px] mt-0.5">{label}</p>
+      {sub && <p className="text-slate-400 text-[15px] mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -118,7 +118,7 @@ export function MDBComparison() {
       {/* Header */}
       <div>
         <h1 className="text-slate-900 text-xl font-semibold">MDB Comparison</h1>
-        <p className="text-slate-500 text-sm mt-0.5">
+        <p className="text-slate-500 text-base mt-0.5">
           Portfolio comparison across the Asian Development Bank, AIIB, and World Bank
         </p>
       </div>
@@ -150,7 +150,7 @@ export function MDBComparison() {
               <div className="px-5 py-4" style={{ backgroundColor: `${color}0D` }}>
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                  <h2 className="text-slate-900 text-sm font-bold">{mdb}</h2>
+                  <h2 className="text-slate-900 text-base font-bold">{mdb}</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <StatCard label="Projects" value={count.toLocaleString()} />
@@ -158,7 +158,7 @@ export function MDBComparison() {
                 </div>
               </div>
               <div className="px-5 py-4 space-y-3">
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-[15px]">
                   <span className="text-slate-500">Mapped coverage</span>
                   <span className="font-medium text-slate-700">{mappedPct}%</span>
                 </div>
@@ -168,16 +168,16 @@ export function MDBComparison() {
                     style={{ width: `${mappedPct}%`, backgroundColor: color }}
                   />
                 </div>
-                <div className="flex justify-between text-xs pt-1">
+                <div className="flex justify-between text-[15px] pt-1">
                   <span className="text-slate-500">Top country</span>
                   <span className="font-medium text-slate-700 max-w-[120px] text-right leading-snug break-words">
                     {(topCountry?.country ?? '—').replace("People's Republic of ", '')}
                   </span>
                 </div>
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-[15px]">
                   <span className="text-slate-500">Top mode</span>
                   <span
-                    className="font-medium px-1.5 py-0.5 rounded text-[11px]"
+                    className="font-medium px-1.5 py-0.5 rounded text-[15px]"
                     style={{
                       backgroundColor: `${MODE_COLORS[topMode]}20`,
                       color: MODE_COLORS[topMode],
@@ -196,23 +196,23 @@ export function MDBComparison() {
       <div className="grid grid-cols-2 gap-4">
         {/* Approval trend */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-800 text-sm font-semibold mb-1">Approval Trend by MDB</h2>
-          <p className="text-slate-400 text-xs mb-4">Annual project approvals · 2000–2024</p>
+          <h2 className="text-slate-800 text-base font-semibold mb-1">Approval Trend by MDB</h2>
+          <p className="text-slate-400 text-[15px] mb-4">Annual project approvals · 2000–2024</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={yearTrend} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
               <XAxis
                 dataKey="year"
-                tick={{ fontSize: 10, fill: '#94A3B8' }}
+                tick={{ fontSize: 15, fill: '#94A3B8' }}
                 tickLine={false}
                 axisLine={false}
                 interval={3}
               />
-              <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
+              <YAxis tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
+                contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }}
               />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 15 }} />
               {MDB_KEYS.map((mdb) => (
                 <Line
                   key={mdb}
@@ -230,25 +230,25 @@ export function MDBComparison() {
 
         {/* Financing comparison */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-800 text-sm font-semibold mb-1">Total Financing Comparison</h2>
-          <p className="text-slate-400 text-xs mb-4">Nominal USD billions · entire portfolio</p>
+          <h2 className="text-slate-800 text-base font-semibold mb-1">Total Financing Comparison</h2>
+          <p className="text-slate-400 text-[15px] mb-4">Nominal USD billions · entire portfolio</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={financingData} margin={{ top: 4, right: 8, left: -10, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
               <XAxis
                 dataKey="name"
-                tick={{ fontSize: 11, fill: '#64748B' }}
+                tick={{ fontSize: 15, fill: '#64748B' }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                tick={{ fontSize: 10, fill: '#94A3B8' }}
+                tick={{ fontSize: 15, fill: '#94A3B8' }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `$${v}B`}
               />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
+                contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }}
                 formatter={(v: number) => [`$${v.toFixed(1)}B`, 'Financing']}
               />
               <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={60}>
@@ -265,14 +265,14 @@ export function MDBComparison() {
       <div className="grid grid-cols-2 gap-4">
         {/* Mode mix radar */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-800 text-sm font-semibold mb-1">Transport Mode Mix</h2>
-          <p className="text-slate-400 text-xs mb-2">Portfolio share by mode (%) per MDB</p>
+          <h2 className="text-slate-800 text-base font-semibold mb-1">Transport Mode Mix</h2>
+          <p className="text-slate-400 text-[15px] mb-2">Portfolio share by mode (%) per MDB</p>
           <ResponsiveContainer width="100%" height={240}>
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={modeRadar}>
               <PolarGrid stroke="#E2E8F0" />
               <PolarAngleAxis
                 dataKey="mode"
-                tick={{ fontSize: 10, fill: '#64748B' }}
+                tick={{ fontSize: 15, fill: '#64748B' }}
               />
               {MDB_KEYS.map((mdb) => (
                 <Radar
@@ -285,9 +285,9 @@ export function MDBComparison() {
                   strokeWidth={1.5}
                 />
               ))}
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 15 }} />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
+                contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }}
                 formatter={(v: number) => [`${v}%`, 'Share']}
               />
             </RadarChart>
@@ -296,29 +296,29 @@ export function MDBComparison() {
 
         {/* Mapped coverage */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-800 text-sm font-semibold mb-1">Geocoding Coverage</h2>
-          <p className="text-slate-400 text-xs mb-4">Share of projects with final coordinates</p>
+          <h2 className="text-slate-800 text-base font-semibold mb-1">Geocoding Coverage</h2>
+          <p className="text-slate-400 text-[15px] mb-4">Share of projects with final coordinates</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={mappedShareData} margin={{ top: 4, right: 8, left: -10, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
               <XAxis
                 dataKey="name"
-                tick={{ fontSize: 11, fill: '#64748B' }}
+                tick={{ fontSize: 15, fill: '#64748B' }}
                 tickLine={false}
                 axisLine={false}
               />
               <YAxis
-                tick={{ fontSize: 10, fill: '#94A3B8' }}
+                tick={{ fontSize: 15, fill: '#94A3B8' }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${v}%`}
                 domain={[0, 100]}
               />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
+                contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }}
                 formatter={(v: number) => [`${v}%`]}
               />
-              <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 11 }} />
+              <Legend iconType="square" iconSize={10} wrapperStyle={{ fontSize: 15 }} />
               <Bar dataKey="mapped" name="Mapped" stackId="a" radius={[0, 0, 0, 0]} maxBarSize={60}>
                 {mappedShareData.map((d, i) => (
                   <Cell
@@ -345,17 +345,17 @@ export function MDBComparison() {
           const maxCount = data[0]?.count ?? 1;
           return (
             <div key={mdb} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h2 className="text-slate-800 text-sm font-semibold mb-1">
+              <h2 className="text-slate-800 text-base font-semibold mb-1">
                 <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: color }} />
                 {mdb} – Top Recipients
               </h2>
-              <p className="text-slate-400 text-xs mb-4">By project count</p>
+              <p className="text-slate-400 text-[15px] mb-4">By project count</p>
               <div className="space-y-2.5">
                 {data.map((c, i) => (
                   <div key={c.country} className="flex items-center gap-2.5">
-                    <span className="text-slate-400 text-xs w-4 text-right">{i + 1}</span>
+                    <span className="text-slate-400 text-[15px] w-4 text-right">{i + 1}</span>
                     <div className="flex-1">
-                      <div className="flex justify-between text-xs mb-0.5">
+                      <div className="flex justify-between text-[15px] mb-0.5">
                         <span className="text-slate-600 max-w-[120px] leading-snug break-words">
                           {c.country.replace("People's Republic of ", '')}
                         </span>

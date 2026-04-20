@@ -18,21 +18,10 @@ import {
   Pie,
   Label,
 } from 'recharts';
-import { 
-  Building2, 
-  Globe2, 
-  Layers3, 
-  MapPinned, 
-  Table2, 
-  Info, 
-  Leaf, 
-  User, 
-  ShieldCheck, 
-  Activity, 
-  Wind 
-} from 'lucide-react';
+import { Building2, Globe2, Layers3, MapPinned, Table2, Info, Leaf, User, ShieldCheck, Activity, Wind, ChevronDown, Search } from 'lucide-react';
 import { estimateCategoryAxisWidth, WrappedCategoryTick } from '../components/ChartTicks';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, summarizeFacts } from '../utils/crsAggregations';
@@ -98,6 +87,7 @@ export function CRSProfiles() {
   const [indexLoading, setIndexLoading] = useState<boolean>(true);
   const [recordsLoading, setRecordsLoading] = useState<boolean>(false);
   const [activeRecord, setActiveRecord] = useState<CRSRecord | null>(null);
+  const [isEntityDropdownOpen, setIsEntityDropdownOpen] = useState(false);
 
   const isConstant = filters.isConstantUSD;
   const activeMeasure = isConstant ? (measure === 'commitment' ? 'commitment_defl' : 'disbursement_defl') : measure;
@@ -279,62 +269,84 @@ export function CRSProfiles() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-slate-900 text-2xl font-bold tracking-tight">Portfolio Deep Dive</h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <p className="text-slate-500 text-base mt-1">
               Select an entity to explore its underlying project ledger and <span className="font-semibold text-slate-700">micro-level financial composition</span>.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-            {(Object.keys(ENTITY_META) as CRSEntityType[]).map((type) => (
-              <button
-                key={type}
-                onClick={() => setEntityType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  entityType === type 
-                    ? 'bg-slate-900 text-white shadow-md' 
-                    : 'text-slate-500 hover:bg-slate-50'
-                }`}
-              >
-                {ENTITY_META[type].label}
-              </button>
-            ))}
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-6 items-start">
-          {/* Sidebar Navigation */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[calc(100vh-200px)] overflow-hidden">
-             <div className="p-4 border-b border-slate-50">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Filter Entity</p>
-                <input
-                  type="text"
-                  placeholder={`Search ${entityType === 'country' ? 'ADB Economies' : ENTITY_META[entityType].label + 's'}...`}
-                  value={entitySearch}
-                  onChange={(e) => setEntitySearch(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
-                />
-             </div>
-             <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-200">
-               {indexLoading ? (
-                 <div className="space-y-2 p-2">
-                   {[1,2,3,4,5].map(i => <div key={i} className="h-10 bg-slate-50 rounded-lg animate-pulse" />)}
-                 </div>
-               ) : (
-                 <div className="space-y-1">
-                   {entityOptions.map(o => (
-                     <button
-                       key={o.label}
-                       onClick={() => setSelectedEntity(o.label)}
-                       className={`w-full text-left px-4 py-3 rounded-xl transition-all ${
-                         selectedEntity === o.label 
-                           ? 'bg-blue-50 text-blue-700 shadow-sm ring-1 ring-blue-100' 
-                           : 'hover:bg-slate-50 text-slate-600'
-                       }`}
-                     >
-                       <span className="text-xs font-bold truncate block">{o.label}</span>
-                     </button>
-                   ))}
-                 </div>
-               )}
+        <div className="flex flex-col gap-6">
+          {/* Header & Filter Selection */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
+             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div className="flex flex-col gap-2">
+                   <p className="text-[15px] font-black text-slate-400 uppercase tracking-widest">Analytics Focus</p>
+                   <div className="flex flex-wrap items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    {(Object.keys(ENTITY_META) as CRSEntityType[]).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => { setEntityType(type); setEntitySearch(''); }}
+                        className={`px-4 py-2 rounded-lg text-[15px] font-bold transition-all ${
+                          entityType === type 
+                            ? 'bg-slate-900 text-white shadow-md' 
+                            : 'text-slate-500 hover:bg-slate-50'
+                        }`}
+                      >
+                        {ENTITY_META[type].label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 min-w-[320px]">
+                   <p className="text-[15px] font-black text-slate-400 uppercase tracking-widest">Selected Entity</p>
+                   <Popover open={isEntityDropdownOpen} onOpenChange={setIsEntityDropdownOpen}>
+                      <PopoverTrigger asChild>
+                         <button className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-all shadow-sm">
+                            <span className="text-base font-bold text-slate-900 truncate">
+                               {selectedEntity || `Select ${ENTITY_META[entityType].label}...`}
+                            </span>
+                            <ChevronDown className={`text-slate-400 transition-transform duration-200 ${isEntityDropdownOpen ? 'rotate-180' : ''}`} size={18} />
+                         </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[400px] p-0 rounded-2xl shadow-2xl border-slate-200 bg-white" align="start">
+                         <div className="flex flex-col h-[400px]">
+                            <div className="p-4 border-b border-slate-100 flex items-center gap-3">
+                               <Search size={18} className="text-slate-400" />
+                               <input
+                                  type="text"
+                                  autoFocus
+                                  placeholder={`Search ${ENTITY_META[entityType].label}s...`}
+                                  value={entitySearch}
+                                  onChange={(e) => setEntitySearch(e.target.value)}
+                                  className="w-full bg-transparent border-none p-0 text-base focus:ring-0 font-medium placeholder:text-slate-400"
+                               />
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-2">
+                               {entityOptions.length === 0 ? (
+                                  <div className="p-8 text-center text-slate-400 text-base font-medium">No results found</div>
+                               ) : (
+                                  <div className="space-y-1">
+                                     {entityOptions.map(o => (
+                                       <button
+                                         key={o.label}
+                                         onClick={() => { setSelectedEntity(o.label); setIsEntityDropdownOpen(false); }}
+                                         className={`w-full text-left px-4 py-3 rounded-xl transition-all ${
+                                           selectedEntity === o.label 
+                                             ? 'bg-blue-50 text-blue-700 font-bold' 
+                                             : 'hover:bg-slate-50 text-slate-600 font-medium'
+                                         }`}
+                                       >
+                                         <span className="text-[15px] truncate block">{o.label}</span>
+                                       </button>
+                                     ))}
+                                  </div>
+                               )}
+                            </div>
+                         </div>
+                      </PopoverContent>
+                   </Popover>
+                </div>
              </div>
           </div>
 
@@ -344,7 +356,7 @@ export function CRSProfiles() {
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center h-[500px] flex flex-col items-center justify-center">
                 <Globe2 className="text-slate-200 w-16 h-16 mb-4" />
                 <h3 className="text-lg font-bold text-slate-800 tracking-tight">Select an entity to explore</h3>
-                <p className="text-slate-400 text-sm mt-2 max-w-sm font-medium">
+                <p className="text-slate-400 text-base mt-2 max-w-sm font-medium">
                   Deep dive into financial instruments, thematic distributions, and the full project ledger for a specific economy, region, or donor.
                 </p>
               </div>
@@ -353,19 +365,19 @@ export function CRSProfiles() {
                 {/* Profile Header Card */}
                 <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                    <div className="relative z-10">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/30">
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[15px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/30">
                         {ENTITY_META[entityType].label} PROFILE
                       </span>
                       <h2 className="text-4xl font-black tracking-tighter mt-6 mb-2 leading-none uppercase">{selectedEntity}</h2>
-                      <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">Global Transport Portfolio Deep Dive</p>
+                      <p className="text-slate-400 text-[15px] font-medium uppercase tracking-widest">Global Transport Portfolio Deep Dive</p>
                    </div>
                    <div className="flex gap-8 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 relative z-10">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
+                        <p className="text-[15px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
                         <p className="text-3xl font-black text-white tabular-nums">{crsFmt.usdM(stats[measure])}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Records</p>
+                        <p className="text-[15px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Records</p>
                         <p className="text-3xl font-black text-white tabular-nums">{crsFmt.num(stats.count)}</p>
                       </div>
                    </div>
@@ -374,8 +386,8 @@ export function CRSProfiles() {
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* 1. Momentum Trend */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Portfolio Momentum</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Historical investment trajectory ($M USD)</p>
+                       <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Portfolio Momentum</p>
+                       <p className="text-[15px] text-slate-400 font-bold mb-6">Historical investment trajectory ($M USD)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <AreaChart data={yearlySeries} margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -408,10 +420,10 @@ export function CRSProfiles() {
 
                     {/* 2. Top Sub-Partners */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">
+                       <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">
                           { (entityType === 'donor' || entityType === 'agency') ? 'Top Recipient Economies' : 'Primary Funding Sources' }
                        </p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Core institutional network topography</p>
+                       <p className="text-[15px] text-slate-400 font-bold mb-6">Core institutional network topography</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={partnershipSeries} layout="vertical" margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -430,8 +442,8 @@ export function CRSProfiles() {
 
                     {/* 3. Strategic Pillar Mix */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Standard Pillar Distribution</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Aggregate focus across standardized ATO sectors</p>
+                       <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Standard Pillar Distribution</p>
+                       <p className="text-[15px] text-slate-400 font-bold mb-6">Aggregate focus across standardized ATO sectors</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={pillarSeries} margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -451,8 +463,8 @@ export function CRSProfiles() {
 
                     {/* 4. Sub-Sector Alignment Matrix */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Strategic Alignment Matrix</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Transport Sub-Sector volume vs Sustainability Score (%)</p>
+                       <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Strategic Alignment Matrix</p>
+                       <p className="text-[15px] text-slate-400 font-bold mb-6">Transport Sub-Sector volume vs Sustainability Score (%)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <ScatterChart margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -470,11 +482,11 @@ export function CRSProfiles() {
                                          const data = payload[0].payload;
                                          return (
                                             <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-xl">
-                                               <p className="text-[11px] font-black text-slate-900 uppercase mb-1">{data.label}</p>
-                                               <p className="text-[10px] text-slate-500 font-bold">
+                                               <p className="text-[15px] font-black text-slate-900 uppercase mb-1">{data.label}</p>
+                                               <p className="text-[15px] text-slate-500 font-bold">
                                                  Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
                                                </p>
-                                               <p className="text-[10px] text-slate-500 font-bold">
+                                               <p className="text-[15px] text-slate-500 font-bold">
                                                  Sustainability: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
                                                </p>
                                             </div>
@@ -493,8 +505,8 @@ export function CRSProfiles() {
                  {/* Key Sub-Mode Comparison */}
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                     <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Granular Portfolio Focus</p>
-                     <p className="text-xs text-slate-400 font-bold mb-6">Top 10 specialized transport sub-modes</p>
+                     <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest mb-1">Granular Portfolio Focus</p>
+                     <p className="text-[15px] text-slate-400 font-bold mb-6">Top 10 specialized transport sub-modes</p>
                      <div className="h-[400px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={sectorMix} layout="vertical" margin={{ left: 10, right: 60, bottom: 40 }}>
@@ -510,8 +522,8 @@ export function CRSProfiles() {
                    </div>
 
                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-center justify-center gap-6">
-                      <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest w-full text-left mb-1">Sustainability Alignment Score</p>
-                      <p className="text-xs text-slate-400 font-bold w-full text-left mb-6">Share of projects with thematic markers</p>
+                      <p className="text-slate-900 text-[15px] font-black uppercase tracking-widest w-full text-left mb-1">Sustainability Alignment Score</p>
+                      <p className="text-[15px] text-slate-400 font-bold w-full text-left mb-6">Share of projects with thematic markers</p>
                       <div className="relative w-48 h-48">
                          <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90">
                             <circle cx="96" cy="96" r="80" fill="transparent" stroke="#f1f5f9" strokeWidth="20" />
@@ -523,22 +535,22 @@ export function CRSProfiles() {
                          </svg>
                          <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <span className="text-4xl font-black text-slate-900 tabular-nums">{((stats.susCount / Math.max(stats.count, 1)) * 100).toFixed(1)}%</span>
-                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Direct Match</span>
+                            <span className="text-[15px] font-bold text-slate-400 uppercase tracking-widest mt-1">Direct Match</span>
                          </div>
                       </div>
                       <div className="text-center px-10">
                          <div className="grid grid-cols-3 gap-8 mt-4">
                             <div>
                                <p className="text-md font-black text-slate-900">{stats.mitCount}</p>
-                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Climate</p>
+                               <p className="text-[14px] font-bold text-slate-400 uppercase tracking-widest">Climate</p>
                             </div>
                             <div>
                                <p className="text-md font-black text-slate-900">{stats.gndCount}</p>
-                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Gender</p>
+                               <p className="text-[14px] font-bold text-slate-400 uppercase tracking-widest">Gender</p>
                             </div>
                             <div>
                                <p className="text-md font-black text-slate-900">{stats.count}</p>
-                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Total</p>
+                               <p className="text-[14px] font-bold text-slate-400 uppercase tracking-widest">Total</p>
                             </div>
                          </div>
                       </div>
@@ -549,8 +561,8 @@ export function CRSProfiles() {
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                    <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <p className="text-slate-900 text-sm font-bold">Transaction Ledger</p>
-                        <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-bold text-slate-500">{filteredRecords.length} results</span>
+                        <p className="text-slate-900 text-base font-bold">Transaction Ledger</p>
+                        <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[15px] font-bold text-slate-500">{filteredRecords.length} results</span>
                       </div>
                       <div className="flex items-center gap-4">
                          <div className="flex items-center gap-1.5 h-7">
@@ -559,7 +571,7 @@ export function CRSProfiles() {
                                disabled={page === 1} 
                                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
                             >←</button>
-                            <span className="text-[10px] font-black text-slate-600 w-12 text-center">{page}</span>
+                            <span className="text-[15px] font-black text-slate-600 w-12 text-center">{page}</span>
                             <button 
                                onClick={() => setPage(p => p + 1)} 
                                disabled={page >= Math.ceil(filteredRecords.length / rowsPerPage)} 
@@ -572,34 +584,34 @@ export function CRSProfiles() {
                      {recordsLoading ? (
                        <div className="p-20 flex flex-col items-center justify-center gap-4">
                           <div className="w-8 h-8 border-3 border-slate-100 border-t-blue-500 rounded-full animate-spin" />
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Streaming Ledger Fragments...</p>
+                          <p className="text-[15px] font-bold text-slate-400 uppercase tracking-widest">Streaming Ledger Fragments...</p>
                        </div>
                      ) : (
                        <table className="w-full border-collapse">
                          <thead>
-                           <tr className="bg-slate-50/20 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                           <tr className="bg-slate-50/20 text-[15px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
                              <th className="px-6 py-4 text-left">Year</th>
                              <th className="px-6 py-4 text-left">Donor / Agency</th>
                              <th className="px-6 py-4 text-left">Amount</th>
                              <th className="px-6 py-4 text-left">Project Title</th>
                            </tr>
-                         </thead>
-                         <tbody className="divide-y divide-slate-50">
+                          </thead>
+                          <tbody className="divide-y divide-slate-50">
                            {pagedRecords.map((record) => (
                              <tr key={record.id} onClick={() => setActiveRecord(record)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                               <td className="px-6 py-4 text-[11px] font-bold text-slate-500 tabular-nums">{record.year}</td>
+                               <td className="px-6 py-4 text-[15px] font-bold text-slate-500 tabular-nums">{record.year}</td>
                                <td className="px-6 py-4">
                                   <div className="max-w-[200px]">
-                                    <p className="text-[11px] font-black text-slate-800 line-clamp-1">{record.donor}</p>
-                                    <p className="text-[10px] text-slate-400 font-bold truncate">{record.agency}</p>
+                                    <p className="text-[15px] font-black text-slate-800 line-clamp-1">{record.donor}</p>
+                                    <p className="text-[14px] text-slate-400 font-bold truncate">{record.agency}</p>
                                   </div>
                                </td>
-                               <td className="px-6 py-4 text-[11px] font-black text-slate-900 tabular-nums">
+                               <td className="px-6 py-4 text-[15px] font-black text-slate-900 tabular-nums">
                                   {crsFmt.usdM(record[activeMeasure] || 0)}
                                </td>
                                <td className="px-6 py-4">
-                                  <p className="text-[11px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
-                                  <p className="text-[9px] text-slate-400 font-medium uppercase mt-0.5">{record.mode} • {record.purpose}</p>
+                                  <p className="text-[15px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
+                                  <p className="text-[13px] text-slate-400 font-medium uppercase mt-0.5">{record.mode} • {record.purpose}</p>
                                </td>
                              </tr>
                            ))}
@@ -618,46 +630,46 @@ export function CRSProfiles() {
              {activeRecord && (
                 <div className="h-full flex flex-col">
                    <div className="bg-slate-900 p-8 text-white">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg shadow-blue-500/20">Project Detail Review</span>
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[15px] font-black tracking-widest uppercase shadow-lg shadow-blue-500/20">Project Detail Review</span>
                       <h2 className="text-2xl font-black tracking-tighter mt-4 leading-tight">{activeRecord.title}</h2>
                    </div>
                    <div className="flex-1 overflow-y-auto p-8 space-y-8">
                       <div className="grid grid-cols-2 gap-4">
                          <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100/50">
-                            <p className="text-[10px] font-bold text-blue-600 uppercase mb-1">Commitment</p>
+                            <p className="text-[15px] font-bold text-blue-600 uppercase mb-1">Commitment</p>
                             <p className="text-xl font-black text-blue-900 tabular-nums">{crsFmt.usdM(activeRecord.commitment)}</p>
                          </div>
                          <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100/50">
-                            <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Disbursement</p>
+                            <p className="text-[15px] font-bold text-emerald-600 uppercase mb-1">Disbursement</p>
                             <p className="text-xl font-black text-emerald-900 tabular-nums">{crsFmt.usdM(activeRecord.disbursement)}</p>
                          </div>
                       </div>
                       <div className="space-y-4">
-                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Institutional Identification</h4>
+                         <h4 className="text-[15px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Institutional Identification</h4>
                          <div className="grid grid-cols-2 gap-4">
                             <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Source Donor</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.donor}</p>
+                               <p className="text-[15px] font-bold text-slate-400 uppercase mb-1">Source Donor</p>
+                               <p className="text-[15px] font-bold text-slate-800">{activeRecord.donor}</p>
                             </div>
                             <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Reporting Agency</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.agency}</p>
+                               <p className="text-[15px] font-bold text-slate-400 uppercase mb-1">Reporting Agency</p>
+                               <p className="text-[15px] font-bold text-slate-800">{activeRecord.agency}</p>
                             </div>
                             <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Recipient Economy</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.recipient}</p>
+                               <p className="text-[15px] font-bold text-slate-400 uppercase mb-1">Recipient Economy</p>
+                               <p className="text-[15px] font-bold text-slate-800">{activeRecord.recipient}</p>
                             </div>
                             <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Transport Mode</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.mode}</p>
+                               <p className="text-[15px] font-bold text-slate-400 uppercase mb-1">Transport Mode</p>
+                               <p className="text-[15px] font-bold text-slate-800">{activeRecord.mode}</p>
                             </div>
                          </div>
                       </div>
                       <div className="space-y-4">
-                         <h4 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
+                         <h4 className="flex items-center gap-2 text-[15px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
                            <Info size={14} className="text-slate-400" /> Narrative Metadata
                          </h4>
-                         <p className="text-sm leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
+                         <p className="text-base leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
                            {activeRecord.short_description || "No granular descriptive metadata available for this transaction."}
                          </p>
                       </div>
