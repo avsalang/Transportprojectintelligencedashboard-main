@@ -1,13 +1,13 @@
 import { NavLink, Outlet } from 'react-router';
-import { ChevronRight, Globe, Map, Network, PieChart, TrendingUp } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { CRS_OVERVIEW_STATS, crsFmt } from '../data/crsData';
 import { CRSFilterProvider } from '../context/CRSFilterContext';
 import { CRSGlobalFilters } from './CRSGlobalFilters';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Overview', icon: TrendingUp, exact: true },
-  { to: '/insights', label: 'Strategic Insights', icon: Network, exact: false },
-  { to: '/profiles', label: 'Deep Dive', icon: PieChart, exact: false },
+  { to: '/', label: 'Overview', exact: true },
+  { to: '/insights', label: 'Strategic insights', exact: false },
+  { to: '/profiles', label: 'Portfolio profiles', exact: false },
 ];
 
 export function CRSLayout() {
@@ -21,8 +21,8 @@ export function CRSLayout() {
                 <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="w-full h-full object-contain rounded-full" />
               </div>
               <div>
-                <p className="text-white text-base font-semibold leading-tight tracking-tight">CRS Dashboard</p>
-                <p className="text-blue-300 text-[10px] font-semibold tracking-wider leading-snug mt-1 max-w-[140px]">
+                <p className="text-white text-base leading-tight tracking-tight">CRS dashboard</p>
+                <p className="text-blue-300 text-[10px] tracking-wider leading-snug mt-1 max-w-[140px]">
                    Visualization and Analysis by the Asian Transport Observatory (ATO)
                 </p>
               </div>
@@ -30,7 +30,7 @@ export function CRSLayout() {
           </div>
 
           <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-            {NAV_ITEMS.map(({ to, label, icon: Icon, exact }) => (
+            {NAV_ITEMS.map(({ to, label, exact }) => (
               <NavLink
                 key={to}
                 to={to}
@@ -45,7 +45,6 @@ export function CRSLayout() {
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={18} className={isActive ? 'text-[#00ADEF]' : 'text-blue-300/40 group-hover:text-blue-200'} />
                     <span className="font-medium">{label}</span>
                     {isActive && <ChevronRight size={14} className="ml-auto text-blue-400/60" />}
                   </>
@@ -62,7 +61,7 @@ export function CRSLayout() {
               ${crsFmt.usdM(CRS_OVERVIEW_STATS.totalCommitment)} commitments
             </p>
             <div className="mt-4 pt-4 border-t border-white/5">
-              <p className="text-[11px] font-semibold text-blue-300/40 uppercase tracking-widest mb-1.5">Data Source</p>
+              <p className="text-[11px] text-blue-300/40 mb-1.5">Data source</p>
               <a 
                 href="https://data-explorer.oecd.org/vis?lc=en&tm=crs&pg=0&snb=25&df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_CRS%40DF_CRS&df[ag]=OECD.DCD.FSD&df[vs]=1.6&dq=DAC..1000.100._T._T.D.Q._T..&lom=LASTNPERIODS&lo=5&to[TIME_PERIOD]=false"
                 target="_blank"

@@ -1,6 +1,5 @@
-import { ReactNode } from 'react';
-import { X, MapPin, Calendar, DollarSign, Building2, FileText, ExternalLink, Navigation, AlertCircle } from 'lucide-react';
 import { Project, fmt } from '../data/mockData';
+import { X, ExternalLink } from 'lucide-react';
 import { SourceBadge } from './SourceBadge';
 import { StatusBadge } from './StatusBadge';
 import { ModePill } from './ModePill';
@@ -13,7 +12,7 @@ interface ProjectDrawerProps {
 function Row({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="text-slate-400 text-xs uppercase tracking-wide w-32 flex-shrink-0 pt-0.5">{label}</span>
+      <span className="text-slate-400 text-xs w-32 flex-shrink-0 pt-0.5">{label}</span>
       <span className="text-slate-800 text-sm flex-1">{value || <span className="text-slate-400 italic">Unknown</span>}</span>
     </div>
   );
@@ -41,7 +40,6 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
                 <StatusBadge status={project.project_status} />
                 {project.low_precision && (
                   <span className="flex items-center gap-1 text-amber-400 text-[10px] bg-amber-400/10 border border-amber-400/20 rounded px-1.5 py-0.5">
-                    <AlertCircle size={10} />
                     Low precision
                   </span>
                 )}
@@ -62,16 +60,16 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
         <div className="flex-1 overflow-y-auto">
           {/* Key metrics */}
           <div className="grid grid-cols-2 gap-px bg-slate-100 border-b border-slate-200">
-            <MetricCell icon={<DollarSign size={14} />} label="Amount" value={fmt.usd(project.amount)} />
-            <MetricCell icon={<Calendar size={14} />} label="Approval" value={project.approval_year ? String(project.approval_year) : '—'} />
-            <MetricCell icon={<MapPin size={14} />} label="Country" value={project.country} />
-            <MetricCell icon={<Building2 size={14} />} label="Financing" value={project.financing_type || '—'} />
+            <MetricCell label="Amount" value={fmt.usd(project.amount)} />
+            <MetricCell label="Approval" value={project.approval_year ? String(project.approval_year) : '—'} />
+            <MetricCell label="Country" value={project.country} />
+            <MetricCell label="Financing" value={project.financing_type || '—'} />
           </div>
 
           <div className="px-6 py-5 space-y-6">
             {/* Classification */}
             <section>
-              <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3">Classification</h3>
+              <h3 className="text-slate-500 text-[11px] font-medium mb-3">Classification</h3>
               <div className="space-y-2.5">
                 <Row label="Region" value={project.region} />
                 <Row label="Sector" value={project.sector} />
@@ -93,8 +91,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
             {/* Description */}
             {project.description && (
               <section>
-                <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3 flex items-center gap-1.5">
-                  <FileText size={12} />
+                <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3">
                   Project Description
                 </h3>
                 <p className="text-slate-600 text-sm leading-relaxed bg-slate-50 rounded-lg p-3 border border-slate-100">
@@ -105,8 +102,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
 
             {/* Location */}
             <section>
-              <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3 flex items-center gap-1.5">
-                <Navigation size={12} />
+              <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3">
                 Location
               </h3>
               <div className="space-y-2.5">
@@ -131,7 +127,6 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
                 } />
                 {project.low_precision && (
                   <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg p-3 mt-2">
-                    <AlertCircle size={14} className="text-amber-500 flex-shrink-0 mt-0.5" />
                     <p className="text-amber-700 text-xs">
                       This location has low geocoding precision. The coordinates may represent a broad administrative area rather than a specific project site.
                     </p>
@@ -159,11 +154,10 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
   );
 }
 
-function MetricCell({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+function MetricCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white px-4 py-3">
-      <div className="flex items-center gap-1.5 text-slate-400 text-[10px] uppercase tracking-wide mb-1">
-        {icon}
+      <div className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">
         {label}
       </div>
       <p className="text-slate-900 text-sm font-semibold truncate">{value}</p>

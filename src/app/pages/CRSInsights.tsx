@@ -16,14 +16,7 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { 
-  Network, 
-  Target, 
-  Leaf, 
-  Activity,
-  ArrowUpRight,
-  ChevronDown,
-  Scale,
-  AlertCircle
+  ChevronDown
 } from 'lucide-react';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { buildStrategicInsights, summarizeFacts } from '../utils/crsAggregations';
@@ -82,17 +75,14 @@ export function CRSInsights() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
            <div>
               <div className="flex items-center gap-3 mb-2">
-                 <div className="bg-blue-600 p-1.5 rounded-lg text-white">
-                    <Activity size={18} />
-                 </div>
-                 <span className="text-[14px] font-semibold text-slate-500 uppercase tracking-widest">Strategic Analysis</span>
+                 <span className="text-[14px] text-slate-500">Institutional analysis</span>
               </div>
-              <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Institutional Deployment Matrix</h1>
+              <h1 className="text-2xl text-slate-900 tracking-tight">Deployment insights</h1>
               <p className="text-slate-500 text-base mt-1">Auditing the disbursement efficiency and sectoral allocation ratio across the global transport portfolio.</p>
            </div>
            <div className="bg-slate-50 px-6 py-4 rounded-xl border border-slate-200 min-w-[200px]">
-              <p className="text-[14px] font-semibold text-slate-500 uppercase tracking-widest">Global Deployment Ratio</p>
-              <p className="text-2xl font-semibold text-slate-900 tracking-tight">{((stats.disbursement / (stats.commitment || 1)) * 100).toFixed(1)}%</p>
+              <p className="text-[14px] text-slate-500">Global deployment ratio</p>
+              <p className="text-2xl font-medium text-slate-900 tracking-tight">{((stats.disbursement / (stats.commitment || 1)) * 100).toFixed(1)}%</p>
            </div>
         </div>
 
@@ -102,15 +92,15 @@ export function CRSInsights() {
           <div className="bg-white p-8 rounded-xl border border-slate-200 shadow-sm space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                <div>
-                  <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-                    <ArrowUpRight size={20} className="text-blue-600" /> Disbursement Ratio Matrix
+                  <h3 className="text-lg text-slate-900 flex items-center gap-2">
+                    Disbursement efficiency
                   </h3>
                   <p className="text-[15px] text-slate-500 mt-1">Numerical audit of fund deployment by sub-sector (Disbursement / Commitment)</p>
                </div>
                <div className="flex items-center gap-4">
-                  <span className="text-[14px] font-semibold text-slate-500 uppercase tracking-widest">0%</span>
+                  <span className="text-[14px] text-slate-500">0%</span>
                   <div className="h-3 w-48 bg-gradient-to-r from-rose-500 via-amber-300 to-emerald-500 rounded-full" />
-                  <span className="text-[14px] font-semibold text-slate-500 uppercase tracking-widest">100%</span>
+                  <span className="text-[14px] text-slate-500">100%</span>
                </div>
             </div>
             
@@ -120,11 +110,11 @@ export function CRSInsights() {
                      <thead>
                         <tr>
                            <th className="w-[280px] border border-slate-200 p-4 bg-slate-50 text-left">
-                              <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Funding Agency</span>
+                              <span className="text-[14px] text-slate-500">Funding agency</span>
                            </th>
                            {heatmapModes.map(mode => (
                              <th key={mode} className="border border-slate-200 p-4 bg-slate-50 text-center w-[140px]">
-                                <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">{mode}</span>
+                                <span className="text-[14px] text-slate-500">{mode}</span>
                              </th>
                            ))}
                         </tr>
@@ -133,7 +123,7 @@ export function CRSInsights() {
                          {heatmapDonors.map(donor => (
                            <tr key={donor.label}>
                               <td className="border border-slate-200 p-4 bg-white">
-                                 <span className="text-[15px] font-semibold text-slate-900 uppercase leading-tight line-clamp-2">{donor.label}</span>
+                                 <span className="text-[14px] font-medium text-slate-900 leading-tight line-clamp-2">{donor.label}</span>
                               </td>
                               {heatmapModes.map(mode => {
                                  const val = donor.modes.get(mode);
@@ -147,9 +137,9 @@ export function CRSInsights() {
                                  return (
                                    <td key={mode} className={`border border-white p-0 text-center transition-all ${cellColor}`}>
                                       <div className="py-6 px-2 flex flex-col items-center justify-center min-h-[90px]">
-                                         <span className="text-[15px] font-semibold tabular-nums">{ratio.toFixed(1)}%</span>
-                                         <span className="text-[15px] font-semibold mt-1 opacity-70 uppercase tracking-tighter">
-                                            VOL: ${val.commitment.toFixed(0)}M
+                                         <span className="text-[14px] font-medium tabular-nums">{ratio.toFixed(1)}%</span>
+                                         <span className="text-[12px] mt-1 opacity-70">
+                                            Vol: ${val.commitment.toFixed(0)}m
                                          </span>
                                       </div>
                                    </td>
@@ -166,8 +156,8 @@ export function CRSInsights() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {/* 2. Execution Parity (Scatter) */}
             <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm flex flex-col h-[550px]">
-               <h3 className="text-base font-semibold text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-10">
-                 <Target size={16} className="text-blue-500" /> Execution Parity Analysis ($M USD)
+               <h3 className="text-base text-slate-900 flex items-center gap-2 mb-10">
+                 Execution parity ($m usd)
                </h3>
                <div className="flex-1 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -203,8 +193,8 @@ export function CRSInsights() {
 
             {/* 3. Strategic Alignment (Bubble) */}
             <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm flex flex-col h-[550px]">
-               <h3 className="text-base font-semibold text-slate-900 uppercase tracking-widest flex items-center gap-2 mb-10">
-                 <Leaf size={16} className="text-emerald-500" /> Strategic Alignment Matrix
+               <h3 className="text-base text-slate-900 flex items-center gap-2 mb-10">
+                 Sustainability alignment
                </h3>
                <div className="flex-1 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -242,10 +232,10 @@ export function CRSInsights() {
           {/* 4. Portfolio DNA (Full Width) */}
           <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm overflow-hidden h-[650px] flex flex-col">
              <div className="mb-14">
-                <h3 className="text-xl font-semibold text-slate-900 tracking-tight uppercase tracking-tighter flex items-center gap-3">
-                  <Scale size={24} className="text-amber-500" /> Sectoral Investment DNA ($M USD)
+                <h3 className="text-lg text-slate-900 flex items-center gap-3">
+                  Investment by sector ($m usd)
                 </h3>
-                <p className="text-[15px] text-slate-400 font-semibold mt-2 uppercase tracking-widest">Cumulative Portfolio Distribution across Standard Pillars</p>
+                <p className="text-[14px] text-slate-500 mt-2">Cumulative portfolio distribution across transport sectors</p>
              </div>
              
              <div className="flex-1 w-full">
@@ -275,20 +265,20 @@ export function CRSInsights() {
                           const total = payload.reduce((sum, p) => sum + (p.value as number), 0);
                           return (
                             <div className="bg-slate-900 p-6 rounded-sm shadow-2xl border border-white/10 text-white min-w-[280px]">
-                               <p className="text-[15px] font-semibold text-amber-400 uppercase tracking-widest mb-4 pb-2 border-b border-white/5">{label}</p>
+                               <p className="text-[14px] font-medium text-amber-400 mb-4 pb-2 border-b border-white/5">{label}</p>
                                <div className="space-y-2">
                                   {payload.filter(p => (p.value as number) > 0).sort((a,b) => (b.value as number) - (a.value as number)).map((p) => (
                                     <div key={p.name} className="flex justify-between items-center text-[15px]">
                                        <div className="flex items-center gap-3">
                                           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-                                          <span className="text-slate-400 font-semibold uppercase">{p.name}</span>
+                                          <span className="text-slate-400">{p.name}</span>
                                        </div>
-                                       <span className="font-semibold tabular-nums tracking-tight">{crsFmt.usdM(p.value as number)}</span>
+                                       <span className="tabular-nums tracking-tight">{crsFmt.usdM(p.value as number)}</span>
                                     </div>
                                   ))}
                                   <div className="pt-4 mt-2 border-t border-white/10 flex justify-between items-center">
-                                     <span className="text-[15px] font-semibold text-white uppercase tracking-widest">Total Portfolio</span>
-                                     <span className="text-base font-semibold text-white tabular-nums">{crsFmt.usdM(total)}</span>
+                                     <span className="text-[14px] text-white">Total portfolio</span>
+                                     <span className="text-base text-white tabular-nums">{crsFmt.usdM(total)}</span>
                                   </div>
                                </div>
                             </div>

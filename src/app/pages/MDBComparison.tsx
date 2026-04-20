@@ -28,7 +28,7 @@ const MDB_KEYS = ['World Bank', 'ADB', 'AIIB'] as const;
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="text-center">
-      <p className="text-2xl font-semibold text-slate-900 tabular-nums">{value}</p>
+      <p className="text-2xl font-medium text-slate-900 tabular-nums">{value}</p>
       <p className="text-slate-500 text-[15px] mt-0.5">{label}</p>
       {sub && <p className="text-slate-500 text-[15px] mt-0.5">{sub}</p>}
     </div>
@@ -117,7 +117,7 @@ export function MDBComparison() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">MDB Comparison</h1>
+        <h1 className="text-2xl text-slate-900 tracking-tight">Agency comparison</h1>
         <p className="text-slate-500 text-base mt-1">
           Portfolio comparison across the Asian Development Bank, AIIB, and World Bank
         </p>
@@ -150,7 +150,7 @@ export function MDBComparison() {
               <div className="px-5 py-4" style={{ backgroundColor: `${color}0D` }}>
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                  <h2 className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest">{mdb}</h2>
+                  <h2 className="text-slate-900 text-[14px]">{mdb}</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <StatCard label="Projects" value={count.toLocaleString()} />
@@ -196,7 +196,7 @@ export function MDBComparison() {
       <div className="grid grid-cols-2 gap-4">
         {/* Approval trend */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-900 text-lg font-semibold mb-1">Approval Trend by MDB</h2>
+          <h2 className="text-slate-900 text-lg mb-1">Approval trend by agency</h2>
           <p className="text-slate-500 text-[15px] mb-4 font-normal">Annual project approvals · 2000–2024</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={yearTrend} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
@@ -230,7 +230,7 @@ export function MDBComparison() {
 
         {/* Financing comparison */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-900 text-lg font-semibold mb-1">Total Financing Comparison</h2>
+          <h2 className="text-slate-900 text-lg mb-1">Total volume by agency</h2>
           <p className="text-slate-500 text-[15px] mb-4 font-normal">Nominal USD billions · entire portfolio</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={financingData} margin={{ top: 4, right: 8, left: -10, bottom: 0 }}>
@@ -265,7 +265,7 @@ export function MDBComparison() {
       <div className="grid grid-cols-2 gap-4">
         {/* Mode mix radar */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-900 text-lg font-semibold mb-1">Transport Mode Mix</h2>
+          <h2 className="text-slate-900 text-lg mb-1">Sectoral mix</h2>
           <p className="text-slate-500 text-[15px] mb-2 font-normal">Portfolio share by mode (%) per MDB</p>
           <ResponsiveContainer width="100%" height={240}>
             <RadarChart cx="50%" cy="50%" outerRadius="70%" data={modeRadar}>
@@ -296,7 +296,7 @@ export function MDBComparison() {
 
         {/* Mapped coverage */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-slate-900 text-lg font-semibold mb-1">Geocoding Coverage</h2>
+          <h2 className="text-slate-900 text-lg mb-1">Mapping coverage</h2>
           <p className="text-slate-500 text-[15px] mb-4 font-normal">Share of projects with final coordinates</p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={mappedShareData} margin={{ top: 4, right: 8, left: -10, bottom: 0 }}>
@@ -345,9 +345,9 @@ export function MDBComparison() {
           const maxCount = data[0]?.count ?? 1;
           return (
             <div key={mdb} className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-              <h2 className="text-slate-900 text-lg font-semibold mb-1">
+              <h2 className="text-slate-900 text-lg mb-1">
                 <span className="inline-block w-2 h-2 rounded-full mr-1.5" style={{ backgroundColor: color }} />
-                {mdb} – Top Recipient Economies
+                {mdb} – top recipient economies
               </h2>
               <p className="text-slate-500 text-[15px] mb-4">By project count</p>
               <div className="space-y-2.5">
@@ -359,7 +359,7 @@ export function MDBComparison() {
                         <span className="text-slate-600 max-w-[120px] leading-snug break-words">
                           {c.country.replace("People's Republic of ", '')}
                         </span>
-                        <span className="text-slate-800 font-medium">{c.count}</span>
+                        <span className="text-slate-800">{c.count}</span>
                       </div>
                       <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
                         <div

@@ -12,7 +12,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { DollarSign, Globe, Landmark, MapPinned, Activity, Wind, Waves } from 'lucide-react';
 import { estimateCategoryAxisWidth, TruncatedCategoryTick } from '../components/ChartTicks';
 import { KPICard } from '../components/KPICard';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
@@ -95,48 +94,39 @@ export function CRSOverview() {
       <div className="max-w-[1440px] mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Transport Intelligence Overview</h1>
-            <p className="text-slate-500 text-base mt-1">
-              Global portfolio analytics focusing on <span className="text-slate-900 font-medium">financial flows</span> and <span className="text-blue-600 font-medium">sustainability shifts</span>.
+            <h1 className="text-2xl text-slate-900 tracking-tight">Investment Overview</h1>
+            <p className="text-slate-500 mt-1">
+              Analytics on financial flows and sustainability markers across the global portfolio.
             </p>
           </div>
           <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
              <div className="text-right">
-               <p className="text-slate-500 text-[14px] uppercase font-semibold tracking-widest">Active Basis</p>
-               <p className="text-blue-600 text-[15px] font-semibold capitalize">{isConstant ? 'Constant USD (Deflated)' : 'Current USD (Nominal)'}</p>
+               <p className="text-slate-500 text-[14px]">Accounting basis</p>
+               <p className="text-blue-600 font-medium">{isConstant ? 'Constant usd (deflated)' : 'Current usd (nominal)'}</p>
              </div>
-             <Activity size={18} className="text-blue-500" />
           </div>
         </div>
 
         <div className="grid grid-cols-4 gap-4">
           <KPICard
-            label="Total Amount"
+            label="Total investment"
             value={crsFmt.usdM(isConstant ? stats.commitment_defl : stats.commitment)}
             sub={`Gross ${measure}s in view`}
-            icon={<DollarSign size={15} />}
-            accent="blue"
           />
           <KPICard
-            label="Sustainability Share"
+            label="Sustainability alignment"
             value={`${sustainabilityTrend.length > 0 ? sustainabilityTrend.at(-1)?.sustainableShare.toFixed(1) : 0}%`}
-            sub="Full Thematic Alignment"
-            icon={<Wind size={15} />}
-            accent="green"
+            sub="Full thematic alignment"
           />
           <KPICard
-            label="Mapped Economies"
+            label="Recipient economies"
             value={crsFmt.num(stats.countryRecipientCount)}
-            sub="Official ADB standard economies"
-            icon={<Globe size={15} />}
-            accent="purple"
+            sub="Official economies in view"
           />
           <KPICard
-            label="Total Records"
+            label="Project count"
             value={crsFmt.num(filteredFacts.reduce((sum, f) => sum + f.count, 0))}
-            sub="Individual project entries"
-            icon={<Waves size={15} />}
-            accent="orange"
+            sub="Individual transaction records"
           />
         </div>
 
@@ -145,8 +135,8 @@ export function CRSOverview() {
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
               <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                  <p className="text-slate-900 text-lg font-semibold">Investment Flows (Sankey)</p>
-                  <p className="text-slate-500 text-[15px] mt-0.5 font-normal">Donor ➔ Mode ➔ Recipient Region</p>
+                  <h2 className="text-slate-900 leading-tight">Funding path analysis</h2>
+                  <p className="text-slate-500 text-[14px] mt-0.5">Donor ➔ Mode ➔ Recipient Region</p>
                 </div>
               </div>
               <div className="h-[460px] p-4">
@@ -157,13 +147,13 @@ export function CRSOverview() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {/* Top Donors */}
                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Top Donors</p>
-                  <p className="text-[15px] text-slate-500 mb-6 font-normal">Lending volume by source</p>
+                  <h3 className="text-slate-900 mb-1">Top donors</h3>
+                  <p className="text-[14px] text-slate-500 mb-6">Investment volume by donor</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topDonors} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -175,14 +165,12 @@ export function CRSOverview() {
                               interval={0}
                            >
                               <Label 
-                                 value="Funding Source" 
+                                 value="Funding source" 
                                  angle={-90} 
                                  position="insideLeft" 
                                  offset={-50} 
-                                 fontSize={14} 
-                                 fontWeight={600} 
+                                 fontSize={13} 
                                  fill="#64748b" 
-                                 className="uppercase tracking-widest" 
                                  style={{ textAnchor: 'middle' }}
                               />
                            </YAxis>
@@ -195,13 +183,13 @@ export function CRSOverview() {
 
                {/* Top Agencies */}
                <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Top Agencies</p>
-                  <p className="text-[15px] text-slate-500 mb-6 font-normal">Technical implementing entities</p>
+                  <h3 className="text-slate-900 mb-1">Top agencies</h3>
+                  <p className="text-[14px] text-slate-500 mb-6">Agencies managing project execution</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topAgencies} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -217,10 +205,8 @@ export function CRSOverview() {
                                  angle={-90} 
                                  position="insideLeft" 
                                  offset={-50} 
-                                 fontSize={14} 
-                                 fontWeight={600} 
+                                 fontSize={13} 
                                  fill="#64748b" 
-                                 className="uppercase tracking-widest" 
                                  style={{ textAnchor: 'middle' }}
                               />
                            </YAxis>
@@ -238,8 +224,8 @@ export function CRSOverview() {
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topRecipients} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -251,14 +237,12 @@ export function CRSOverview() {
                               interval={0}
                            >
                               <Label 
-                                 value="Recipient Economy" 
+                                 value="Recipient economy" 
                                  angle={-90} 
                                  position="insideLeft" 
                                  offset={-50} 
-                                 fontSize={9} 
-                                 fontWeight={800} 
+                                 fontSize={13} 
                                  fill="#64748b" 
-                                 className="uppercase tracking-widest" 
                                  style={{ textAnchor: 'middle' }}
                               />
                            </YAxis>
@@ -273,8 +257,8 @@ export function CRSOverview() {
 
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-              <p className="text-slate-900 text-lg font-semibold mb-1">Sustainability Trend</p>
-              <p className="text-slate-500 text-[15px] mb-5 font-medium">Sustainable-tagged finance vs total portfolio volume</p>
+              <h3 className="text-slate-900 mb-1">Sustainability trends</h3>
+              <p className="text-slate-500 text-[14px] mb-5">Sustainable-tagged finance vs total portfolio volume</p>
               <ResponsiveContainer width="100%" height={240}>
                 <AreaChart data={sustainabilityTrend} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
                   <defs>
@@ -300,7 +284,7 @@ export function CRSOverview() {
                     tickLine={false} 
                     tick={{ fontSize: 15, fill: '#64748b' }} 
                     tickFormatter={(v) => crsFmt.usdM(v)} 
-                    label={{ value: 'Volume (USD Millions)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 15, fontWeight: 700, fill: '#94a3b8' }}
+                    label={{ value: 'Volume ($m usd)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 13, fill: '#94a3b8' }}
                   />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
@@ -313,24 +297,24 @@ export function CRSOverview() {
 
                <div className="mt-4 flex items-center justify-center gap-6">
                   <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-slate-300" />
-                      <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Total Finance</span>
+                       <div className="w-3 h-3 rounded-full bg-slate-300" />
+                       <span className="text-[14px] text-slate-500">Total finance</span>
                   </div>
                   <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                      <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Sustainable Tagged</span>
+                       <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                       <span className="text-[14px] text-slate-500">Sustainable tagged</span>
                   </div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-              <p className="text-slate-900 text-lg font-semibold mb-4 tracking-tight">Transport Mode Mix</p>
+              <h3 className="text-slate-900 mb-4 tracking-tight">Sector distribution</h3>
               <div className="space-y-4">
                 {modeSeries.map((mode) => (
                   <div key={mode.label}>
-                    <div className="flex justify-between text-[15px] mb-1.5 px-0.5">
-                      <span className="text-slate-700 font-semibold">{mode.label}</span>
-                      <span className="text-slate-900 font-semibold">{crsFmt.usdM(mode[activeMeasure] ?? mode[measure])}</span>
+                    <div className="flex justify-between text-[14px] mb-1.5 px-0.5">
+                      <span className="text-slate-700 font-medium">{mode.label}</span>
+                      <span className="text-slate-900 font-medium">{crsFmt.usdM(mode[activeMeasure] ?? mode[measure])}</span>
                     </div>
                     <div className="h-2 bg-slate-100 rounded-full overflow-hidden p-[1px]">
                       <div
@@ -351,11 +335,11 @@ export function CRSOverview() {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
               <div>
-                <p className="text-slate-900 text-lg font-semibold">Spatial Concentration</p>
-                <p className="text-slate-500 text-[15px] mt-0.5 font-medium">Mapped economies standard totals</p>
+                <h2 className="text-slate-900 leading-tight">Geographic distribution</h2>
+                <p className="text-slate-500 text-[14px] mt-0.5">Mapped economies standard totals</p>
               </div>
-              <div className="text-slate-500 text-[15px] font-semibold uppercase py-2">
-                Viewing: {measure === 'commitment' ? 'COMMITMENTS' : 'DISBURSEMENTS'}
+              <div className="text-slate-500 text-[14px]">
+                Viewing: {measure === 'commitment' ? 'commitments' : 'disbursements'}
               </div>
             </div>
             <StyledCRSCountryMap

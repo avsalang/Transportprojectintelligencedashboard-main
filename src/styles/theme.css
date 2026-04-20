@@ -1,7 +1,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --font-size: 16px;
+  --font-size: 15px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
   --card: #ffffff;
@@ -128,54 +128,58 @@
     @apply bg-background text-foreground;
   }
 
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
-
   html {
-    font-size: var(--font-size);
+    font-size: var(--font-size); /* 15px */
   }
 
   h1 {
-    font-size: var(--text-2xl);
+    font-size: 24px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+    text-transform: none;
   }
 
   h2 {
-    font-size: var(--text-xl);
+    font-size: 18px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+    text-transform: none;
   }
 
   h3 {
-    font-size: var(--text-lg);
+    font-size: 16px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+    text-transform: none;
   }
 
   h4 {
-    font-size: var(--text-base);
+    font-size: 15px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
+    text-transform: none;
+  }
+
+  p, span, div {
+    font-weight: var(--font-weight-normal);
   }
 
   label {
-    font-size: var(--text-base);
+    font-size: 15px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   button {
-    font-size: var(--text-base);
+    font-size: 15px;
     font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   input {
-    font-size: var(--text-base);
+    font-size: 15px;
     font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 }

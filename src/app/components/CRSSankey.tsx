@@ -17,8 +17,8 @@ export function CRSSankey({ data }: SankeyProps) {
             <div className="w-6 h-6 border-2 border-slate-100 border-t-blue-400 rounded-full animate-spin" />
         </div>
         <div className="text-center">
-           <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">No Flow Pathways Detected</p>
-           <p className="text-[10px] font-medium text-slate-400 mt-1">Adjust filters to visualize donor-recipient connectivity</p>
+           <p className="text-slate-500">No flow pathways detected</p>
+           <p className="text-[10px] text-slate-400 mt-1">Adjust filters to visualize donor-recipient connectivity</p>
         </div>
       </div>
     );
@@ -54,16 +54,16 @@ export function CRSSankey({ data }: SankeyProps) {
           <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-xl text-xs min-w-[180px]">
             <div className="flex items-center gap-2 mb-3 border-b border-slate-50 pb-2">
                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: node.color }} />
-               <span className="font-semibold text-slate-900 uppercase tracking-tight">{node.name}</span>
+               <span className="text-slate-900 tracking-tight">{node.name}</span>
             </div>
             <div className="space-y-2">
                <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase">Global Portfolio</span>
-                  <span className="text-blue-600 font-semibold">{crsFmt.usdM(node.globalValue || 0)}</span>
+                  <span className="text-[10px] text-slate-400">Global portfolio</span>
+                  <span className="text-blue-600">{crsFmt.usdM(node.globalValue || 0)}</span>
                </div>
                <div className="flex justify-between items-center px-2">
-                  <span className="text-[10px] font-semibold text-slate-400 uppercase">Visible Flows</span>
-                  <span className="text-slate-900 font-semibold">{node.formattedValue}</span>
+                  <span className="text-[10px] text-slate-400">Visible flows</span>
+                  <span className="text-slate-900">{node.formattedValue}</span>
                </div>
             </div>
           </div>
@@ -73,7 +73,7 @@ export function CRSSankey({ data }: SankeyProps) {
           labels: {
             text: {
               fontSize: 10,
-              fontWeight: 600,
+              fontWeight: 500,
               fill: '#475569',
             },
           },

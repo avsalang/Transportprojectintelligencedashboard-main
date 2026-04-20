@@ -168,10 +168,10 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
       <section className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest">Sustainability Transition Analysis</h2>
+            <h2 className="text-lg text-slate-900">Sustainability alignment trends</h2>
             <p className="text-[15px] text-slate-500 font-normal mt-0.5">Tracking markers and climate alignment over time</p>
           </div>
-          <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+          <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">
             Commitment Basis
           </div>
         </div>
@@ -179,7 +179,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Mitigation Share Line Chart */}
           <div className="h-[350px]">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+            <h3 className="text-sm text-slate-700 mb-4 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
               Climate Mitigation Target Share (%)
             </h3>
@@ -207,9 +207,9 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
 
           {/* Clustered Marker Volume */}
           <div className="h-[350px]">
-            <h3 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+            <h3 className="text-sm text-slate-700 mb-4 flex items-center gap-2">
                <span className="w-2 h-2 rounded-full bg-blue-500" />
-               Annual Volume by Marker Target
+               Annual volume by marker target
             </h3>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={markerData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -235,7 +235,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
         
         {/* 100% Stacked Sustainability share */}
         <div className="mt-12">
-           <h3 className="text-sm font-semibold text-slate-700 mb-4">Sustainability-Tagged vs Conventional Finance (%)</h3>
+           <h3 className="text-sm text-slate-700 mb-4">Sustainability-tagged vs conventional finance (%)</h3>
            <div className="h-[240px] bg-slate-50/50 rounded-xl p-4 border border-slate-100 overflow-hidden">
              <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trendData} stackOffset="expand" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
@@ -262,7 +262,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
         
         {/* Mode Evolution */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden min-h-[450px]">
-          <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest mb-1">Portfolio Evolution (by Mode)</h2>
+          <h2 className="text-lg text-slate-900 mb-1">Sectoral distribution trends</h2>
           <p className="text-[15px] text-slate-500 font-normal">Long-term shifts in transport sub-sector focus</p>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -294,7 +294,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
 
         {/* Treemap */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[450px] overflow-hidden">
-          <h2 className="text-lg font-semibold text-slate-900 mb-1 border-l-4 border-blue-500 pl-3">Relative Size</h2>
+          <h2 className="text-lg text-slate-900 mb-1 border-l-4 border-blue-500 pl-3">Relative size</h2>
           <p className="text-xs text-slate-500 mb-8 pl-3 font-medium">Treemap of finance by sub-sector (Mode & Detail)</p>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -317,7 +317,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
 
       {/* Purpose Ranking */}
       <section className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden">
-        <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest mb-4">Top Specific Purpose Categories</h2>
+        <h2 className="text-lg text-slate-900 mb-4">Sub-sector analysis</h2>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={purposeRanking} layout="vertical" margin={{ left: 40, right: 30 }}>

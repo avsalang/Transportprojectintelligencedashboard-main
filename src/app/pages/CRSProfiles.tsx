@@ -18,7 +18,7 @@ import {
   Pie,
   Label,
 } from 'recharts';
-import { Building2, Globe2, Layers3, MapPinned, Table2, Info, Leaf, User, ShieldCheck, Activity, Wind, ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Search } from 'lucide-react';
 import { estimateCategoryAxisWidth, WrappedCategoryTick } from '../components/ChartTicks';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
@@ -290,9 +290,9 @@ export function CRSProfiles() {
       <div className="max-w-[1440px] mx-auto space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Portfolio Deep Dive</h1>
-            <p className="text-slate-500 text-base mt-1">
-              Select an entity to explore its underlying project ledger and <span className="font-medium text-slate-700">micro-level financial composition</span>.
+            <h1 className="text-2xl text-slate-900 tracking-tight">Portfolio Profiles</h1>
+            <p className="text-slate-500 mt-1">
+              Explore the underlying project ledger and financial composition for a specific entity.
             </p>
           </div>
         </div>
@@ -302,7 +302,7 @@ export function CRSProfiles() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                 <div className="flex flex-col gap-2">
-                   <p className="text-[14px] font-semibold text-slate-500 uppercase tracking-widest">Analytics Focus</p>
+                   <p className="text-[14px] text-slate-500">Analytics focus</p>
                    <div className="flex flex-wrap items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-200">
                     {(Object.keys(ENTITY_META) as CRSEntityType[]).map((type) => (
                       <button
@@ -321,7 +321,7 @@ export function CRSProfiles() {
                 </div>
 
                 <div className="flex flex-col gap-2 min-w-[320px]">
-                   <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Selected Entity</p>
+                   <p className="text-[14px] text-slate-500">Selected entity</p>
                    <Popover open={isEntityDropdownOpen} onOpenChange={setIsEntityDropdownOpen}>
                       <PopoverTrigger asChild>
                          <button className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 flex items-center justify-between hover:bg-slate-50 transition-all shadow-sm">
@@ -376,9 +376,8 @@ export function CRSProfiles() {
           <div className="space-y-6">
             {!selectedEntity ? (
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center h-[500px] flex flex-col items-center justify-center">
-                <Globe2 className="text-slate-200 w-16 h-16 mb-4" />
-                <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Select an entity to explore</h3>
-                <p className="text-slate-400 text-base mt-2 max-w-sm font-medium">
+                <h3 className="text-lg text-slate-900">Select an entity to explore</h3>
+                <p className="text-slate-400 text-base mt-2 max-w-sm">
                   Deep dive into financial instruments, thematic distributions, and the full project ledger for a specific economy, region, or donor.
                 </p>
               </div>
@@ -387,20 +386,20 @@ export function CRSProfiles() {
                 {/* Profile Header Card */}
                 <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
                    <div className="relative z-10">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[14px] font-semibold uppercase tracking-widest shadow-lg shadow-blue-500/30">
-                        {ENTITY_META[entityType].label} PROFILE
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[14px] shadow-lg shadow-blue-500/30">
+                        {ENTITY_META[entityType].label} profile
                       </span>
-                      <h2 className="text-4xl font-semibold tracking-tighter mt-6 mb-2 leading-none uppercase">{selectedEntity}</h2>
-                      <p className="text-slate-500 text-[15px] font-medium uppercase tracking-widest">Global Transport Portfolio Deep Dive</p>
+                      <h2 className="text-4xl text-white mt-6 mb-2 leading-none">{selectedEntity}</h2>
+                      <p className="text-slate-400 text-[14px]">Portfolio analysis summary</p>
                    </div>
                    <div className="flex gap-8 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 relative z-10">
                       <div>
-                        <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
-                        <p className="text-3xl font-semibold text-white tabular-nums">{crsFmt.usdM(stats[measure])}</p>
+                        <p className="text-[14px] text-slate-400 mb-1">Total investment</p>
+                        <p className="text-3xl text-white tabular-nums">{crsFmt.usdM(stats[measure])}</p>
                       </div>
                       <div>
-                        <p className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest mb-1">Total Records</p>
-                        <p className="text-3xl font-semibold text-white tabular-nums">{crsFmt.num(stats.count)}</p>
+                        <p className="text-[14px] text-slate-400 mb-1">Project count</p>
+                        <p className="text-3xl text-white tabular-nums">{crsFmt.num(stats.count)}</p>
                       </div>
                    </div>
                 </div>
@@ -408,8 +407,8 @@ export function CRSProfiles() {
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* 1. Momentum Trend */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Portfolio Momentum</p>
-                       <p className="text-[15px] text-slate-400 font-semibold mb-6">Historical investment trajectory ($M USD)</p>
+                       <h3 className="text-slate-900 mb-1">Portfolio momentum</h3>
+                       <p className="text-[14px] text-slate-500 mb-6">Historical investment trajectory ($m usd)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <AreaChart data={yearlySeries} margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -420,18 +419,18 @@ export function CRSProfiles() {
                                    </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="year" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Reporting Year" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                                <XAxis dataKey="year" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Reporting year" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
-                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($m usd)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                                 <Legend 
                                    verticalAlign="top" 
                                    align="right" 
                                    iconType="circle" 
-                                   wrapperStyle={{ fontSize: '9px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', paddingBottom: '20px' }}
+                                   wrapperStyle={{ fontSize: '9px', paddingBottom: '20px' }}
                                 />
                                 <Area name="Commitment" type="monotone" dataKey="commitment" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorCommit)" />
                                 <Area name="Disbursement" type="monotone" dataKey="disbursement" stroke="#10b981" strokeWidth={1} fill="transparent" strokeDasharray="4 4" />
@@ -442,18 +441,18 @@ export function CRSProfiles() {
 
                     {/* 2. Top Sub-Partners */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">
-                          { (entityType === 'donor' || entityType === 'agency') ? 'Top Recipient Economies' : 'Primary Funding Sources' }
-                       </p>
-                       <p className="text-[15px] text-slate-400 font-semibold mb-6">Core institutional network topography</p>
+                       <h3 className="text-slate-900 mb-1">
+                          { (entityType === 'donor' || entityType === 'agency') ? 'Top recipient economies' : 'Primary funding sources' }
+                       </h3>
+                       <p className="text-[14px] text-slate-500 mb-6">Main institutional network partners</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={partnershipSeries} layout="vertical" margin={{ left: 10, right: 30, bottom: 40 }}>
-                                <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                                <XAxis type="number" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
-                                <YAxis type="category" dataKey="label" fontSize={9} fontWeight={800} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Partner Entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis type="category" dataKey="label" fontSize={9} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Partner entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                                 <Bar dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} />
@@ -464,17 +463,17 @@ export function CRSProfiles() {
 
                     {/* 3. Strategic Pillar Mix */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Standard Pillar Distribution</p>
-                       <p className="text-[15px] text-slate-400 font-semibold mb-6">Aggregate focus across standardized ATO sectors</p>
+                       <h3 className="text-slate-900 mb-1">Standard pillar distribution</h3>
+                       <p className="text-[14px] text-slate-500 mb-6">Aggregate focus across transport pillars</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={pillarSeries} margin={{ left: 10, right: 30, bottom: 40 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="label" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Standard Transport Pillars" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                                <XAxis dataKey="label" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Standard transport pillars" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
-                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($m usd)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                                 <Bar dataKey="value" fill="#0f766e" radius={[4, 4, 0, 0]} />
@@ -485,17 +484,17 @@ export function CRSProfiles() {
 
                     {/* 4. Sub-Sector Alignment Matrix */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Strategic Alignment Matrix</p>
-                       <p className="text-[15px] text-slate-400 font-semibold mb-6">Transport Sub-Sector volume vs Sustainability Score (%)</p>
+                       <h3 className="text-slate-900 mb-1">Strategic alignment matrix</h3>
+                       <p className="text-[14px] text-slate-500 mb-6">Volume vs sustainability score (%)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <ScatterChart margin={{ left: 10, right: 30, bottom: 40 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                <XAxis type="number" dataKey="volume" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Sub-Sector Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                                <XAxis type="number" dataKey="volume" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Sub-sector volume ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
-                                <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
-                                   <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
+                                   <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip 
                                    cursor={{ strokeDasharray: '3 3' }}
@@ -504,11 +503,11 @@ export function CRSProfiles() {
                                          const data = payload[0].payload;
                                          return (
                                             <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-xl">
-                                               <p className="text-[15px] font-semibold text-slate-900 uppercase mb-1">{data.label}</p>
-                                               <p className="text-[15px] text-slate-500 font-semibold">
+                                               <p className="text-[14px] text-slate-900 mb-1">{data.label}</p>
+                                               <p className="text-[15px] text-slate-500">
                                                  Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
                                                </p>
-                                               <p className="text-[15px] text-slate-500 font-semibold">
+                                               <p className="text-[15px] text-slate-500">
                                                  Sustainability: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
                                                </p>
                                             </div>
@@ -527,15 +526,15 @@ export function CRSProfiles() {
                  {/* Key Sub-Mode Comparison */}
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                     <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest mb-1">Granular Portfolio Focus</p>
-                     <p className="text-[15px] text-slate-400 font-semibold mb-6">Top 10 specialized transport sub-modes</p>
+                     <h3 className="text-slate-900 mb-1">Granular portfolio focus</h3>
+                     <p className="text-[14px] text-slate-500 mb-6">Top 10 specialized transport sub-modes</p>
                      <div className="h-[400px]">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={sectorMix} layout="vertical" margin={{ left: 10, right: 60, bottom: 40 }}>
-                            <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                               <Label value="Project Volumes ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#64748b" className="uppercase tracking-widest" />
+                            <XAxis type="number" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                               <Label value="Project volumes ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                             </XAxis>
-                            <YAxis type="category" dataKey="name" fontSize={9} fontWeight={800} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
+                            <YAxis type="category" dataKey="name" fontSize={9} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
                             <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                             <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} />
                           </BarChart>
@@ -543,56 +542,56 @@ export function CRSProfiles() {
                      </div>
                    </div>
 
-                   <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-center justify-center gap-6">
-                      <p className="text-slate-900 text-[14px] font-semibold uppercase tracking-widest w-full text-left mb-1">Sustainability Alignment Score</p>
-                      <p className="text-[15px] text-slate-400 font-semibold w-full text-left mb-6">Share of projects with thematic markers</p>
-                      <div className="relative w-48 h-48">
-                         <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90">
-                            <circle cx="96" cy="96" r="80" fill="transparent" stroke="#f1f5f9" strokeWidth="20" />
+                   <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-6">
+                      <h3 className="text-slate-900 w-full text-left mb-1">Sustainability alignment score</h3>
+                      <p className="text-[14px] text-slate-500 w-full text-left mb-6">Share of projects with thematic markers</p>
+                      <div className="relative w-48 h-48 mx-auto">
+                         <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 192 192">
+                            <circle cx="96" cy="96" r="74" fill="transparent" stroke="#f1f5f9" strokeWidth="18" />
                             <circle 
-                               cx="96" cy="96" r="80" fill="transparent" stroke="#10b981" strokeWidth="20" 
-                               strokeDasharray={`${(stats.susCount / Math.max(stats.count, 1)) * 502} 502`}
+                               cx="96" cy="96" r="74" fill="transparent" stroke="#10b981" strokeWidth="18" 
+                               strokeDasharray={`${(stats.susCount / Math.max(stats.count, 1)) * 465} 465`}
                                strokeLinecap="round"
                             />
                          </svg>
                          <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-4xl font-semibold text-slate-900 tabular-nums">{((stats.susCount / Math.max(stats.count, 1)) * 100).toFixed(1)}%</span>
-                            <span className="text-[15px] font-semibold text-slate-500 uppercase tracking-widest">Direct Match</span>
+                            <span className="text-4xl text-slate-900 tabular-nums">{((stats.susCount / Math.max(stats.count, 1)) * 100).toFixed(1)}%</span>
+                            <span className="text-[14px] text-slate-500">Direct match</span>
                          </div>
                       </div>
                       <div className="w-full">
                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.mit}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Mitigation</p>
+                               <p className="text-xl text-slate-900">{stats.mit}</p>
+                               <p className="text-[11px] text-slate-500">Mitigation</p>
                             </div>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.adp}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Adaptation</p>
+                               <p className="text-xl text-slate-900">{stats.adp}</p>
+                               <p className="text-[11px] text-slate-500">Adaptation</p>
                             </div>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.gnd}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Gender</p>
+                               <p className="text-xl text-slate-900">{stats.gnd}</p>
+                               <p className="text-[11px] text-slate-500">Gender</p>
                             </div>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.drr}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">DRR</p>
+                               <p className="text-xl text-slate-900">{stats.drr}</p>
+                               <p className="text-[11px] text-slate-500">DRR</p>
                             </div>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.bio}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Biodiversity</p>
+                               <p className="text-xl text-slate-900">{stats.bio}</p>
+                               <p className="text-[11px] text-slate-500">Biodiversity</p>
                             </div>
                             <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                               <p className="text-xl font-semibold text-slate-900">{stats.env}</p>
-                               <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-widest">Environment</p>
+                               <p className="text-xl text-slate-900">{stats.env}</p>
+                               <p className="text-[11px] text-slate-500">Environment</p>
                             </div>
                             <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                               <p className="text-xl font-semibold text-emerald-700">{stats.susCount}</p>
-                               <p className="text-[11px] font-semibold text-emerald-600 uppercase tracking-widest">Aligned</p>
+                               <p className="text-xl text-emerald-700">{stats.susCount}</p>
+                               <p className="text-[11px] text-emerald-600">Aligned</p>
                             </div>
                             <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                               <p className="text-xl font-semibold text-blue-700">{stats.count}</p>
-                               <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-widest">Total</p>
+                               <p className="text-xl text-blue-700">{stats.count}</p>
+                               <p className="text-[11px] text-blue-600">Total</p>
                             </div>
                          </div>
                       </div>
@@ -603,8 +602,8 @@ export function CRSProfiles() {
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                    <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <p className="text-slate-900 text-lg font-semibold">Transaction Ledger</p>
-                        <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[15px] font-semibold text-slate-500">{filteredRecords.length} results</span>
+                         <h2 className="text-slate-900">Project registry</h2>
+                         <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[14px] text-slate-500">{filteredRecords.length} results</span>
                       </div>
                       <div className="flex items-center gap-4">
                          <div className="flex items-center gap-1.5 h-7">
@@ -613,7 +612,7 @@ export function CRSProfiles() {
                                disabled={page === 1} 
                                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
                             >←</button>
-                            <span className="text-[15px] font-semibold text-slate-600 w-12 text-center">{page}</span>
+                            <span className="text-[15px] text-slate-600 w-12 text-center">{page}</span>
                             <button 
                                onClick={() => setPage(p => p + 1)} 
                                disabled={page >= Math.ceil(filteredRecords.length / rowsPerPage)} 
@@ -631,29 +630,29 @@ export function CRSProfiles() {
                      ) : (
                        <table className="w-full border-collapse">
                          <thead>
-                           <tr className="bg-slate-50/20 text-[15px] font-semibold text-slate-500 uppercase tracking-widest border-b border-slate-50">
+                           <tr className="bg-slate-50/20 text-[14px] text-slate-500 border-b border-slate-50">
                              <th className="px-6 py-4 text-left">Year</th>
-                             <th className="px-6 py-4 text-left">Donor / Agency</th>
+                             <th className="px-6 py-4 text-left">Donor / agency</th>
                              <th className="px-6 py-4 text-left">Amount</th>
-                             <th className="px-6 py-4 text-left">Project Title</th>
+                             <th className="px-6 py-4 text-left">Project title</th>
                            </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-50">
                            {pagedRecords.map((record) => (
                              <tr key={record.id} onClick={() => setActiveRecord(record)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                               <td className="px-6 py-4 text-[15px] font-semibold text-slate-500 tabular-nums">{record.year}</td>
+                               <td className="px-6 py-4 text-[14px] text-slate-500 tabular-nums">{record.year}</td>
                                <td className="px-6 py-4">
                                   <div className="max-w-[200px]">
-                                    <p className="text-[15px] font-semibold text-slate-900 line-clamp-1">{record.donor}</p>
-                                    <p className="text-[15px] text-slate-400 font-semibold truncate">{record.agency}</p>
+                                    <p className="text-[14px] font-medium text-slate-900 line-clamp-1">{record.donor}</p>
+                                    <p className="text-[14px] text-slate-400 truncate">{record.agency}</p>
                                   </div>
                                </td>
-                               <td className="px-6 py-4 text-[15px] font-semibold text-slate-900 tabular-nums">
+                               <td className="px-6 py-4 text-[14px] font-medium text-slate-900 tabular-nums">
                                   {crsFmt.usdM(record[activeMeasure] || 0)}
                                </td>
                                <td className="px-6 py-4">
-                                  <p className="text-[15px] font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
-                                  <p className="text-[15px] text-slate-400 font-medium uppercase mt-0.5">{record.mode} • {record.purpose}</p>
+                                  <p className="text-[14px] font-medium text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
+                                  <p className="text-[14px] text-slate-400 mt-0.5">{record.mode} • {record.purpose}</p>
                                </td>
                              </tr>
                            ))}
@@ -672,8 +671,8 @@ export function CRSProfiles() {
              {activeRecord && (
                 <div className="h-full flex flex-col">
                    <div className="bg-slate-900 p-8 text-white">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[15px] font-semibold tracking-widest uppercase shadow-lg shadow-blue-500/20">Project Detail Review</span>
-                      <h2 className="text-2xl font-semibold text-slate-900 tracking-tight tracking-tight">{activeRecord.title}</h2>
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[14px] font-medium shadow-lg shadow-blue-500/20">Project detail review</span>
+                      <h2 className="text-xl text-white tracking-tight leading-tight">{activeRecord.title}</h2>
                    </div>
                    <div className="flex-1 overflow-y-auto p-8 space-y-8">
                       <div className="grid grid-cols-2 gap-4">
@@ -709,7 +708,7 @@ export function CRSProfiles() {
                       </div>
                       <div className="space-y-4">
                          <h4 className="flex items-center gap-2 text-[15px] font-semibold text-slate-500 uppercase tracking-widest border-b border-slate-100 pb-2">
-                           <Info size={14} className="text-slate-400" /> Narrative Metadata
+                           Narrative Metadata
                          </h4>
                          <p className="text-base leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
                            {activeRecord.short_description || "No granular descriptive metadata available for this transaction."}
