@@ -16,13 +16,15 @@ export function CRSLayout() {
       <div className="flex h-screen bg-[#F0F4F8] overflow-hidden">
         <aside className="w-60 flex-shrink-0 bg-[#002147] flex flex-col border-r border-white/5">
           <div className="px-5 pt-6 pb-5 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#00ADEF] flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
-                <Globe size={16} className="text-white" />
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-900/40 p-1">
+                <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="w-full h-full object-contain rounded-full" />
               </div>
               <div>
-                <p className="text-white text-sm font-bold leading-tight tracking-tight">CRS Dashboard</p>
-                <p className="text-blue-300 text-[9px] font-black uppercase tracking-widest leading-tight">Institutional Portal</p>
+                <p className="text-white text-base font-semibold leading-tight tracking-tight">CRS Dashboard</p>
+                <p className="text-blue-300 text-[10px] font-semibold tracking-wider leading-snug mt-1 max-w-[140px]">
+                   Visualization and Analysis by the Asian Transport Observatory (ATO)
+                </p>
               </div>
             </div>
           </div>
@@ -34,7 +36,7 @@ export function CRSLayout() {
                 to={to}
                 end={exact}
                 className={({ isActive }) =>
-                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all group ${
+                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-[15px] transition-all group ${
                     isActive
                       ? 'bg-white/10 text-white border border-white/10 shadow-sm'
                       : 'text-blue-100/60 hover:text-white hover:bg-white/5 border border-transparent'
@@ -43,9 +45,9 @@ export function CRSLayout() {
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={16} className={isActive ? 'text-[#00ADEF]' : 'text-blue-300/40 group-hover:text-blue-200'} />
-                    <span className="font-semibold">{label}</span>
-                    {isActive && <ChevronRight size={12} className="ml-auto text-blue-400/60" />}
+                    <Icon size={18} className={isActive ? 'text-[#00ADEF]' : 'text-blue-300/40 group-hover:text-blue-200'} />
+                    <span className="font-medium">{label}</span>
+                    {isActive && <ChevronRight size={14} className="ml-auto text-blue-400/60" />}
                   </>
                 )}
               </NavLink>
@@ -53,12 +55,23 @@ export function CRSLayout() {
           </nav>
 
           <div className="px-5 py-4 border-t border-white/10">
-            <p className="text-slate-500 text-[11px]">
-              {crsFmt.num(CRS_OVERVIEW_STATS.recipientCount)} countries · {crsFmt.num(CRS_OVERVIEW_STATS.donorCount)} donors
+            <p className="text-slate-400 text-[13px]">
+              {crsFmt.num(CRS_OVERVIEW_STATS.recipientCount)} economies · {crsFmt.num(CRS_OVERVIEW_STATS.donorCount)} donors
             </p>
-            <p className="text-slate-600 text-[10px] mt-0.5">
+            <p className="text-slate-500 text-[12px] mt-0.5">
               ${crsFmt.usdM(CRS_OVERVIEW_STATS.totalCommitment)} commitments
             </p>
+            <div className="mt-4 pt-4 border-t border-white/5">
+              <p className="text-[11px] font-semibold text-blue-300/40 uppercase tracking-widest mb-1.5">Data Source</p>
+              <a 
+                href="https://data-explorer.oecd.org/vis?lc=en&tm=crs&pg=0&snb=25&df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_CRS%40DF_CRS&df[ag]=OECD.DCD.FSD&df[vs]=1.6&dq=DAC..1000.100._T._T.D.Q._T..&lom=LASTNPERIODS&lo=5&to[TIME_PERIOD]=false"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[12px] text-blue-200/60 hover:text-[#00ADEF] transition-colors font-medium flex items-center gap-1.5 underline decoration-blue-500/30 underline-offset-4"
+              >
+                OECD Credit Reporting System (CRS)
+              </a>
+            </div>
           </div>
         </aside>
 

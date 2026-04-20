@@ -237,9 +237,9 @@ export function CRSFlows() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-900 text-xl font-semibold">Donor-Recipient Flows</h1>
-          <p className="text-slate-500 text-base mt-0.5">
-            Follow the shape of transport finance from donors into recipient countries and regional recipients.
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Financial Flow Dynamics</h1>
+          <p className="text-slate-500 text-base mt-1">
+            Analyzing the transition of funds from <span className="text-slate-900 font-medium">Donors</span> through <span className="text-blue-600 font-medium">Financing Agencies</span> to <span className="text-emerald-600 font-medium">Recipient Regions</span>.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -250,7 +250,7 @@ export function CRSFlows() {
                 setSelectedAgency(null);
                 setSelectedRecipient(null);
               }}
-              className="px-3 py-1.5 text-[15px] rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900"
+              className="px-3 py-1.5 text-[15px] font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900 transition-colors shadow-sm"
             >
               Clear {activeSelectionType}
             </button>
@@ -258,13 +258,13 @@ export function CRSFlows() {
           <div className="inline-flex rounded-lg bg-slate-100 p-1">
             <button
               onClick={() => setMeasure('commitment')}
-              className={`px-3 py-1.5 text-[15px] rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
             >
               Commitments
             </button>
             <button
               onClick={() => setMeasure('disbursement')}
-              className={`px-3 py-1.5 text-[15px] rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
             >
               Disbursements
             </button>
@@ -273,9 +273,9 @@ export function CRSFlows() {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Donor to Recipient Flows</p>
-          <p className="text-slate-400 text-[15px] mb-4">
-            Sankey view limited to the strongest donor, agency, and recipient pathways in the current filter state. Click a donor, agency, or recipient node to isolate it.
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Donor to Recipient Flows</p>
+          <p className="text-slate-500 text-[15px] mb-4 font-normal leading-relaxed">
+            Sankey view limited to the strongest donor, agency, and recipient pathways in the current filter state. Click a node to isolate it.
           </p>
         {activeSelectionLabel ? (
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-[15px] text-emerald-700 border border-emerald-200">
@@ -316,8 +316,8 @@ export function CRSFlows() {
 
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Donors</p>
-          <p className="text-slate-400 text-[15px] mb-4">Top donors in the current filtered country-recipient portfolio</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Donors</p>
+          <p className="text-slate-500 text-[15px] mb-4">Top donors in the current filtered country-recipient portfolio</p>
           <ResponsiveContainer width="100%" height={donorChartHeight}>
             <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -334,8 +334,8 @@ export function CRSFlows() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Agencies</p>
-          <p className="text-slate-400 text-[15px] mb-4">Top agencies in the current filtered country-recipient portfolio</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Agencies</p>
+          <p className="text-slate-500 text-[15px] mb-4">Top agencies in the current filtered country-recipient portfolio</p>
           <ResponsiveContainer width="100%" height={agencyChartHeight}>
             <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -352,8 +352,8 @@ export function CRSFlows() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-[15px] mb-4">Top recipient countries in the current filtered portfolio</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Recipient Economies</p>
+          <p className="text-slate-500 text-[15px] mb-4">Top recipient economies in the current filtered portfolio</p>
           <ResponsiveContainer width="100%" height={recipientChartHeight}>
             <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -371,8 +371,8 @@ export function CRSFlows() {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-        <p className="text-slate-800 text-base font-semibold mb-1">Financing Instrument Mix</p>
-        <p className="text-slate-400 text-[15px] mb-4">How the filtered transport portfolio is delivered</p>
+        <p className="text-slate-900 text-lg font-semibold mb-1">Financing Instrument Mix</p>
+        <p className="text-slate-500 text-[15px] mb-4">How the filtered transport portfolio is delivered</p>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={flowTypes}>
             <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />

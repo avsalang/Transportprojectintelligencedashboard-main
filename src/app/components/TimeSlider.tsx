@@ -26,10 +26,10 @@ export function TimeSlider({ label, min, max, yearMin, yearMax, onChange }: Time
   return (
     <div className="px-2 pb-2">
       <div className="flex items-center justify-between mb-3 ml-1">
-        <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+        <label className="text-[14px] font-semibold text-slate-400 uppercase tracking-widest">
           {label}
         </label>
-        <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full ring-1 ring-blue-500/10">
+        <span className="text-[14px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full ring-1 ring-blue-500/10">
           {yearMin} — {yearMax}
         </span>
       </div>
@@ -64,8 +64,8 @@ export function TimeSlider({ label, min, max, yearMin, yearMax, onChange }: Time
       </div>
       
       <div className="flex justify-between mt-1 px-0.5">
-        <span className="text-[10px] font-medium text-slate-400">{min}</span>
-        <span className="text-[10px] font-medium text-slate-400">{max}</span>
+        <span className="text-[12px] font-medium text-slate-400">{min}</span>
+        <span className="text-[12px] font-medium text-slate-400">{max}</span>
       </div>
     </div>
   );

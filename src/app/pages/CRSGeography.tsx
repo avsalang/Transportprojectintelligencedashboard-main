@@ -51,9 +51,9 @@ export function CRSGeography() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-slate-900 text-xl font-semibold">Recipient Geography</h1>
-          <p className="text-slate-500 text-base mt-0.5">
-            Country totals on the map, with regional recipients broken out separately for analysis.
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Recipient Geography</h1>
+          <p className="text-slate-500 text-base mt-1">
+            Economy totals on the map, with regional recipients broken out separately for analysis.
           </p>
         </div>
       </div>
@@ -62,22 +62,22 @@ export function CRSGeography() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
             <div>
-              <p className="text-slate-900 text-base font-semibold">Country Totals Map</p>
-              <p className="text-slate-400 text-[15px] mt-0.5">
-                Click a country point to sync the geography profile card.
+              <p className="text-slate-900 text-lg font-semibold">Economy Totals Map</p>
+              <p className="text-slate-500 text-[15px] mt-0.5 font-normal">
+                Click an economy point to sync the geography profile card.
               </p>
             </div>
             <div className="flex items-center gap-2">
               <div className="inline-flex rounded-lg bg-slate-100 p-1">
                 <button
                   onClick={() => setMeasure('commitment')}
-                  className={`px-3 py-1.5 text-[15px] rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Commitments
                 </button>
                 <button
                   onClick={() => setMeasure('disbursement')}
-                  className={`px-3 py-1.5 text-[15px] rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Disbursements
                 </button>
@@ -85,16 +85,16 @@ export function CRSGeography() {
               <div className="inline-flex rounded-lg bg-slate-100 p-1">
                 <button
                   onClick={() => setMapView('points')}
-                  className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[15px] font-medium rounded-md flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <Orbit size={12} />
+                  <Orbit size={16} />
                   Points
                 </button>
                 <button
                   onClick={() => setMapView('heatmap')}
-                  className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[15px] font-medium rounded-md flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <Flame size={12} />
+                  <Flame size={16} />
                   Heatmap
                 </button>
               </div>
@@ -113,50 +113,50 @@ export function CRSGeography() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
             <div className="flex items-center gap-2 mb-3">
               <MapPinned size={14} className="text-emerald-600" />
-              <p className="text-slate-900 text-base font-semibold">Selected Country</p>
+            <p className="text-slate-900 text-lg font-semibold">Selected Economy</p>
             </div>
             {selectedCountryProfile ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div>
-                  <p className="text-slate-900 text-lg font-semibold">{selectedCountryProfile.recipient}</p>
-                  <p className="text-slate-500 text-[15px]">{selectedCountryProfile.region}</p>
+                  <p className="text-slate-900 text-2xl font-semibold tracking-tight">{selectedCountryProfile.recipient}</p>
+                  <p className="text-slate-500 text-base mt-0.5">{selectedCountryProfile.region}</p>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[15px] uppercase tracking-wide text-slate-400">Commitments</p>
-                    <p className="text-slate-900 text-base font-semibold mt-1">
+                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
+                    <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Commitments</p>
+                    <p className="text-slate-900 text-xl font-semibold tabular-nums">
                       {crsFmt.usdM(selectedCountryProfile.commitment)}
                     </p>
                   </div>
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[15px] uppercase tracking-wide text-slate-400">Disbursements</p>
-                    <p className="text-slate-900 text-base font-semibold mt-1">
+                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
+                    <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Disbursements</p>
+                    <p className="text-slate-900 text-xl font-semibold tabular-nums">
                       {crsFmt.usdM(selectedCountryProfile.disbursement)}
                     </p>
                   </div>
                 </div>
-                <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                  <p className="text-[15px] uppercase tracking-wide text-slate-400">Records</p>
-                  <p className="text-slate-900 text-base font-semibold mt-1">
+                <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
+                  <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Project Count</p>
+                  <p className="text-slate-900 text-xl font-semibold tabular-nums">
                     {crsFmt.num(selectedCountryProfile.count)}
                   </p>
                 </div>
               </div>
             ) : (
-              <p className="text-base text-slate-500">No country-level data is available under the current filters.</p>
+              <p className="text-base text-slate-500">No economy-level data is available under the current filters.</p>
             )}
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <p className="text-slate-900 text-base font-semibold mb-1">Regional Recipients</p>
-            <p className="text-slate-400 text-[15px] mb-4">
-              `recipient_name` values ending with “, regional” are tracked here instead of on the country map.
+            <p className="text-slate-900 text-lg font-semibold mb-1">Regional Recipients</p>
+            <p className="text-slate-500 text-[15px] mb-4 font-normal leading-relaxed">
+              Recipients ending with “, regional” are indexed here as they represent non-point spatial features.
             </p>
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {regionalRecipients.slice(0, 8).map((row) => (
-                <div key={row.label} className="flex items-center justify-between text-base">
-                  <span className="text-slate-600 truncate pr-3">{row.label}</span>
-                  <span className="text-slate-900 font-medium">{crsFmt.usdM(row[measure])}</span>
+                <div key={row.label} className="flex items-center justify-between text-[15px]">
+                  <span className="text-slate-600 truncate pr-3 font-medium">{row.label}</span>
+                  <span className="text-slate-900 font-semibold tabular-nums">{crsFmt.usdM(row[measure])}</span>
                 </div>
               ))}
             </div>
@@ -166,8 +166,8 @@ export function CRSGeography() {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-[15px] mb-4">Country-level totals by current measure</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Recipient Economies</p>
+          <p className="text-slate-500 text-[15px] mb-4 font-normal">Economy-level totals sorted by the active financial measure.</p>
           <ResponsiveContainer width="100%" height={290}>
             <BarChart data={topCountries} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -184,8 +184,8 @@ export function CRSGeography() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Broad Region Distribution</p>
-          <p className="text-slate-400 text-[15px] mb-4">For country and regional recipients together</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Broad Region Distribution</p>
+          <p className="text-slate-500 text-[15px] mb-4 font-normal">Volume distribution across aggregate regional classifications.</p>
           <ResponsiveContainer width="100%" height={290}>
             <BarChart data={broadRegions} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />

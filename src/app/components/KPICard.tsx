@@ -21,7 +21,7 @@ export function KPICard({ label, value, sub, icon, accent = 'blue', trend }: KPI
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
-        <p className="text-slate-500 text-xs uppercase tracking-wider">{label}</p>
+        <p className="text-slate-500 text-[14px] font-semibold uppercase tracking-widest">{label}</p>
         {icon && (
           <span className={`w-8 h-8 rounded-lg flex items-center justify-center border ${accentMap[accent]}`}>
             {icon}
@@ -30,10 +30,10 @@ export function KPICard({ label, value, sub, icon, accent = 'blue', trend }: KPI
       </div>
       <div>
         <p className="text-slate-900 text-2xl font-semibold tabular-nums leading-none">{value}</p>
-        {sub && <p className="text-slate-400 text-xs mt-1">{sub}</p>}
+        {sub && <p className="text-slate-500 text-[15px] mt-1 font-normal">{sub}</p>}
       </div>
       {trend && (
-        <p className="text-emerald-600 text-xs">{trend}</p>
+        <p className="text-emerald-600 text-[15px] font-medium">{trend}</p>
       )}
     </div>
   );

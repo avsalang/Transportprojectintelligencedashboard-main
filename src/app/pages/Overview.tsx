@@ -100,7 +100,7 @@ export function Overview() {
           </p>
         </div>
         <div className="text-right">
-          <p className="text-slate-400 text-[15px] uppercase tracking-wide">Current mode taxonomy</p>
+          <p className="text-slate-500 text-[15px] uppercase tracking-wide">Current mode taxonomy</p>
           <p className="text-slate-700 text-base">Refined presentation categories</p>
         </div>
       </div>
@@ -116,20 +116,20 @@ export function Overview() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <div>
-              <p className="text-slate-900 text-base font-semibold">Global Project Map</p>
-              <p className="text-slate-400 text-[15px] mt-0.5">{mapSubtitle}</p>
+              <p className="text-slate-900 text-lg font-semibold">Global Project Map</p>
+              <p className="text-slate-500 text-[15px] mt-0.5">{mapSubtitle}</p>
             </div>
             <div className="inline-flex rounded-lg bg-slate-100 p-1">
               <button
                 onClick={() => setMapView('points')}
-                className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                className={`px-3 py-1.5 text-[15px] font-medium rounded-lg flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
               >
                 <Orbit size={12} />
                 Points
               </button>
               <button
                 onClick={() => setMapView('heatmap')}
-                className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                className={`px-3 py-1.5 text-[15px] font-medium rounded-lg flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
               >
                 <Flame size={12} />
                 Heatmap
@@ -141,7 +141,7 @@ export function Overview() {
 
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <p className="text-slate-800 text-base font-semibold mb-3">Financing by MDB</p>
+            <p className="text-slate-900 text-lg font-semibold mb-3">Financing by MDB</p>
             <div className="space-y-3">
               {Object.entries(stats.bySourceFinancing).map(([source, value]) => {
                 const pct = stats.totalFinancing ? (value / stats.totalFinancing) * 100 : 0;
@@ -161,7 +161,7 @@ export function Overview() {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <p className="text-slate-800 text-base font-semibold mb-3">Mode Mix</p>
+            <p className="text-slate-900 text-lg font-semibold mb-3">Mode Mix</p>
             <div className="space-y-2.5">
               {modeData.slice(0, 7).map((mode) => (
                 <div key={mode.mode}>
@@ -181,8 +181,8 @@ export function Overview() {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Approvals Over Time</p>
-          <p className="text-slate-400 text-[15px] mb-4">Project approvals in the current portfolio view</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Approvals Over Time</p>
+          <p className="text-slate-500 text-[15px] mb-4">Project approvals in the current portfolio view</p>
           <ResponsiveContainer width="100%" height={230}>
             <AreaChart data={yearData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
@@ -201,8 +201,8 @@ export function Overview() {
         </div>
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-base font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-[15px] mb-4">Current portfolio view by project count</p>
+          <p className="text-slate-900 text-lg font-semibold mb-1">Top Recipient Economies</p>
+          <p className="text-slate-500 text-[15px] mb-4">Current portfolio view by project count</p>
           <ResponsiveContainer width="100%" height={230}>
             <BarChart data={countryData} layout="vertical" margin={{ top: 0, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />

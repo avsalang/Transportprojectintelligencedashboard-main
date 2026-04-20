@@ -150,7 +150,7 @@ export function ProjectExplorer() {
                     <p className="text-slate-800 font-medium leading-snug truncate group-hover:text-blue-700">
                       {project.project_name}
                     </p>
-                    <p className="text-slate-400 text-[15px] mt-0.5 font-mono">{project.id}</p>
+                    <p className="text-slate-500 text-[15px] mt-0.5 font-mono">{project.id}</p>
                   </td>
                   <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
                     <span className="text-[15px]">{project.country.replace("People's Republic of ", '')}</span>
@@ -192,7 +192,7 @@ export function ProjectExplorer() {
         </div>
 
         {filtered.length > 0 && (
-          <p className="text-slate-400 text-[15px] mt-3 text-center">
+          <p className="text-slate-500 text-[15px] mt-3 text-center">
             Showing {filtered.length} projects from the active portfolio view
           </p>
         )}

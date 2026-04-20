@@ -39,17 +39,17 @@ export function CheckboxDropdown({ label, options, selected, onChange }: Checkbo
 
   return (
     <div className="relative" ref={containerRef}>
-      <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 ml-1">
+      <label className="block text-[14px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">
         {label}
       </label>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full group flex items-center justify-between px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg shadow-sm hover:border-slate-300 transition-all ${isOpen ? 'ring-2 ring-blue-500/20 border-blue-500' : ''}`}
+        className={`w-full group flex items-center justify-between px-3 py-2 text-[15px] bg-white border border-slate-200 rounded-lg shadow-sm hover:border-slate-300 transition-all ${isOpen ? 'ring-2 ring-blue-500/20 border-blue-500' : ''}`}
       >
         <span className="truncate text-slate-700 font-medium">
           {selected.length === 0 ? 'All' : `${selected.length} Selected`}
         </span>
-        <ChevronDown size={14} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
@@ -62,20 +62,20 @@ export function CheckboxDropdown({ label, options, selected, onChange }: Checkbo
                 placeholder="Search..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500"
+                className="w-full pl-8 pr-3 py-2 text-[14px] bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500"
                 autoFocus
               />
             </div>
             <div className="flex items-center justify-between mt-2 px-1">
-               <button onClick={clearAll} className="text-[10px] font-semibold text-blue-600 hover:text-blue-700">
+               <button onClick={clearAll} className="text-[12px] font-semibold text-blue-600 hover:text-blue-700">
                 Clear All
               </button>
-              <span className="text-[10px] text-slate-400 font-medium">{filteredOptions.length} results</span>
+              <span className="text-[12px] text-slate-400 font-medium">{filteredOptions.length} results</span>
             </div>
           </div>
           <div className="max-h-60 overflow-y-auto p-1 custom-scrollbar">
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-4 text-center text-xs text-slate-500 italic">No matches found</div>
+              <div className="px-3 py-4 text-center text-base text-slate-500 italic">No matches found</div>
             ) : (
               filteredOptions.map((opt) => {
                 const isSelected = selected.includes(opt);
@@ -83,7 +83,7 @@ export function CheckboxDropdown({ label, options, selected, onChange }: Checkbo
                   <button
                     key={opt}
                     onClick={() => toggleOption(opt)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-xs rounded-md transition-colors ${isSelected ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
+                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 text-[14px] rounded-md transition-colors ${isSelected ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}
                   >
                     <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${isSelected ? 'bg-blue-600 border-blue-600' : 'bg-white border-slate-300'}`}>
                       {isSelected && <Check size={10} className="text-white" />}

@@ -55,7 +55,7 @@ const CustomTreemapContent = (props: any) => {
         <foreignObject x={x + 4} y={y + 4} width={width - 8} height={height - 8}>
           <div className="w-full h-full flex flex-col items-center justify-center text-center overflow-hidden pointer-events-none">
             <span 
-              className="text-white font-bold leading-tight drop-shadow-md select-none"
+              className="text-white font-semibold leading-tight drop-shadow-md select-none"
               style={{ fontSize: Math.max(9, Math.min(width / 12, 12)) }}
             >
               {name}
@@ -168,8 +168,8 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
       <section className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Sustainability Transition Analysis</h2>
-            <p className="text-sm text-slate-500">Tracking the "Big 6" markers and climate alignment over time</p>
+            <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest">Sustainability Transition Analysis</h2>
+            <p className="text-[15px] text-slate-500 font-normal mt-0.5">Tracking markers and climate alignment over time</p>
           </div>
           <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
             Commitment Basis
@@ -262,8 +262,8 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
         
         {/* Mode Evolution */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden min-h-[450px]">
-          <h2 className="text-xl font-bold text-slate-900 mb-1">Portfolio Evolution (by Mode)</h2>
-          <p className="text-sm text-slate-500 mb-6 font-medium">Long-term shifts in transport sub-sector focus</p>
+          <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest mb-1">Portfolio Evolution (by Mode)</h2>
+          <p className="text-[15px] text-slate-500 font-normal">Long-term shifts in transport sub-sector focus</p>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={modeTrendData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
@@ -294,7 +294,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
 
         {/* Treemap */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 min-h-[450px] overflow-hidden">
-          <h2 className="text-lg font-bold text-slate-900 mb-1 border-l-4 border-blue-500 pl-3">Relative Size</h2>
+          <h2 className="text-lg font-semibold text-slate-900 mb-1 border-l-4 border-blue-500 pl-3">Relative Size</h2>
           <p className="text-xs text-slate-500 mb-8 pl-3 font-medium">Treemap of finance by sub-sector (Mode & Detail)</p>
           <div className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -317,7 +317,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
 
       {/* Purpose Ranking */}
       <section className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden">
-        <h2 className="text-lg font-bold text-slate-900 mb-4">Top Specific Purpose Categories (By Volume)</h2>
+        <h2 className="text-lg font-semibold text-slate-900 uppercase tracking-widest mb-4">Top Specific Purpose Categories</h2>
         <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={purposeRanking} layout="vertical" margin={{ left: 40, right: 30 }}>

@@ -61,14 +61,14 @@ export function Geography() {
         <div className="inline-flex rounded-lg bg-slate-100 p-1">
           <button
             onClick={() => setMapView('points')}
-            className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+            className={`px-3 py-1.5 text-[15px] font-medium rounded-lg flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
           >
             <Orbit size={12} />
             Project points
           </button>
           <button
             onClick={() => setMapView('heatmap')}
-            className={`px-3 py-1.5 text-[15px] rounded-md flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+            className={`px-3 py-1.5 text-[15px] font-medium rounded-lg flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
           >
             <Flame size={12} />
             Heatmap
@@ -79,8 +79,8 @@ export function Geography() {
       <div className="grid grid-cols-[2fr,1fr] gap-4">
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
-            <p className="text-slate-900 text-base font-semibold">Geocoded Transport Project Footprint</p>
-            <p className="text-slate-400 text-[15px] mt-0.5">{titleText}</p>
+            <p className="text-slate-900 text-lg font-semibold">Geocoded Transport Project Footprint</p>
+            <p className="text-slate-500 text-[15px] mt-0.5">{titleText}</p>
           </div>
           <StyledProjectMap projects={filteredProjects} viewMode={mapView} height={560} onProjectSelect={setSelectedProject} />
         </div>
@@ -88,8 +88,8 @@ export function Geography() {
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-5 py-3.5 border-b border-slate-100">
-              <p className="text-slate-800 text-base font-semibold">Country Rankings</p>
-              <p className="text-slate-400 text-[15px] mt-0.5">Click to profile a recipient country</p>
+              <p className="text-slate-900 text-lg font-semibold">Country Rankings</p>
+              <p className="text-slate-500 text-[15px] mt-0.5">Click to profile a recipient country</p>
             </div>
             <div className="max-h-[300px] overflow-y-auto">
               {countrySummaries.slice(0, 25).map((country, index) => {
@@ -101,7 +101,7 @@ export function Geography() {
                     onClick={() => setSelectedCountry((prev) => (prev === country.country ? null : country.country))}
                     className={`w-full flex items-center gap-3 px-4 py-2.5 border-b border-slate-50 hover:bg-slate-50 transition-colors text-left ${isSelected ? 'bg-blue-50' : ''}`}
                   >
-                    <span className="text-slate-400 text-[15px] w-5 text-right flex-shrink-0">{index + 1}</span>
+                    <span className="text-slate-500 text-[15px] w-5 text-right flex-shrink-0">{index + 1}</span>
                     <div className="flex-1 min-w-0">
                       <p className={`text-[15px] leading-snug ${isSelected ? 'text-blue-700 font-semibold' : 'text-slate-700'}`}>
                         {country.country}
@@ -120,7 +120,7 @@ export function Geography() {
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <p className="text-slate-800 text-base font-semibold mb-3 flex items-center gap-2">
+            <p className="text-slate-900 text-lg font-semibold mb-3 flex items-center gap-2">
               <Globe size={14} className="text-blue-500" />
               Country Profile
             </p>
@@ -131,7 +131,7 @@ export function Geography() {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <p className="text-slate-900 text-base font-semibold">{selectedCountry}</p>
+                  <p className="text-slate-900 text-lg font-semibold">{selectedCountry}</p>
                   <div className="flex items-center gap-3 mt-1 text-[15px] text-slate-500">
                     <span className="inline-flex items-center gap-1"><TrendingUp size={11} />{selectedCountryProjects.length} projects</span>
                     <span className="inline-flex items-center gap-1"><DollarSign size={11} />${(selectedCountryProjects.reduce((sum, p) => sum + ((p.amount ?? 0) / 1_000_000_000), 0)).toFixed(1)}B</span>
@@ -185,7 +185,7 @@ export function Geography() {
                         className="w-full text-left border border-slate-200 rounded-lg p-3 hover:bg-slate-50"
                       >
                         <p className="text-slate-700 text-[15px] font-medium leading-snug">{project.project_name}</p>
-                        <p className="text-slate-400 text-[15px] mt-1">
+                        <p className="text-slate-500 text-[15px] mt-1">
                           {project.approval_year ?? '—'} · {project.transport_mode_category}
                         </p>
                       </button>

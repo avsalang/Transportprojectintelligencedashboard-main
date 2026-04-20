@@ -33,15 +33,15 @@ export function CRSGlobalFilters() {
               <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
                 <Filter size={14} className="text-blue-600" />
               </div>
-              <h2 className="text-slate-800 text-sm font-bold tracking-tight">Financial Intelligence Filters</h2>
+              <h2 className="text-slate-900 text-lg font-semibold tracking-tight">Financial Intelligence Filters</h2>
               {activeCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold">
-                  {activeCount} ACTIVE
+                <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[11px] font-medium uppercase tracking-wider">
+                  {activeCount} Active
                 </span>
               )}
             </div>
-            <p className="text-slate-500 text-[11px] mt-0.5 font-medium">
-              Analyzing <span className="text-slate-900 font-bold">{filteredFacts.length.toLocaleString()}</span> granular transaction lines
+            <p className="text-slate-500 text-[14px] mt-0.5 font-normal">
+              Analyzing <span className="text-slate-900 font-medium">{filteredFacts.length.toLocaleString()}</span> granular transaction lines
             </p>
           </div>
           
@@ -51,13 +51,13 @@ export function CRSGlobalFilters() {
           <div className="flex items-center gap-3 bg-slate-50 p-1 rounded-xl border border-slate-200">
             <button 
               onClick={() => setFilters(prev => ({ ...prev, isConstantUSD: false }))}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${!filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${!filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
             >
               CURRENT USD
             </button>
             <button 
               onClick={() => setFilters(prev => ({ ...prev, isConstantUSD: true }))}
-              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all ${filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
             >
               CONSTANT USD
             </button>
@@ -67,15 +67,15 @@ export function CRSGlobalFilters() {
         {activeCount > 0 && (
           <button 
             onClick={resetFilters} 
-            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-all border border-transparent hover:border-slate-200"
+            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-all border border-transparent hover:border-slate-200"
           >
-            <X size={13} className="group-hover:rotate-90 transition-transform" />
+            <X size={14} className="group-hover:rotate-90 transition-transform" />
             RESET ALL
           </button>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
         <CheckboxDropdown
           label="Donors"
           options={donorOptions}
@@ -116,21 +116,21 @@ export function CRSGlobalFilters() {
         </div>
 
         <div className="flex flex-col justify-end gap-2.5">
-           <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+           <label className="block text-[14px] font-semibold text-slate-400 uppercase tracking-widest ml-1">
              Financial Basis
            </label>
            <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-200">
              <button 
                 onClick={() => setFilters(prev => ({ ...prev, measure: 'commitment' }))}
-                className={`flex-1 py-1 px-3 rounded-lg text-[10px] font-bold transition-all ${filters.measure === 'commitment' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-[11px] font-semibold transition-all ${filters.measure === 'commitment' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
              >
-               COMMITMENTS
+                COMMITMENTS
              </button>
              <button 
                 onClick={() => setFilters(prev => ({ ...prev, measure: 'disbursement' }))}
-                className={`flex-1 py-1 px-3 rounded-lg text-[10px] font-bold transition-all ${filters.measure === 'disbursement' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
+                className={`flex-1 py-1.5 px-3 rounded-lg text-[11px] font-semibold transition-all ${filters.measure === 'disbursement' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
              >
-               DISBURSEMENTS
+                DISBURSEMENTS
              </button>
            </div>
         </div>
