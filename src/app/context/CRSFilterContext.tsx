@@ -7,8 +7,13 @@ export type CRSFilters = {
   recipients: string[];
   modes: string[];
   scopes: string[];
-  yearMin: string;
-  yearMax: string;
+  yearMin: number;
+  yearMax: number;
+  isConstantUSD: boolean;
+  climateMitigation: number | null; // 0, 1, 2
+  climateAdaptation: number | null;
+  gender: number | null;
+  measure: 'commitment' | 'disbursement';
 };
 
 type CRSFilterContextValue = {
@@ -28,8 +33,13 @@ const DEFAULT_FILTERS: CRSFilters = {
   recipients: [],
   modes: [],
   scopes: [],
-  yearMin: '',
-  yearMax: '',
+  yearMin: 1973,
+  yearMax: 2024,
+  isConstantUSD: false,
+  climateMitigation: null,
+  climateAdaptation: null,
+  gender: null,
+  measure: 'commitment',
 };
 
 const CRSFilterContext = createContext<CRSFilterContextValue | null>(null);
@@ -41,14 +51,14 @@ function applyFilters(facts: CRSFact[], filters: CRSFilters): CRSFact[] {
     if (filters.recipients.length && !filters.recipients.includes(fact.recipient || 'Unknown')) return false;
     if (filters.modes.length && !filters.modes.includes(fact.mode || 'Other')) return false;
     if (filters.scopes.length && !filters.scopes.includes(fact.recipient_scope || 'unknown')) return false;
-    if (filters.yearMin) {
-      const minYear = parseInt(filters.yearMin, 10);
-      if (!Number.isNaN(minYear) && fact.year < minYear) return false;
-    }
-    if (filters.yearMax) {
-      const maxYear = parseInt(filters.yearMax, 10);
-      if (!Number.isNaN(maxYear) && fact.year > maxYear) return false;
-    }
+    if (fact.year < filters.yearMin) return false;
+    if (fact.year > filters.yearMax) return false;
+    
+    // Sustainability filters are currently retired from the global filter bar
+    // if (filters.climateMitigation !== null && (fact.climate_mitigation ?? 0) < filters.climateMitigation) return false;
+    // if (filters.climateAdaptation !== null && (fact.climate_adaptation ?? 0) < filters.climateAdaptation) return false;
+    // if (filters.gender !== null && (fact.gender ?? 0) < filters.gender) return false;
+    
     return true;
   });
 }

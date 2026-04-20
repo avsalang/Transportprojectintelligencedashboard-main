@@ -2,19 +2,40 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
+  Area,
+  AreaChart,
+  Scatter,
+  ScatterChart,
+  ZAxis,
+  Legend,
   CartesianGrid,
   Cell,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  PieChart,
+  Pie,
+  Label,
 } from 'recharts';
-import { Building2, Globe2, Layers3, MapPinned, Table2 } from 'lucide-react';
+import { 
+  Building2, 
+  Globe2, 
+  Layers3, 
+  MapPinned, 
+  Table2, 
+  Info, 
+  Leaf, 
+  User, 
+  ShieldCheck, 
+  Activity, 
+  Wind 
+} from 'lucide-react';
 import { estimateCategoryAxisWidth, WrappedCategoryTick } from '../components/ChartTicks';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
-import { aggregateFacts, summarizeFacts, type CRSMeasure } from '../utils/crsAggregations';
+import { aggregateFacts, summarizeFacts } from '../utils/crsAggregations';
 
 type CRSEntityType = 'country' | 'regionalRecipient' | 'broadRegion' | 'donor' | 'agency';
 
@@ -22,35 +43,27 @@ type CRSRecord = {
   id: number;
   year: number | null;
   donor: string;
-  donor_original: string;
   agency: string;
-  agency_original: string;
   recipient: string;
-  recipient_original: string;
   recipient_scope: string;
-  recipient_region_detail: string;
   region: string;
-  region_original: string;
-  recipient_group: string;
-  recipient_subgroup: string;
-  income_group: string;
   flow: string;
   finance_type: string;
-  aid_type: string;
   commitment: number;
   disbursement: number;
+  commitment_defl: number;
+  disbursement_defl: number;
   title: string;
   short_description: string;
   purpose: string;
-  sector: string;
-  channel: string;
-  channel_reported: string;
-  geography: string;
-  expected_start_date: string;
-  completion_date: string;
-  long_description: string;
   mode: string;
   mode_detail: string;
+  climate_mitigation: number;
+  climate_adaptation: number;
+  gender: number;
+  biodiversity: number;
+  environment: number;
+  drr: number;
 };
 
 type CRSRecordIndex = {
@@ -60,719 +73,600 @@ type CRSRecordIndex = {
     id: number;
     file: string;
     count: number;
-    sizeBytes: number;
   }>;
   entityShardMap: Record<CRSEntityType, Record<string, number[]>>;
 };
 
 const ENTITY_META: Record<CRSEntityType, { label: string; description: string }> = {
-  country: {
-    label: 'Country',
-    description: 'Recipient economies included in the current filter state.',
-  },
-  regionalRecipient: {
-    label: 'Regional recipient',
-    description: 'Recipient labels coming from `recipient_name` values ending in “, regional”.',
-  },
-  broadRegion: {
-    label: 'Broad region',
-    description: 'Top-level regional rollup from the standardized CRS geography layer.',
-  },
-  donor: {
-    label: 'Funding source',
-    description: 'Top-level donor or funding institution names in the current filter state.',
-  },
-  agency: {
-    label: 'Agency / financing window',
-    description: 'Reported agency labels, windows, funds, ministries, and implementing bodies in the current filter state.',
-  },
+  country: { label: 'ADB Economy', description: 'Deep dive into official ADB standard economies.' },
+  regionalRecipient: { label: 'Regional Recipient', description: 'Rollups of multi-country regional programs.' },
+  broadRegion: { label: 'Broad Region', description: 'Macro-regional transport investment trends.' },
+  donor: { label: 'Funding Source', description: 'Top-level contributing nations or institutions.' },
+  agency: { label: 'Implementing Agency', description: 'Technical departments, windows, or ministries.' },
 };
-
-const PAGE_SIZES = [10, 25, 50, 100];
-
-function entityLabelForFact(type: CRSEntityType, fact: any) {
-  switch (type) {
-    case 'country':
-      return fact.recipient_scope === 'economy' ? fact.recipient : '';
-    case 'regionalRecipient':
-      return fact.recipient_scope === 'regional' ? fact.recipient_region_detail || fact.recipient : '';
-    case 'broadRegion':
-      return fact.region || 'Unknown';
-    case 'donor':
-      return fact.donor || 'Unknown';
-    case 'agency':
-      return fact.agency || 'Unknown';
-    default:
-      return '';
-  }
-}
-
-function recordMatchesEntity(record: CRSRecord, type: CRSEntityType, selectedEntity: string) {
-  if (!selectedEntity) return false;
-  switch (type) {
-    case 'country':
-      return record.recipient_scope === 'economy' && record.recipient === selectedEntity;
-    case 'regionalRecipient':
-      return record.recipient_scope === 'regional' && (record.recipient_region_detail || record.recipient) === selectedEntity;
-    case 'broadRegion':
-      return record.region === selectedEntity;
-    case 'donor':
-      return record.donor === selectedEntity;
-    case 'agency':
-      return record.agency === selectedEntity;
-    default:
-      return false;
-  }
-}
-
-function formatDateLabel(value: string) {
-  return value || '—';
-}
 
 export function CRSProfiles() {
   const { filteredFacts, filters } = useCRSFilters();
-  const [measure, setMeasure] = useState<CRSMeasure>('commitment');
+  const measure = filters.measure;
   const [entityType, setEntityType] = useState<CRSEntityType>('country');
   const [selectedEntity, setSelectedEntity] = useState<string>('');
   const [entitySearch, setEntitySearch] = useState<string>('');
-  const [rowsPerPage, setRowsPerPage] = useState<number>(25);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(50);
   const [page, setPage] = useState<number>(1);
   const [recordIndex, setRecordIndex] = useState<CRSRecordIndex | null>(null);
   const [recordChunks, setRecordChunks] = useState<Record<string, CRSRecord[]>>({});
   const [indexLoading, setIndexLoading] = useState<boolean>(true);
   const [recordsLoading, setRecordsLoading] = useState<boolean>(false);
-  const [recordsError, setRecordsError] = useState<string | null>(null);
   const [activeRecord, setActiveRecord] = useState<CRSRecord | null>(null);
 
+  const isConstant = filters.isConstantUSD;
+  const activeMeasure = isConstant ? (measure === 'commitment' ? 'commitment_defl' : 'disbursement_defl') : measure;
+
   useEffect(() => {
-    let cancelled = false;
-    async function loadRecordIndex() {
+    async function loadIndex() {
       try {
         setIndexLoading(true);
-        setRecordsError(null);
-        const response = await fetch(`${import.meta.env.BASE_URL}data/crs-records/index.json`);
-        if (!response.ok) throw new Error(`Failed to load CRS record index (${response.status})`);
-        const payload = (await response.json()) as CRSRecordIndex;
-        if (!cancelled) setRecordIndex(payload);
-      } catch (error) {
-        if (!cancelled) setRecordsError(error instanceof Error ? error.message : 'Unable to load CRS records');
+        const res = await fetch(`${import.meta.env.BASE_URL}data/crs-records/index.json`);
+        const data = await res.json();
+        setRecordIndex(data);
+      } catch (e) {
+        console.error('Failed to load record index:', e);
       } finally {
-        if (!cancelled) setIndexLoading(false);
+        setIndexLoading(false);
       }
     }
-    void loadRecordIndex();
-    return () => {
-      cancelled = true;
-    };
+    loadIndex();
   }, []);
 
   const entityOptions = useMemo(() => {
-    return aggregateFacts(filteredFacts, (fact) => entityLabelForFact(entityType, fact))
-      .filter((item) => item.label)
-      .slice(0, 240);
-  }, [entityType, filteredFacts]);
+    const list = aggregateFacts(filteredFacts, (fact) => {
+        if (entityType === 'country') return fact.recipient_scope === 'economy' ? fact.recipient : '';
+        if (entityType === 'regionalRecipient') return fact.recipient_scope === 'regional' ? fact.recipient : '';
+        if (entityType === 'broadRegion') return fact.region;
+        if (entityType === 'donor') return fact.donor;
+        if (entityType === 'agency') return fact.agency;
+        return '';
+    }).filter(i => i.label);
 
-  const filteredEntityOptions = useMemo(() => {
-    const query = entitySearch.trim().toLowerCase();
-    if (!query) return entityOptions;
-    return entityOptions.filter((item) => item.label.toLowerCase().includes(query));
-  }, [entityOptions, entitySearch]);
+    if (entitySearch) {
+      return list.filter(i => i.label.toLowerCase().includes(entitySearch.toLowerCase())).slice(0, 100);
+    }
+    return list.slice(0, 500);
+  }, [entityType, filteredFacts, entitySearch]);
 
   useEffect(() => {
-    if (!selectedEntity && entityOptions[0]) setSelectedEntity(entityOptions[0].label);
-  }, [entityOptions, selectedEntity]);
+    if (entityOptions.length > 0 && (!selectedEntity || !entityOptions.find(o => o.label === selectedEntity))) {
+      setSelectedEntity(entityOptions[0].label);
+    }
+  }, [entityType, entityOptions]);
+
+  const activeShardIds = useMemo(() => recordIndex?.entityShardMap?.[entityType]?.[selectedEntity] ?? [], [entityType, recordIndex, selectedEntity]);
 
   useEffect(() => {
-    if (selectedEntity && !entityOptions.some((item) => item.label === selectedEntity)) {
-      setSelectedEntity(entityOptions[0]?.label ?? '');
-    }
-  }, [entityOptions, selectedEntity]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [entityType, selectedEntity, rowsPerPage, measure, filters]);
-
-  useEffect(() => {
-    setEntitySearch('');
-  }, [entityType]);
-
-  const subset = useMemo(
-    () => filteredFacts.filter((fact) => entityLabelForFact(entityType, fact) === selectedEntity),
-    [entityType, filteredFacts, selectedEntity],
-  );
-
-  const stats = useMemo(() => summarizeFacts(subset), [subset]);
-
-  const counterpartRanking = useMemo(() => {
-    if (entityType === 'donor' || entityType === 'agency') {
-      return aggregateFacts(subset, (fact) =>
-        fact.recipient_scope === 'regional' ? fact.recipient_region_detail || fact.recipient : fact.recipient,
-      ).slice(0, 12);
-    }
-    return aggregateFacts(subset, (fact) => fact.donor).slice(0, 12);
-  }, [entityType, subset]);
-
-  const modeRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.mode).slice(0, 8), [subset]);
-  const flowRanking = useMemo(() => aggregateFacts(subset, (fact) => fact.flow).slice(0, 8), [subset]);
-  const relationshipRanking = useMemo(() => {
-    if (entityType === 'donor') {
-      return aggregateFacts(subset, (fact) => fact.agency || 'Unknown').slice(0, 10);
-    }
-    if (entityType === 'agency') {
-      return aggregateFacts(subset, (fact) => fact.donor || 'Unknown').slice(0, 10);
-    }
-    if (entityType === 'country' || entityType === 'regionalRecipient' || entityType === 'broadRegion') {
-      return aggregateFacts(subset, (fact) => fact.agency || 'Unknown').slice(0, 10);
-    }
-    return [];
-  }, [entityType, subset]);
-
-  const counterpartLabel =
-    entityType === 'donor' || entityType === 'agency' ? 'Top recipients' : 'Top donors';
-  const counterpartAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(counterpartRanking.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 248 }),
-    [counterpartRanking],
-  );
-  const relationshipLabel =
-    entityType === 'donor'
-      ? 'Top agencies / windows'
-      : entityType === 'agency'
-        ? 'Top funding sources'
-        : 'Top agencies / windows';
-  const relationshipAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(relationshipRanking.map((item) => item.label), { maxChars: 18, minWidth: 180, maxWidth: 248 }),
-    [relationshipRanking],
-  );
-  const modeAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(modeRanking.map((item) => item.label), { maxChars: 16, minWidth: 110, maxWidth: 170 }),
-    [modeRanking],
-  );
-  const flowAxisWidth = useMemo(
-    () => estimateCategoryAxisWidth(flowRanking.map((item) => item.label), { maxChars: 18, minWidth: 130, maxWidth: 200 }),
-    [flowRanking],
-  );
-
-  const selectedMeta = ENTITY_META[entityType];
-  const selectedEntityMetrics = useMemo(
-    () => entityOptions.find((option) => option.label === selectedEntity) ?? null,
-    [entityOptions, selectedEntity],
-  );
-  const activeShardIds = useMemo(
-    () => recordIndex?.entityShardMap?.[entityType]?.[selectedEntity] ?? [],
-    [entityType, recordIndex, selectedEntity],
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-    async function loadMissingShards() {
-      if (!recordIndex || !activeShardIds.length) {
-        setRecordsLoading(false);
-        return;
-      }
-
-      const missingShardIds = activeShardIds.filter((id) => !recordChunks[String(id)]);
-      if (!missingShardIds.length) {
-        setRecordsLoading(false);
-        return;
-      }
-
+    async function loadShards() {
+      if (!recordIndex || !activeShardIds.length) return;
+      const missing = activeShardIds.filter(id => !recordChunks[String(id)]);
+      if (!missing.length) return;
+      setRecordsLoading(true);
       try {
-        setRecordsLoading(true);
-        setRecordsError(null);
-        const loaded = await Promise.all(
-          missingShardIds.map(async (id) => {
-            const chunk = recordIndex.chunks.find((entry) => entry.id === id);
-            if (!chunk) {
-              throw new Error(`Missing chunk metadata for shard ${id}`);
-            }
-            const response = await fetch(`${import.meta.env.BASE_URL}${chunk.file}`);
-            if (!response.ok) throw new Error(`Failed to load CRS records shard ${id} (${response.status})`);
-            const payload = (await response.json()) as CRSRecord[];
-            return [String(id), payload] as const;
-          }),
-        );
-        if (!cancelled) {
-          setRecordChunks((prev) => {
-            const next = { ...prev };
-            loaded.forEach(([id, payload]) => {
-              next[id] = payload;
-            });
-            return next;
-          });
-        }
-      } catch (error) {
-        if (!cancelled) setRecordsError(error instanceof Error ? error.message : 'Unable to load CRS records');
+        const loaded = await Promise.all(missing.map(async id => {
+            const chunk = recordIndex.chunks.find(c => c.id === id);
+            const res = await fetch(`${import.meta.env.BASE_URL}${chunk?.file}`);
+            return [String(id), await res.json()];
+        }));
+        setRecordChunks(prev => ({ ...prev, ...Object.fromEntries(loaded) }));
+      } catch (err) {
+        console.error("Failed to load records", err);
       } finally {
-        if (!cancelled) setRecordsLoading(false);
+        setRecordsLoading(false);
       }
     }
+    loadShards();
+  }, [activeShardIds, recordIndex]);
 
-    void loadMissingShards();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeShardIds, recordChunks, recordIndex]);
-
-  const records = useMemo(
-    () => activeShardIds.flatMap((id) => recordChunks[String(id)] ?? []),
-    [activeShardIds, recordChunks],
-  );
+  const allRecords = useMemo(() => activeShardIds.flatMap(id => recordChunks[String(id)] ?? []), [activeShardIds, recordChunks]);
 
   const filteredRecords = useMemo(() => {
-    return records
-      .filter((record) => {
-        if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
-        if (filters.regions.length && !filters.regions.includes(record.region || 'Unknown')) return false;
-        if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;
-        if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
-        if (filters.scopes.length && !filters.scopes.includes(record.recipient_scope || 'unknown')) return false;
-        if (filters.yearMin) {
-          const minYear = parseInt(filters.yearMin, 10);
-          if (!Number.isNaN(minYear) && (record.year ?? 0) < minYear) return false;
-        }
-        if (filters.yearMax) {
-          const maxYear = parseInt(filters.yearMax, 10);
-          if (!Number.isNaN(maxYear) && (record.year ?? 0) > maxYear) return false;
-        }
-        return recordMatchesEntity(record, entityType, selectedEntity);
-      })
-      .sort((a, b) => {
-        const measureDiff = (b[measure] ?? 0) - (a[measure] ?? 0);
-        if (measureDiff !== 0) return measureDiff;
-        return (b.year ?? 0) - (a.year ?? 0);
-      });
-  }, [entityType, filters, measure, records, selectedEntity]);
+    return allRecords.filter(r => {
+        if (filters.donors.length && !filters.donors.includes(r.donor)) return false;
+        if (filters.regions.length && !filters.regions.includes(r.region)) return false;
+        if (filters.recipients.length && !filters.recipients.includes(r.recipient)) return false;
+        if (filters.modes.length && !filters.modes.includes(r.mode)) return false;
+        if (r.year && (r.year < filters.yearMin || r.year > filters.yearMax)) return false;
+        
+        if (entityType === 'country' && (r.recipient_scope !== 'economy' || r.recipient !== selectedEntity)) return false;
+        if (entityType === 'regionalRecipient' && (r.recipient_scope !== 'regional' || r.recipient !== selectedEntity)) return false;
+        if (entityType === 'broadRegion' && r.region !== selectedEntity) return false;
+        if (entityType === 'donor' && r.donor !== selectedEntity) return false;
+        if (entityType === 'agency' && r.agency !== selectedEntity) return false;
+        
+        return true;
+    }).sort((a,b) => (b[activeMeasure] || 0) - (a[activeMeasure] || 0));
+  }, [allRecords, filters, entityType, selectedEntity, activeMeasure]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / rowsPerPage));
-  const currentPage = Math.min(page, totalPages);
-  const pagedRecords = filteredRecords.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+  const stats = useMemo(() => {
+    let commitment = 0, disbursement = 0, count = 0;
+    let susCount = 0, mitCount = 0, adpCount = 0, gndCount = 0;
+    filteredRecords.forEach(r => {
+        commitment += r[isConstant ? 'commitment_defl' : 'commitment'] || 0;
+        disbursement += r[isConstant ? 'disbursement_defl' : 'disbursement'] || 0;
+        count++;
+        if ((r.climate_mitigation ?? 0) > 0) mitCount++;
+        if ((r.climate_adaptation ?? 0) > 0) adpCount++;
+        if ((r.gender ?? 0) > 0) gndCount++;
+        if ((r.climate_mitigation ?? 0) > 0 || (r.climate_adaptation ?? 0) > 0 || (r.gender ?? 0) > 0) susCount++;
+    });
+    return { commitment, disbursement, count, susCount, mitCount, adpCount, gndCount };
+  }, [filteredRecords, isConstant]);
+
+  const yearlySeries = useMemo(() => {
+    const map = new Map<number, { year: string; commitment: number; disbursement: number }>();
+    filteredRecords.forEach(r => {
+      const y = r.year || 0;
+      if (!map.has(y)) map.set(y, { year: String(y), commitment: 0, disbursement: 0 });
+      const entry = map.get(y)!;
+      entry.commitment += r[isConstant ? 'commitment_defl' : 'commitment'] || 0;
+      entry.disbursement += r[isConstant ? 'disbursement_defl' : 'disbursement'] || 0;
+    });
+    return [...map.values()].sort((a,b) => Number(a.year) - Number(b.year));
+  }, [filteredRecords, isConstant]);
+
+  const partnershipSeries = useMemo(() => {
+    const map: Record<string, number> = {};
+    const partnerKey = (entityType === 'donor' || entityType === 'agency') ? 'recipient' : 'donor';
+    filteredRecords.forEach(r => {
+      const label = r[partnerKey] || 'Unknown';
+      map[label] = (map[label] || 0) + (r[activeMeasure] || 0);
+    });
+    return Object.entries(map)
+      .map(([label, value]) => ({ label, value }))
+      .sort((a,b) => b.value - a.value)
+      .slice(0, 8);
+  }, [filteredRecords, activeMeasure, entityType]);
+
+  const pillarSeries = useMemo(() => {
+    const map: Record<string, number> = { 'Road': 0, 'Rail': 0, 'Aviation': 0, 'Water': 0, 'Other': 0 };
+    filteredRecords.forEach(r => {
+      const raw = (r.mode || 'Other').toLowerCase();
+      let key = 'Other';
+      if (raw.includes('road')) key = 'Road';
+      else if (raw.includes('rail')) key = 'Rail';
+      else if (raw.includes('air') || raw.includes('aviation')) key = 'Aviation';
+      else if (raw.includes('water') || raw.includes('sea') || raw.includes('river')) key = 'Water';
+      map[key] += (r[activeMeasure] || 0);
+    });
+    return Object.entries(map).map(([label, value]) => ({ label, value })).sort((a,b) => b.value - a.value);
+  }, [filteredRecords, activeMeasure]);
+
+  const sectorMix = useMemo(() => {
+    const map: Record<string, number> = {};
+    filteredRecords.forEach(r => {
+      const label = r.mode_detail || r.mode || 'Other';
+      map[label] = (map[label] || 0) + (r[activeMeasure] || 0);
+    });
+    return Object.entries(map)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a,b) => b.value - a.value)
+      .slice(0, 10);
+  }, [filteredRecords, activeMeasure]);
+
+  const bubbleData = useMemo(() => {
+    const map = new Map<string, { label: string; volume: number; susVolume: number; count: number }>();
+    filteredRecords.forEach(r => {
+      const key = r.mode || 'Other';
+      if (!map.has(key)) map.set(key, { label: key, volume: 0, susVolume: 0, count: 0 });
+      const entry = map.get(key)!;
+      const vol = r[activeMeasure] || 0;
+      entry.volume += vol;
+      entry.count++;
+      if ((r.climate_mitigation ?? 0) > 0 || (r.climate_adaptation ?? 0) > 0 || (r.gender ?? 0) > 0) {
+        entry.susVolume += vol;
+      }
+    });
+    return [...map.values()]
+      .map(d => ({
+        ...d,
+        sustainabilityScore: d.volume > 0 ? Number(((d.susVolume / d.volume) * 100).toFixed(1)) : 0
+      }))
+      .filter(d => d.volume > 0.1);
+  }, [filteredRecords, activeMeasure]);
+
+  const pagedRecords = filteredRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-start justify-between gap-6">
-        <div className="max-w-2xl">
-          <h1 className="text-slate-900 text-xl font-semibold">Entity Deep Dive</h1>
-          <p className="text-slate-500 text-sm mt-1 leading-6">
-            Drill into countries, regional recipients, broad regions, and organizations with the current global CRS filters applied.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm min-w-[860px]">
-          <div className="grid grid-cols-[200px_260px_minmax(320px,1fr)_auto] gap-3 items-end">
-            <label className="block">
-              <span className="text-[11px] uppercase tracking-wide text-slate-400">Explore by</span>
-              <select
-                value={entityType}
-                onChange={(event) => setEntityType(event.target.value as CRSEntityType)}
-                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
-              >
-                {Object.entries(ENTITY_META).map(([value, meta]) => (
-                  <option key={value} value={value}>
-                    {meta.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="block">
-              <span className="text-[11px] uppercase tracking-wide text-slate-400">Search</span>
-              <input
-                value={entitySearch}
-                onChange={(event) => setEntitySearch(event.target.value)}
-                placeholder={`Search ${selectedMeta.label.toLowerCase()}...`}
-                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
-              />
-            </label>
-            <label className="block">
-              <span className="text-[11px] uppercase tracking-wide text-slate-400">Selection</span>
-              <select
-                value={selectedEntity}
-                onChange={(event) => setSelectedEntity(event.target.value)}
-                className="mt-1 w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm bg-white"
-              >
-                {filteredEntityOptions.map((option) => (
-                  <option key={option.label} value={option.label}>
-                    {option.label} · {crsFmt.usdM(option[measure])} · {crsFmt.num(option.count)} records
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className="inline-flex rounded-xl bg-slate-100 p-1 self-end">
+    <div className="p-6 bg-slate-50/50 min-h-screen">
+      <div className="max-w-[1440px] mx-auto space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-slate-900 text-2xl font-bold tracking-tight">Portfolio Deep Dive</h1>
+            <p className="text-slate-500 text-sm mt-1">
+              Select an entity to explore its underlying project ledger and <span className="font-semibold text-slate-700">micro-level financial composition</span>.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+            {(Object.keys(ENTITY_META) as CRSEntityType[]).map((type) => (
               <button
-                onClick={() => setMeasure('commitment')}
-                className={`px-3 py-2 text-xs rounded-lg ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                key={type}
+                onClick={() => setEntityType(type)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  entityType === type 
+                    ? 'bg-slate-900 text-white shadow-md' 
+                    : 'text-slate-500 hover:bg-slate-50'
+                }`}
               >
-                Commitments
+                {ENTITY_META[type].label}
               </button>
-              <button
-                onClick={() => setMeasure('disbursement')}
-                className={`px-3 py-2 text-xs rounded-lg ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
-              >
-                Disbursements
-              </button>
-            </div>
+            ))}
           </div>
         </div>
-      </div>
 
-      {(entityType === 'donor' || entityType === 'agency') ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-          <p className="text-amber-900 text-sm font-semibold">
-            {entityType === 'donor' ? 'Funding source view' : 'Agency / financing window view'}
-          </p>
-          <p className="text-amber-800 text-sm mt-1">
-            {entityType === 'donor'
-              ? 'This view groups records by the top-level donor or institution. A single funding source can contain many reported agencies, windows, funds, or ministries underneath it.'
-              : 'This view groups records by the reported agency label in CRS. These labels can include true agencies, financing windows, trust funds, ministries, or other reporting buckets, so they may look more mixed than donor names.'}
-          </p>
-        </div>
-      ) : null}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-6 items-start">
+          {/* Sidebar Navigation */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[calc(100vh-200px)] overflow-hidden">
+             <div className="p-4 border-b border-slate-50">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Filter Entity</p>
+                <input
+                  type="text"
+                  placeholder={`Search ${entityType === 'country' ? 'ADB Economies' : ENTITY_META[entityType].label + 's'}...`}
+                  value={entitySearch}
+                  onChange={(e) => setEntitySearch(e.target.value)}
+                  className="w-full bg-slate-50 border-none rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                />
+             </div>
+             <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-200">
+               {indexLoading ? (
+                 <div className="space-y-2 p-2">
+                   {[1,2,3,4,5].map(i => <div key={i} className="h-10 bg-slate-50 rounded-lg animate-pulse" />)}
+                 </div>
+               ) : (
+                 <div className="space-y-1">
+                   {entityOptions.map(o => (
+                     <button
+                       key={o.label}
+                       onClick={() => setSelectedEntity(o.label)}
+                       className={`w-full text-left px-4 py-3 rounded-xl transition-all ${
+                         selectedEntity === o.label 
+                           ? 'bg-blue-50 text-blue-700 shadow-sm ring-1 ring-blue-100' 
+                           : 'hover:bg-slate-50 text-slate-600'
+                       }`}
+                     >
+                       <span className="text-xs font-bold truncate block">{o.label}</span>
+                     </button>
+                   ))}
+                 </div>
+               )}
+             </div>
+          </div>
 
-      <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-500 text-xs uppercase tracking-wider">Selected entity</p>
-          <div className="flex items-start gap-3 mt-4">
-            {entityType === 'country' ? <MapPinned size={16} className="text-emerald-600" /> : null}
-            {entityType === 'regionalRecipient' ? <Layers3 size={16} className="text-emerald-600" /> : null}
-            {entityType === 'broadRegion' ? <Globe2 size={16} className="text-emerald-600" /> : null}
-            {(entityType === 'donor' || entityType === 'agency') ? <Building2 size={16} className="text-emerald-600" /> : null}
-            <div className="min-w-0">
-              <p className="text-slate-900 text-[28px] leading-tight font-semibold">{selectedEntity || '—'}</p>
-              <p className="text-slate-500 text-xs mt-0.5">{selectedMeta.label}</p>
-              {selectedEntityMetrics ? (
-                <p className="text-slate-400 text-xs mt-1">
-                  {crsFmt.num(selectedEntityMetrics.count)} records in current filtered view
+          {/* Main Profile content */}
+          <div className="space-y-6">
+            {!selectedEntity ? (
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center h-[500px] flex flex-col items-center justify-center">
+                <Globe2 className="text-slate-200 w-16 h-16 mb-4" />
+                <h3 className="text-lg font-bold text-slate-800 tracking-tight">Select an entity to explore</h3>
+                <p className="text-slate-400 text-sm mt-2 max-w-sm font-medium">
+                  Deep dive into financial instruments, thematic distributions, and the full project ledger for a specific economy, region, or donor.
                 </p>
-              ) : null}
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-500 text-xs uppercase tracking-wider">Commitments</p>
-          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{crsFmt.usdM(stats.commitment)}</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-500 text-xs uppercase tracking-wider">Disbursements</p>
-          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{crsFmt.usdM(stats.disbursement)}</p>
-        </div>
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-500 text-xs uppercase tracking-wider">Underlying records</p>
-          <p className="text-slate-900 text-[42px] leading-none font-semibold mt-5">{indexLoading || recordsLoading ? '…' : crsFmt.num(filteredRecords.length)}</p>
-          <p className="text-slate-500 text-xs mt-3 leading-5">{selectedMeta.description}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-800 text-sm font-semibold mb-1">{counterpartLabel}</p>
-          <p className="text-slate-400 text-xs mb-4">Largest connected entities under the current selection</p>
-          <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={counterpartRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={counterpartAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
-                {counterpartRanking.map((row) => (
-                  <Cell key={row.label} fill="#0F766E" fillOpacity={0.84} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-800 text-sm font-semibold mb-1">{relationshipLabel}</p>
-          <p className="text-slate-400 text-xs mb-4">
-            {entityType === 'donor'
-              ? 'How this funding source breaks down across reported agencies and financing windows'
-              : entityType === 'agency'
-                ? 'Which funding sources are using this agency / financing window label'
-                : 'Agencies and financing windows most associated with this selection'}
-          </p>
-          <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={relationshipRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={relationshipAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
-                {relationshipRanking.map((row) => (
-                  <Cell key={row.label} fill="#2563EB" fillOpacity={0.78} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Mode Mix</p>
-          <p className="text-slate-400 text-xs mb-4">Transport composition inside the selected entity</p>
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={modeRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={16} />} tickLine={false} axisLine={false} width={modeAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
-                {modeRanking.map((row) => (
-                  <Cell key={row.label} fill="#059669" fillOpacity={0.84} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Financing Mix</p>
-          <p className="text-slate-400 text-xs mb-4">How support is delivered into this selected entity</p>
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={flowRanking} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={flowAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={22}>
-                {flowRanking.map((row) => (
-                  <Cell key={row.label} fill="#10B981" fillOpacity={0.84} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Table2 size={14} className="text-emerald-600" />
-            <div>
-              <p className="text-slate-900 text-sm font-semibold">Underlying Records</p>
-              <p className="text-slate-400 text-xs mt-0.5">
-                Full CRS rows matching the current selection and filters. Click a row to open the original entry.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 flex-wrap justify-end">
-            <div className="text-right">
-              <p className="text-[11px] uppercase tracking-wide text-slate-400">Exploring by</p>
-              <p className="text-sm text-slate-700 font-medium">{selectedMeta.label}</p>
-            </div>
-            <label className="text-xs text-slate-500">Rows per page</label>
-            <select
-              value={rowsPerPage}
-              onChange={(event) => setRowsPerPage(Number(event.target.value))}
-              className="px-3 py-2 rounded-lg border border-slate-200 text-sm bg-white"
-            >
-              {PAGE_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {indexLoading || recordsLoading ? (
-          <div className="px-5 py-14 text-sm text-slate-500">Loading CRS records for the deep dive…</div>
-        ) : recordsError ? (
-          <div className="px-5 py-14 text-sm text-rose-600">{recordsError}</div>
-        ) : (
-          <>
-            <div className="px-5 py-3 text-xs text-slate-500 border-b border-slate-100 flex items-center justify-between">
-              <span>
-                Showing {(currentPage - 1) * rowsPerPage + (pagedRecords.length ? 1 : 0)}–
-                {Math.min(currentPage * rowsPerPage, filteredRecords.length)} of {filteredRecords.length} records
-              </span>
-              <span>{selectedMeta.label}: {selectedEntity || '—'}</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr className="text-left text-slate-500 text-xs uppercase tracking-wide">
-                    <th className="px-4 py-3 font-medium">Year</th>
-                    <th className="px-4 py-3 font-medium">Donor</th>
-                    <th className="px-4 py-3 font-medium">Agency</th>
-                    <th className="px-4 py-3 font-medium">Recipient</th>
-                    <th className="px-4 py-3 font-medium">Mode</th>
-                    <th className="px-4 py-3 font-medium">Flow</th>
-                    <th className="px-4 py-3 font-medium">Amount</th>
-                    <th className="px-4 py-3 font-medium">Title / Description</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pagedRecords.map((record) => (
-                    <tr
-                      key={record.id}
-                      className="border-b border-slate-100 align-top cursor-pointer hover:bg-slate-50"
-                      onClick={() => setActiveRecord(record)}
-                    >
-                      <td className="px-4 py-3 text-slate-600">{record.year ?? '—'}</td>
-                      <td className="px-4 py-3 text-slate-800 font-medium">{record.donor}</td>
-                      <td className="px-4 py-3 text-slate-600">{record.agency}</td>
-                      <td className="px-4 py-3 text-slate-600">
-                        <div>{record.recipient}</div>
-                        <div className="text-xs text-slate-400 mt-0.5">{record.region}</div>
-                      </td>
-                      <td className="px-4 py-3 text-slate-600">
-                        <div>{record.mode}</div>
-                        {record.mode_detail && record.mode_detail !== record.mode ? (
-                          <div className="text-xs text-slate-400 mt-0.5">{record.mode_detail}</div>
-                        ) : null}
-                      </td>
-                      <td className="px-4 py-3 text-slate-600">{record.flow}</td>
-                      <td className="px-4 py-3 text-slate-800 font-medium">{crsFmt.usdM(record[measure])}</td>
-                      <td className="px-4 py-3 text-slate-600 max-w-[420px]">
-                        <div className="font-medium text-slate-800">{record.title || 'Untitled record'}</div>
-                        <div className="text-xs text-slate-500 mt-1">{record.short_description || 'No description available.'}</div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="px-5 py-4 border-t border-slate-100 flex items-center justify-between">
-              <p className="text-xs text-slate-500">Page {currentPage} of {totalPages}</p>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <button
-                  onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-600 disabled:opacity-50"
-                >
-                  Next
-                </button>
               </div>
-            </div>
-          </>
-        )}
-      </div>
-
-      <Sheet open={Boolean(activeRecord)} onOpenChange={(open) => !open && setActiveRecord(null)}>
-        <SheetContent side="right" className="sm:max-w-xl bg-white">
-          {activeRecord ? (
-            <>
-              <SheetHeader className="border-b border-slate-100">
-                <SheetTitle className="text-slate-900">{activeRecord.title || 'Untitled CRS entry'}</SheetTitle>
-                <SheetDescription className="text-slate-500">
-                  Full original-entry detail for the selected CRS transport record.
-                </SheetDescription>
-              </SheetHeader>
-              <div className="p-5 space-y-5 overflow-y-auto">
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">Commitment</p>
-                    <p className="text-slate-900 text-sm font-semibold mt-1">{crsFmt.usdM(activeRecord.commitment)}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">Disbursement</p>
-                    <p className="text-slate-900 text-sm font-semibold mt-1">{crsFmt.usdM(activeRecord.disbursement)}</p>
-                  </div>
+            ) : (
+              <div className="space-y-6 animate-in fade-in duration-500">
+                {/* Profile Header Card */}
+                <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                   <div className="relative z-10">
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/30">
+                        {ENTITY_META[entityType].label} PROFILE
+                      </span>
+                      <h2 className="text-4xl font-black tracking-tighter mt-6 mb-2 leading-none uppercase">{selectedEntity}</h2>
+                      <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">Global Transport Portfolio Deep Dive</p>
+                   </div>
+                   <div className="flex gap-8 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 relative z-10">
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
+                        <p className="text-3xl font-black text-white tabular-nums">{crsFmt.usdM(stats[measure])}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Records</p>
+                        <p className="text-3xl font-black text-white tabular-nums">{crsFmt.num(stats.count)}</p>
+                      </div>
+                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Donor</p>
-                    <p className="text-slate-900">{activeRecord.donor}</p>
-                    <p className="text-slate-500 text-xs mt-1">Top-level funding source</p>
-                    {activeRecord.donor_original && activeRecord.donor_original !== activeRecord.donor ? (
-                      <p className="text-slate-500 text-xs mt-1">Original: {activeRecord.donor_original}</p>
-                    ) : null}
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Agency</p>
-                    <p className="text-slate-900">{activeRecord.agency}</p>
-                    <p className="text-slate-500 text-xs mt-1">Reported agency / financing window label</p>
-                    {activeRecord.agency_original && activeRecord.agency_original !== activeRecord.agency ? (
-                      <p className="text-slate-500 text-xs mt-1">Original: {activeRecord.agency_original}</p>
-                    ) : null}
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Recipient</p>
-                    <p className="text-slate-900">{activeRecord.recipient}</p>
-                    <p className="text-slate-500 text-xs mt-1">
-                      {activeRecord.recipient_scope} • {activeRecord.region}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Year</p>
-                    <p className="text-slate-900">{activeRecord.year ?? '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Mode</p>
-                    <p className="text-slate-900">{activeRecord.mode}</p>
-                    <p className="text-slate-500 text-xs mt-1">{activeRecord.mode_detail || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Flow</p>
-                    <p className="text-slate-900">{activeRecord.flow}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3 text-sm">
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Short description</p>
-                    <p className="text-slate-700 leading-6">{activeRecord.short_description || 'No short description available.'}</p>
-                  </div>
-                  {activeRecord.long_description ? (
-                    <div>
-                      <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Long description</p>
-                      <p className="text-slate-700 leading-6 whitespace-pre-wrap">{activeRecord.long_description}</p>
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* 1. Momentum Trend */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Portfolio Momentum</p>
+                       <p className="text-xs text-slate-400 font-bold mb-6">Historical investment trajectory ($M USD)</p>
+                       <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                             <AreaChart data={yearlySeries} margin={{ left: 10, right: 30, bottom: 40 }}>
+                                <defs>
+                                   <linearGradient id="colorCommit" x1="0" y1="0" x2="0" y2="1">
+                                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
+                                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                   </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="year" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Reporting Year" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                </XAxis>
+                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                </YAxis>
+                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Legend 
+                                   verticalAlign="top" 
+                                   align="right" 
+                                   iconType="circle" 
+                                   wrapperStyle={{ fontSize: '9px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', paddingBottom: '20px' }}
+                                />
+                                <Area name="Commitment" type="monotone" dataKey="commitment" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorCommit)" />
+                                <Area name="Disbursement" type="monotone" dataKey="disbursement" stroke="#10b981" strokeWidth={1} fill="transparent" strokeDasharray="4 4" />
+                             </AreaChart>
+                          </ResponsiveContainer>
+                       </div>
                     </div>
-                  ) : null}
-                </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Purpose</p>
-                    <p className="text-slate-900">{activeRecord.purpose || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Sector</p>
-                    <p className="text-slate-900">{activeRecord.sector || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Finance type</p>
-                    <p className="text-slate-900">{activeRecord.finance_type || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Aid type</p>
-                    <p className="text-slate-900">{activeRecord.aid_type || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Channel</p>
-                    <p className="text-slate-900">{activeRecord.channel || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Channel reported</p>
-                    <p className="text-slate-900">{activeRecord.channel_reported || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Geography</p>
-                    <p className="text-slate-900">{activeRecord.geography || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Income group</p>
-                    <p className="text-slate-900">{activeRecord.income_group || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Expected start</p>
-                    <p className="text-slate-900">{formatDateLabel(activeRecord.expected_start_date)}</p>
-                  </div>
-                  <div>
-                    <p className="text-slate-400 text-xs uppercase tracking-wide mb-1">Completion</p>
-                    <p className="text-slate-900">{formatDateLabel(activeRecord.completion_date)}</p>
-                  </div>
+                    {/* 2. Top Sub-Partners */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">
+                          { (entityType === 'donor' || entityType === 'agency') ? 'Top Recipient Economies' : 'Primary Funding Sources' }
+                       </p>
+                       <p className="text-xs text-slate-400 font-bold mb-6">Core institutional network topography</p>
+                       <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                             <BarChart data={partnershipSeries} layout="vertical" margin={{ left: 10, right: 30, bottom: 40 }}>
+                                <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                </XAxis>
+                                <YAxis type="category" dataKey="label" fontSize={9} fontWeight={800} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Partner Entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                </YAxis>
+                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Bar dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                             </BarChart>
+                          </ResponsiveContainer>
+                       </div>
+                    </div>
+
+                    {/* 3. Strategic Pillar Mix */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Standard Pillar Distribution</p>
+                       <p className="text-xs text-slate-400 font-bold mb-6">Aggregate focus across standardized ATO sectors</p>
+                       <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                             <BarChart data={pillarSeries} margin={{ left: 10, right: 30, bottom: 40 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                <XAxis dataKey="label" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
+                                   <Label value="Standard Transport Pillars" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                </XAxis>
+                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                </YAxis>
+                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Bar dataKey="value" fill="#0f766e" radius={[4, 4, 0, 0]} />
+                             </BarChart>
+                          </ResponsiveContainer>
+                       </div>
+                    </div>
+
+                    {/* 4. Sub-Sector Alignment Matrix */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Strategic Alignment Matrix</p>
+                       <p className="text-xs text-slate-400 font-bold mb-6">Transport Sub-Sector volume vs Sustainability Score (%)</p>
+                       <div className="h-64">
+                          <ResponsiveContainer width="100%" height="100%">
+                             <ScatterChart margin={{ left: 10, right: 30, bottom: 40 }}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                <XAxis type="number" dataKey="volume" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Sub-Sector Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                </XAxis>
+                                <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
+                                   <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                </YAxis>
+                                <Tooltip 
+                                   cursor={{ strokeDasharray: '3 3' }}
+                                   content={({ active, payload }) => {
+                                      if (active && payload && payload.length) {
+                                         const data = payload[0].payload;
+                                         return (
+                                            <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-xl">
+                                               <p className="text-[11px] font-black text-slate-900 uppercase mb-1">{data.label}</p>
+                                               <p className="text-[10px] text-slate-500 font-bold">
+                                                 Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
+                                               </p>
+                                               <p className="text-[10px] text-slate-500 font-bold">
+                                                 Sustainability: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
+                                               </p>
+                                            </div>
+                                         );
+                                      }
+                                      return null;
+                                   }}
+                                />
+                                <Scatter data={bubbleData} fill="#10b981" fillOpacity={0.5} />
+                             </ScatterChart>
+                          </ResponsiveContainer>
+                       </div>
+                    </div>
+                 </div>
+
+                 {/* Key Sub-Mode Comparison */}
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                   <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+                     <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Granular Portfolio Focus</p>
+                     <p className="text-xs text-slate-400 font-bold mb-6">Top 10 specialized transport sub-modes</p>
+                     <div className="h-[400px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={sectorMix} layout="vertical" margin={{ left: 10, right: 60, bottom: 40 }}>
+                            <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                               <Label value="Project Volumes ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                            </XAxis>
+                            <YAxis type="category" dataKey="name" fontSize={9} fontWeight={800} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
+                            <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
+                            <Bar dataKey="value" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                     </div>
+                   </div>
+
+                   <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col items-center justify-center gap-6">
+                      <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest w-full text-left mb-1">Sustainability Alignment Score</p>
+                      <p className="text-xs text-slate-400 font-bold w-full text-left mb-6">Share of projects with thematic markers</p>
+                      <div className="relative w-48 h-48">
+                         <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90">
+                            <circle cx="96" cy="96" r="80" fill="transparent" stroke="#f1f5f9" strokeWidth="20" />
+                            <circle 
+                               cx="96" cy="96" r="80" fill="transparent" stroke="#10b981" strokeWidth="20" 
+                               strokeDasharray={`${(stats.susCount / Math.max(stats.count, 1)) * 502} 502`}
+                               strokeLinecap="round"
+                            />
+                         </svg>
+                         <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-4xl font-black text-slate-900 tabular-nums">{((stats.susCount / Math.max(stats.count, 1)) * 100).toFixed(1)}%</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Direct Match</span>
+                         </div>
+                      </div>
+                      <div className="text-center px-10">
+                         <div className="grid grid-cols-3 gap-8 mt-4">
+                            <div>
+                               <p className="text-md font-black text-slate-900">{stats.mitCount}</p>
+                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Climate</p>
+                            </div>
+                            <div>
+                               <p className="text-md font-black text-slate-900">{stats.gndCount}</p>
+                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Gender</p>
+                            </div>
+                            <div>
+                               <p className="text-md font-black text-slate-900">{stats.count}</p>
+                               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Total</p>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                 </div>
+
+                {/* Transaction Ledger */}
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                   <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <p className="text-slate-900 text-sm font-bold">Transaction Ledger</p>
+                        <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-bold text-slate-500">{filteredRecords.length} results</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                         <div className="flex items-center gap-1.5 h-7">
+                            <button 
+                               onClick={() => setPage(p => Math.max(1, p - 1))} 
+                               disabled={page === 1} 
+                               className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
+                            >←</button>
+                            <span className="text-[10px] font-black text-slate-600 w-12 text-center">{page}</span>
+                            <button 
+                               onClick={() => setPage(p => p + 1)} 
+                               disabled={page >= Math.ceil(filteredRecords.length / rowsPerPage)} 
+                               className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
+                            >→</button>
+                         </div>
+                      </div>
+                   </div>
+                   <div className="overflow-x-auto min-h-[400px]">
+                     {recordsLoading ? (
+                       <div className="p-20 flex flex-col items-center justify-center gap-4">
+                          <div className="w-8 h-8 border-3 border-slate-100 border-t-blue-500 rounded-full animate-spin" />
+                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Streaming Ledger Fragments...</p>
+                       </div>
+                     ) : (
+                       <table className="w-full border-collapse">
+                         <thead>
+                           <tr className="bg-slate-50/20 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                             <th className="px-6 py-4 text-left">Year</th>
+                             <th className="px-6 py-4 text-left">Donor / Agency</th>
+                             <th className="px-6 py-4 text-left">Amount</th>
+                             <th className="px-6 py-4 text-left">Project Title</th>
+                           </tr>
+                         </thead>
+                         <tbody className="divide-y divide-slate-50">
+                           {pagedRecords.map((record) => (
+                             <tr key={record.id} onClick={() => setActiveRecord(record)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
+                               <td className="px-6 py-4 text-[11px] font-bold text-slate-500 tabular-nums">{record.year}</td>
+                               <td className="px-6 py-4">
+                                  <div className="max-w-[200px]">
+                                    <p className="text-[11px] font-black text-slate-800 line-clamp-1">{record.donor}</p>
+                                    <p className="text-[10px] text-slate-400 font-bold truncate">{record.agency}</p>
+                                  </div>
+                               </td>
+                               <td className="px-6 py-4 text-[11px] font-black text-slate-900 tabular-nums">
+                                  {crsFmt.usdM(record[activeMeasure] || 0)}
+                               </td>
+                               <td className="px-6 py-4">
+                                  <p className="text-[11px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
+                                  <p className="text-[9px] text-slate-400 font-medium uppercase mt-0.5">{record.mode} • {record.purpose}</p>
+                               </td>
+                             </tr>
+                           ))}
+                         </tbody>
+                       </table>
+                     )}
+                   </div>
                 </div>
               </div>
-            </>
-          ) : null}
-        </SheetContent>
-      </Sheet>
+            )}
+          </div>
+        </div>
+
+        <Sheet open={!!activeRecord} onOpenChange={() => setActiveRecord(null)}>
+          <SheetContent className="sm:max-w-xl border-l border-slate-200 bg-white/95 backdrop-blur-xl p-0">
+             {activeRecord && (
+                <div className="h-full flex flex-col">
+                   <div className="bg-slate-900 p-8 text-white">
+                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg shadow-blue-500/20">Project Detail Review</span>
+                      <h2 className="text-2xl font-black tracking-tighter mt-4 leading-tight">{activeRecord.title}</h2>
+                   </div>
+                   <div className="flex-1 overflow-y-auto p-8 space-y-8">
+                      <div className="grid grid-cols-2 gap-4">
+                         <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100/50">
+                            <p className="text-[10px] font-bold text-blue-600 uppercase mb-1">Commitment</p>
+                            <p className="text-xl font-black text-blue-900 tabular-nums">{crsFmt.usdM(activeRecord.commitment)}</p>
+                         </div>
+                         <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100/50">
+                            <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Disbursement</p>
+                            <p className="text-xl font-black text-emerald-900 tabular-nums">{crsFmt.usdM(activeRecord.disbursement)}</p>
+                         </div>
+                      </div>
+                      <div className="space-y-4">
+                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Institutional Identification</h4>
+                         <div className="grid grid-cols-2 gap-4">
+                            <div>
+                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Source Donor</p>
+                               <p className="text-xs font-bold text-slate-800">{activeRecord.donor}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Reporting Agency</p>
+                               <p className="text-xs font-bold text-slate-800">{activeRecord.agency}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Recipient Economy</p>
+                               <p className="text-xs font-bold text-slate-800">{activeRecord.recipient}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Transport Mode</p>
+                               <p className="text-xs font-bold text-slate-800">{activeRecord.mode}</p>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="space-y-4">
+                         <h4 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
+                           <Info size={14} className="text-slate-400" /> Narrative Metadata
+                         </h4>
+                         <p className="text-sm leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
+                           {activeRecord.short_description || "No granular descriptive metadata available for this transaction."}
+                         </p>
+                      </div>
+                   </div>
+                </div>
+             )}
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 }

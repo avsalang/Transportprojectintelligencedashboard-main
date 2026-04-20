@@ -6,8 +6,7 @@ import { CRSGlobalFilters } from './CRSGlobalFilters';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Overview', icon: TrendingUp, exact: true },
-  { to: '/geography', label: 'Geography', icon: Map, exact: false },
-  { to: '/flows', label: 'Flows', icon: Network, exact: false },
+  { to: '/insights', label: 'Strategic Insights', icon: Network, exact: false },
   { to: '/profiles', label: 'Deep Dive', icon: PieChart, exact: false },
 ];
 

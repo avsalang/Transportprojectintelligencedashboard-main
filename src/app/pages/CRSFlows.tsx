@@ -9,6 +9,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  Label,
 } from 'recharts';
 import { estimateCategoryAxisWidth, TruncatedCategoryTick, WrappedAxisTick } from '../components/ChartTicks';
 import { crsFmt } from '../data/crsData';

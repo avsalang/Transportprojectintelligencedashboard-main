@@ -1,11 +1,13 @@
 import { CRS_COUNTRY_MAP_POINTS, CRS_FACTS, CRSFact } from '../data/crsData';
 
-export type CRSMeasure = 'commitment' | 'disbursement';
+export type CRSMeasure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
 
 type AggregateRow = {
   label: string;
   commitment: number;
   disbursement: number;
+  commitment_defl: number;
+  disbursement_defl: number;
   count: number;
 };
 
@@ -27,6 +29,8 @@ export function summarizeFacts(facts: CRSFact[]) {
   const regionalRecipients = new Set<string>();
   let commitment = 0;
   let disbursement = 0;
+  let commitment_defl = 0;
+  let disbursement_defl = 0;
   let count = 0;
 
   facts.forEach((fact) => {
@@ -36,17 +40,39 @@ export function summarizeFacts(facts: CRSFact[]) {
     if (fact.recipient_scope === 'regional') regionalRecipients.add(fact.recipient);
     commitment += fact.commitment;
     disbursement += fact.disbursement;
+    commitment_defl += fact.commitment_defl ?? fact.commitment;
+    disbursement_defl += fact.disbursement_defl ?? fact.disbursement;
     count += fact.count;
   });
+
+  // Calculate sustainable totals (any of Big 6 markers > 0)
+  const sustainableFacts = facts.filter(f => 
+    (f.climate_mitigation ?? 0) > 0 || 
+    (f.climate_adaptation ?? 0) > 0 || 
+    (f.gender ?? 0) > 0 ||
+    (f.drr ?? 0) > 0 ||
+    (f.biodiversity ?? 0) > 0 ||
+    (f.environment ?? 0) > 0
+  );
+  const sustainableStats = sustainableFacts.reduce((acc, f) => ({
+    commitment: acc.commitment + f.commitment,
+    commitment_defl: acc.commitment_defl + (f.commitment_defl ?? f.commitment),
+    count: acc.count + f.count
+  }), { commitment: 0, commitment_defl: 0, count: 0 });
 
   return {
     commitment,
     disbursement,
+    commitment_defl,
+    disbursement_defl,
     count,
     donorCount: donors.size,
     recipientCount: recipients.size,
     countryRecipientCount: countryRecipients.size,
     regionalRecipientCount: regionalRecipients.size,
+    sustainableCommitment: sustainableStats.commitment,
+    sustainableCommitmentDefl: sustainableStats.commitment_defl,
+    sustainableCount: sustainableStats.count
   };
 }
 
@@ -62,34 +88,95 @@ export function aggregateFacts(
         label: key,
         commitment: 0,
         disbursement: 0,
+        commitment_defl: 0,
+        disbursement_defl: 0,
         count: 0,
       });
     }
     const entry = grouped.get(key)!;
     entry.commitment += fact.commitment;
     entry.disbursement += fact.disbursement;
+    entry.commitment_defl += fact.commitment_defl ?? fact.commitment;
+    entry.disbursement_defl += fact.disbursement_defl ?? fact.disbursement;
     entry.count += fact.count;
   });
   return [...grouped.values()].sort((a, b) => b.commitment - a.commitment);
 }
 
 export function buildYearSeries(facts: CRSFact[]) {
-  const byYear = new Map<number, { year: string; commitment: number; disbursement: number; count: number }>();
+  const byYear = new Map<number, { year: string; commitment: number; disbursement: number; commitment_defl: number; disbursement_defl: number; count: number }>();
   facts.forEach((fact) => {
     if (!byYear.has(fact.year)) {
       byYear.set(fact.year, {
         year: String(fact.year),
         commitment: 0,
         disbursement: 0,
+        commitment_defl: 0,
+        disbursement_defl: 0,
         count: 0,
       });
     }
     const entry = byYear.get(fact.year)!;
     entry.commitment += fact.commitment;
     entry.disbursement += fact.disbursement;
+    entry.commitment_defl += fact.commitment_defl ?? fact.commitment;
+    entry.disbursement_defl += fact.disbursement_defl ?? fact.disbursement;
     entry.count += fact.count;
   });
   return [...byYear.values()].sort((a, b) => Number(a.year) - Number(b.year));
+}
+
+export function buildSustainabilityTrend(facts: CRSFact[], isConstant = false) {
+  const byYear = new Map<number, { 
+    year: string; 
+    sustainable: number; 
+    total: number;
+    mitigation: number;
+    adaptation: number;
+    gender: number;
+    drr: number;
+    biodiversity: number;
+    environment: number;
+  }>();
+  
+  facts.forEach((fact) => {
+    if (!byYear.has(fact.year)) {
+      byYear.set(fact.year, { 
+        year: String(fact.year), 
+        sustainable: 0, 
+        total: 0,
+        mitigation: 0,
+        adaptation: 0,
+        gender: 0,
+        drr: 0,
+        biodiversity: 0,
+        environment: 0
+      });
+    }
+    const entry = byYear.get(fact.year)!;
+    const val = isConstant ? (fact.commitment_defl ?? fact.commitment) : fact.commitment;
+    entry.total += val;
+    
+    let isSustainable = false;
+    if ((fact.climate_mitigation ?? 0) > 0) { entry.mitigation += val; isSustainable = true; }
+    if ((fact.climate_adaptation ?? 0) > 0) { entry.adaptation += val; isSustainable = true; }
+    if ((fact.gender ?? 0) > 0) { entry.gender += val; isSustainable = true; }
+    if ((fact.drr ?? 0) > 0) { entry.drr += val; isSustainable = true; }
+    if ((fact.biodiversity ?? 0) > 0) { entry.biodiversity += val; isSustainable = true; }
+    if ((fact.environment ?? 0) > 0) { entry.environment += val; isSustainable = true; }
+    
+    if (isSustainable) {
+      entry.sustainable += val;
+    }
+  });
+  
+  return [...byYear.values()]
+    .sort((a, b) => Number(a.year) - Number(b.year))
+    .map(d => ({ 
+      ...d, 
+      sustainableShare: d.total > 0 ? (d.sustainable / d.total) * 100 : 0,
+      mitigationShare: d.total > 0 ? (d.mitigation / d.total) * 100 : 0
+    }));
 }
 
 export function buildCountryMapPoints(facts: CRSFact[]) {
@@ -236,17 +323,17 @@ export function buildFlowSankeyData(
   const activeRecipients = new Set(agencyRecipientLinks.map((link) => link.targetName));
 
   const nodes = [
-    ...donorTotals.filter((item) => activeDonors.has(item.label)).map((item) => ({ id: `donor::${item.label}`, name: item.label, role: 'donor' })),
-    ...agencyTotals.filter((item) => activeAgencies.has(item.label)).map((item) => ({ id: `agency::${item.label}`, name: item.label, role: 'agency' })),
-    ...recipientTotals.filter((item) => activeRecipients.has(item.label)).map((item) => ({ id: `recipient::${item.label}`, name: item.label, role: 'recipient' })),
+    ...donorTotals.filter((item) => activeDonors.has(item.label)).map((item) => ({ id: `donor::${item.label}`, name: item.label, role: 'donor', globalValue: item[measure] })),
+    ...agencyTotals.filter((item) => activeAgencies.has(item.label)).map((item) => ({ id: `agency::${item.label}`, name: item.label, role: 'agency', globalValue: item[measure] })),
+    ...recipientTotals.filter((item) => activeRecipients.has(item.label)).map((item) => ({ id: `recipient::${item.label}`, name: item.label, role: 'recipient', globalValue: item[measure] })),
   ];
   const nodeIndex = new Map(nodes.map((node, index) => [node.id, index]));
 
   const links = [...donorAgencyLinks, ...agencyRecipientLinks]
     .filter((link) => nodeIndex.has(link.sourceId) && nodeIndex.has(link.targetId))
     .map((link) => ({
-      source: nodeIndex.get(link.sourceId)!,
-      target: nodeIndex.get(link.targetId)!,
+      source: link.sourceId,
+      target: link.targetId,
       sourceName: link.sourceName,
       targetName: link.targetName,
       value: link.value,
@@ -257,7 +344,7 @@ export function buildFlowSankeyData(
     .map((item) => ({
       ...item,
       visibleValue: links
-        .filter((link) => link.source === nodeIndex.get(`donor::${item.label}`))
+        .filter((link) => link.source === `donor::${item.label}`)
         .reduce((sum, link) => sum + link.value, 0),
     }))
     .filter((item) => item.visibleValue > 0)
@@ -272,12 +359,12 @@ export function buildFlowSankeyData(
 
   const agencyLinkTotals = agencyTotals
     .map((item) => {
-      const nodeIdx = nodeIndex.get(`agency::${item.label}`);
+      const nodeId = `agency::${item.label}`;
       const outgoing = links
-        .filter((link) => link.source === nodeIdx)
+        .filter((link) => link.source === nodeId)
         .reduce((sum, link) => sum + link.value, 0);
       const incoming = links
-        .filter((link) => link.target === nodeIdx)
+        .filter((link) => link.target === nodeId)
         .reduce((sum, link) => sum + link.value, 0);
       return {
         ...item,
@@ -298,7 +385,7 @@ export function buildFlowSankeyData(
     .map((item) => ({
       ...item,
       visibleValue: links
-        .filter((link) => link.target === nodeIndex.get(`recipient::${item.label}`))
+        .filter((link) => link.target === `recipient::${item.label}`)
         .reduce((sum, link) => sum + link.value, 0),
     }))
     .filter((item) => item.visibleValue > 0)
@@ -324,4 +411,79 @@ export function getLatestYearChange() {
   const previous = years.at(-2);
   if (!latest || !previous || previous.commitment === 0) return null;
   return ((latest.commitment - previous.commitment) / previous.commitment) * 100;
+}
+
+export function buildStrategicInsights(facts: CRSFact[], activeMeasure: CRSMeasure) {
+  const entityMap = new Map<string, { 
+    label: string, 
+    commitment: number, 
+    disbursement: number, 
+    count: number, 
+    sustainableCommitment: number,
+    modes: Map<string, { commitment: number, disbursement: number }> 
+  }>();
+
+  const STANDARD_MODES = ['Road', 'Rail', 'Aviation', 'Water', 'Other'];
+
+  facts.forEach(f => {
+    const dKey = f.donor;
+    let mRaw = f.mode || 'Other';
+    
+    // Mapping to standard categories
+    let mKey = 'Other';
+    const lowerRaw = mRaw.toLowerCase();
+    if (lowerRaw.includes('road')) mKey = 'Road';
+    else if (lowerRaw.includes('rail')) mKey = 'Rail';
+    else if (lowerRaw.includes('air') || lowerRaw.includes('aviation')) mKey = 'Aviation';
+    else if (lowerRaw.includes('water') || lowerRaw.includes('sea') || lowerRaw.includes('river')) mKey = 'Water';
+    else mKey = 'Other';
+
+    if (!entityMap.has(dKey)) {
+      entityMap.set(dKey, { 
+        label: dKey, 
+        commitment: 0, 
+        disbursement: 0, 
+        count: 0, 
+        sustainableCommitment: 0, 
+        modes: new Map() 
+      });
+    }
+    const entry = entityMap.get(dKey)!;
+    entry.commitment += f.commitment;
+    entry.disbursement += f.disbursement;
+    entry.count += f.count;
+    
+    const isSustainable = 
+      (f.climate_mitigation ?? 0) > 0 || 
+      (f.climate_adaptation ?? 0) > 0 || 
+      (f.gender ?? 0) > 0 ||
+      (f.drr ?? 0) > 0 ||
+      (f.biodiversity ?? 0) > 0 ||
+      (f.environment ?? 0) > 0;
+
+    if (isSustainable) {
+      entry.sustainableCommitment += f.commitment;
+    }
+
+    if (!entry.modes.has(mKey)) {
+      entry.modes.set(mKey, { commitment: 0, disbursement: 0 });
+    }
+    const mEntry = entry.modes.get(mKey)!;
+    mEntry.commitment += f.commitment;
+    mEntry.disbursement += f.disbursement;
+  });
+
+  const entities = [...entityMap.values()].sort((a,b) => b.commitment - a.commitment);
+
+  // Prep Stacked Data for Top 10 Donors
+  const topEntities = entities.slice(0, 10);
+  const stackedData = topEntities.map(e => {
+    const row: any = { label: e.label, total: e.commitment };
+    e.modes.forEach((val, mode) => { 
+        row[mode] = val[activeMeasure.includes('commitment') ? 'commitment' : 'disbursement']; 
+    });
+    return row;
+  });
+
+  return { entities, stackedData, modes: STANDARD_MODES };
 }

@@ -165,8 +165,8 @@ def load_country_coords():
 def main():
     country_coords = load_country_coords()
 
-    facts = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "count": 0})
-    year_totals = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0})
+    facts = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0})
+    year_totals = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0})
     donor_totals = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "count": 0})
     recipient_totals = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "count": 0, "scope": "", "region": "", "detail": ""})
     mode_totals = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "count": 0})
@@ -190,6 +190,19 @@ def main():
             flow = clean_text(row.get("flow_name")) or "Unknown"
             commitment = parse_float(row.get("usd_commitment"))
             disbursement = parse_float(row.get("usd_disbursement"))
+            commitment_defl = parse_float(row.get("usd_commitment_defl"))
+            disbursement_defl = parse_float(row.get("usd_disbursement_defl"))
+            
+            # Sustainability markers (usually 0, 1, 2)
+            gender = parse_int(row.get("gender")) or 0
+            climate_mitigation = parse_int(row.get("climate_mitigation")) or 0
+            climate_adaptation = parse_int(row.get("climate_adaptation")) or 0
+            environment = parse_int(row.get("environment")) or 0
+            biodiversity = parse_int(row.get("biodiversity")) or 0
+            drr = parse_int(row.get("drr")) or 0
+
+            title = clean_text(row.get("project_title")) or ""
+            description = clean_text(row.get("short_description")) or ""
 
             key = (
                 year or 0,
@@ -202,14 +215,24 @@ def main():
                 mode,
                 mode_detail,
                 flow,
+                climate_mitigation,
+                climate_adaptation,
+                gender,
+                drr,
+                biodiversity,
+                environment,
             )
             facts[key]["commitment"] += commitment
             facts[key]["disbursement"] += disbursement
+            facts[key]["commitment_defl"] += commitment_defl
+            facts[key]["disbursement_defl"] += disbursement_defl
             facts[key]["count"] += 1
 
             if year is not None:
                 year_totals[year]["commitment"] += commitment
                 year_totals[year]["disbursement"] += disbursement
+                year_totals[year]["commitment_defl"] += commitment_defl
+                year_totals[year]["disbursement_defl"] += disbursement_defl
 
             donor_totals[donor]["commitment"] += commitment
             donor_totals[donor]["disbursement"] += disbursement
@@ -244,8 +267,10 @@ def main():
                         "flow": flow,
                         "commitment": commitment,
                         "disbursement": disbursement,
-                        "title": clean_text(row.get("project_title")) or "",
-                        "description": clean_text(row.get("short_description")) or "",
+                        "commitment_defl": commitment_defl,
+                        "disbursement_defl": disbursement_defl,
+                        "title": title,
+                        "description": description,
                     }
                 )
 
@@ -268,9 +293,12 @@ def main():
                 "flow": flow,
                 "finance_type": clean_text(row.get("finance_t")) or "",
                 "aid_type": clean_text(row.get("aid_t")) or "",
-                "commitment": round(commitment, 4),
-                "disbursement": round(disbursement, 4),
-                "title": clean_text(row.get("project_title")) or "",
+                "commitment": round(commitment, 2),
+                "disbursement": round(disbursement, 2),
+                "commitment_defl": round(commitment_defl, 2),
+                "disbursement_defl": round(disbursement_defl, 2),
+                "title": title,
+                "description": description,
                 "short_description": clean_text(row.get("short_description")) or "",
                 "purpose": clean_text(row.get("purpose_name")) or "",
                 "sector": clean_text(row.get("sector_name")) or "",
@@ -282,6 +310,14 @@ def main():
                 "long_description": clean_text(row.get("long_description")) or "",
                 "mode": mode,
                 "mode_detail": mode_detail,
+                "gender": gender,
+                "climate_mitigation": climate_mitigation,
+                "climate_adaptation": climate_adaptation,
+                "environment": environment,
+                "biodiversity": biodiversity,
+                "drr": drr,
+                "grant_equiv": parse_float(row.get("grant_equiv")),
+                "usd_grant_equiv": parse_float(row.get("usd_grant_equiv")),
             }
             all_records.append(record_row)
 
@@ -296,10 +332,18 @@ def main():
                         "mode": mode,
                         "mode_detail": mode_detail,
                         "flow": flow,
-                        "commitment": round(commitment, 4),
-                        "disbursement": round(disbursement, 4),
-                        "title": clean_text(row.get("project_title")) or "",
-                        "description": clean_text(row.get("short_description")) or "",
+                        "commitment": round(commitment, 2),
+                        "disbursement": round(disbursement, 2),
+                        "commitment_defl": round(commitment_defl, 2),
+                        "disbursement_defl": round(disbursement_defl, 2),
+                        "title": title,
+                        "description": description,
+                        "climate_mitigation": climate_mitigation,
+                        "climate_adaptation": climate_adaptation,
+                        "gender": gender,
+                        "drr": drr,
+                        "biodiversity": biodiversity,
+                        "environment": environment,
                     }
                 )
 
@@ -317,9 +361,17 @@ def main():
             "flow": flow,
             "commitment": round(vals["commitment"], 4),
             "disbursement": round(vals["disbursement"], 4),
+            "commitment_defl": round(vals["commitment_defl"], 4),
+            "disbursement_defl": round(vals["disbursement_defl"], 4),
+            "climate_mitigation": climate_mitigation,
+            "climate_adaptation": climate_adaptation,
+            "gender": gender,
+            "drr": drr,
+            "biodiversity": biodiversity,
+            "environment": environment,
             "count": vals["count"],
         }
-        for (year, donor, agency, recipient, recipient_scope, recipient_detail, region, mode, mode_detail, flow), vals in facts.items()
+        for (year, donor, agency, recipient, recipient_scope, recipient_detail, region, mode, mode_detail, flow, climate_mitigation, climate_adaptation, gender, drr, biodiversity, environment), vals in facts.items()
     ]
 
     year_series = [
@@ -415,6 +467,32 @@ def main():
         )
         country_records_export[recipient] = sorted_records[:80]
 
+
+    # Simple Sankey data generation (Donor -> Mode -> Region)
+    def build_sankey_data(records):
+        node_map = {}
+        def get_node(name, category):
+            key = f"{category}:{name}"
+            if key not in node_map:
+                node_map[key] = len(node_map)
+            return node_map[key]
+
+        links = defaultdict(float)
+        for r in records:
+            d_idx = get_node(r['donor'], 'donor')
+            m_idx = get_node(r['mode'], 'mode')
+            r_idx = get_node(r['region'], 'region')
+            links[(d_idx, m_idx)] += r.get('commitment', 0)
+            links[(m_idx, r_idx)] += r.get('commitment', 0)
+
+        nodes = [{"id": k, "name": k.split(':', 1)[1], "category": k.split(':', 1)[0]} for k, v in sorted(node_map.items(), key=lambda x: x[1])]
+        return {
+            "nodes": nodes,
+            "links": [{"source": s, "target": t, "value": round(v, 2)} for (s, t), v in links.items() if v > 0]
+        }
+
+    sankey_data = build_sankey_data(all_records)
+
     file_text = f"""// Auto-generated from crs_transport_dashboard_ready.csv
 // Do not edit manually. Rebuild with build_crs_dashboard_data.py.
 
@@ -432,6 +510,14 @@ export interface CRSFact {{
   commitment: number;
   disbursement: number;
   count: number;
+  commitment_defl?: number;
+  disbursement_defl?: number;
+  gender?: number;
+  climate_mitigation?: number;
+  climate_adaptation?: number;
+  drr?: number;
+  biodiversity?: number;
+  environment?: number;
 }}
 
 export interface CRSRecipientSummary {{
@@ -457,8 +543,16 @@ export interface CRSCountryRecord {{
   flow: string;
   commitment: number;
   disbursement: number;
+  commitment_defl?: number;
+  disbursement_defl?: number;
   title: string;
   description: string;
+  climate_mitigation?: number;
+  climate_adaptation?: number;
+  gender?: number;
+  drr?: number;
+  biodiversity?: number;
+  environment?: number;
 }}
 
 export const CRS_MODE_COLORS: Record<string, string> = {to_js(MODE_COLORS)};
@@ -477,6 +571,7 @@ export const CRS_REGION_OPTIONS = {to_js(region_options)};
 export const CRS_REGION_DETAIL_OPTIONS = {to_js(region_detail_options)};
 export const CRS_TOP_RECORDS = {to_js(top_records)};
 export const CRS_COUNTRY_RECORDS: Record<string, CRSCountryRecord[]> = {to_js(country_records_export)};
+export const CRS_SANKEY_DATA = {to_js(sankey_data)};
 
 export const crsFmt = {{
   usdM: (v: number): string => {{

@@ -1,12 +1,19 @@
-import { Filter, Layers, X } from 'lucide-react';
+import { Filter, X, Leaf, User } from 'lucide-react';
 import { useCRSFilters } from '../context/CRSFilterContext';
-
-function toggleValue<T>(values: T[], value: T) {
-  return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
-}
+import { CheckboxDropdown } from './CheckboxDropdown';
+import { TimeSlider } from './TimeSlider';
 
 export function CRSGlobalFilters() {
-  const { filters, setFilters, resetFilters, donorOptions, regionOptions, recipientOptions, modeOptions, filteredFacts } = useCRSFilters();
+  const { 
+    filters, 
+    setFilters, 
+    resetFilters, 
+    donorOptions, 
+    regionOptions, 
+    recipientOptions, 
+    modeOptions, 
+    filteredFacts 
+  } = useCRSFilters();
 
   const activeCount =
     filters.donors.length +
@@ -14,182 +21,118 @@ export function CRSGlobalFilters() {
     filters.recipients.length +
     filters.modes.length +
     filters.scopes.length +
-    (filters.yearMin ? 1 : 0) +
-    (filters.yearMax ? 1 : 0);
+    (filters.yearMin > 1973 ? 1 : 0) +
+    (filters.yearMax < 2024 ? 1 : 0);
 
   return (
-    <div className="px-6 pt-5 pb-4 border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-20">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Filter size={15} className="text-slate-500" />
-            <p className="text-slate-800 text-sm font-semibold">CRS Filters</p>
-            {activeCount > 0 && (
-              <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[11px] font-medium">
-                {activeCount} active
-              </span>
-            )}
+    <div className="px-6 py-4 border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                <Filter size={14} className="text-blue-600" />
+              </div>
+              <h2 className="text-slate-800 text-sm font-bold tracking-tight">Financial Intelligence Filters</h2>
+              {activeCount > 0 && (
+                <span className="px-2 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold">
+                  {activeCount} ACTIVE
+                </span>
+              )}
+            </div>
+            <p className="text-slate-500 text-[11px] mt-0.5 font-medium">
+              Analyzing <span className="text-slate-900 font-bold">{filteredFacts.length.toLocaleString()}</span> granular transaction lines
+            </p>
           </div>
-          <p className="text-slate-500 text-xs mt-1">
-            {filteredFacts.length.toLocaleString()} aggregated donor-recipient facts in current view
-          </p>
+          
+          <div className="h-8 w-px bg-slate-200 mx-2" />
+
+          {/* USD Toggle Switch */}
+          <div className="flex items-center gap-3 bg-slate-50 p-1 rounded-xl border border-slate-200">
+            <button 
+              onClick={() => setFilters(prev => ({ ...prev, isConstantUSD: false }))}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${!filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              CURRENT USD
+            </button>
+            <button 
+              onClick={() => setFilters(prev => ({ ...prev, isConstantUSD: true }))}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all ${filters.isConstantUSD ? 'bg-white text-blue-600 shadow-sm ring-1 ring-slate-200' : 'text-slate-400 hover:text-slate-600'}`}
+            >
+              CONSTANT USD
+            </button>
+          </div>
         </div>
+
         {activeCount > 0 && (
-          <button onClick={resetFilters} className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1">
-            <X size={12} />
-            Clear filters
+          <button 
+            onClick={resetFilters} 
+            className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-all border border-transparent hover:border-slate-200"
+          >
+            <X size={13} className="group-hover:rotate-90 transition-transform" />
+            RESET ALL
           </button>
         )}
       </div>
 
-      <div className="grid grid-cols-6 gap-3 mt-4">
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Donor</p>
-          <select
-            value=""
-            onChange={(e) => {
-              const value = e.target.value;
-              if (!value) return;
-              setFilters((prev) => ({ ...prev, donors: toggleValue(prev.donors, value) }));
-              e.target.value = '';
-            }}
-            className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-          >
-            <option value="">Add donor…</option>
-            {donorOptions.slice(0, 100).map((donor) => (
-              <option key={donor} value={donor}>
-                {donor}
-              </option>
-            ))}
-          </select>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {filters.donors.map((donor) => (
-              <button key={donor} onClick={() => setFilters((prev) => ({ ...prev, donors: prev.donors.filter((d) => d !== donor) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
-                {donor}
-              </button>
-            ))}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-5">
+        <CheckboxDropdown
+          label="Donors"
+          options={donorOptions}
+          selected={filters.donors}
+          onChange={(val) => setFilters(prev => ({ ...prev, donors: val }))}
+        />
+        
+        <CheckboxDropdown
+          label="Regions"
+          options={regionOptions}
+          selected={filters.regions}
+          onChange={(val) => setFilters(prev => ({ ...prev, regions: val }))}
+        />
+
+        <CheckboxDropdown
+          label="Economies"
+          options={recipientOptions}
+          selected={filters.recipients}
+          onChange={(val) => setFilters(prev => ({ ...prev, recipients: val }))}
+        />
+
+        <CheckboxDropdown
+          label="Modes"
+          options={modeOptions}
+          selected={filters.modes}
+          onChange={(val) => setFilters(prev => ({ ...prev, modes: val }))}
+        />
+
+        <div className="lg:col-span-1">
+          <TimeSlider
+            label="Year Range"
+            min={1973}
+            max={2024}
+            yearMin={filters.yearMin}
+            yearMax={filters.yearMax}
+            onChange={(min, max) => setFilters(prev => ({ ...prev, yearMin: min, yearMax: max }))}
+          />
         </div>
 
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Broad region</p>
-          <select
-            value=""
-            onChange={(e) => {
-              const value = e.target.value;
-              if (!value) return;
-              setFilters((prev) => ({ ...prev, regions: toggleValue(prev.regions, value) }));
-              e.target.value = '';
-            }}
-            className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-          >
-            <option value="">Add region…</option>
-            {regionOptions.map((region) => (
-              <option key={region} value={region}>
-                {region}
-              </option>
-            ))}
-          </select>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {filters.regions.map((region) => (
-              <button key={region} onClick={() => setFilters((prev) => ({ ...prev, regions: prev.regions.filter((r) => r !== region) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
-                {region}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Country recipient</p>
-          <select
-            value=""
-            onChange={(e) => {
-              const value = e.target.value;
-              if (!value) return;
-              setFilters((prev) => ({ ...prev, recipients: toggleValue(prev.recipients, value) }));
-              e.target.value = '';
-            }}
-            className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-          >
-            <option value="">Add country recipient…</option>
-            {recipientOptions.map((recipient) => (
-              <option key={recipient} value={recipient}>
-                {recipient}
-              </option>
-            ))}
-          </select>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {filters.recipients.map((recipient) => (
-              <button key={recipient} onClick={() => setFilters((prev) => ({ ...prev, recipients: prev.recipients.filter((r) => r !== recipient) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
-                {recipient}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Mode</p>
-          <select
-            value=""
-            onChange={(e) => {
-              const value = e.target.value;
-              if (!value) return;
-              setFilters((prev) => ({ ...prev, modes: toggleValue(prev.modes, value) }));
-              e.target.value = '';
-            }}
-            className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-          >
-            <option value="">Add mode…</option>
-            {modeOptions.map((mode) => (
-              <option key={mode} value={mode}>
-                {mode}
-              </option>
-            ))}
-          </select>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {filters.modes.map((mode) => (
-              <button key={mode} onClick={() => setFilters((prev) => ({ ...prev, modes: prev.modes.filter((m) => m !== mode) }))} className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[11px]">
-                {mode}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Recipient scope</p>
-          <div className="space-y-1.5">
-            {['economy', 'regional', 'non_country'].map((scope) => (
-              <label key={scope} className="flex items-center gap-2 text-xs text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={filters.scopes.includes(scope)}
-                  onChange={() => setFilters((prev) => ({ ...prev, scopes: toggleValue(prev.scopes, scope) }))}
-                />
-                <Layers size={12} className="text-slate-400" />
-                {scope}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Year</p>
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              placeholder="From"
-              value={filters.yearMin}
-              onChange={(e) => setFilters((prev) => ({ ...prev, yearMin: e.target.value }))}
-              className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-            />
-            <input
-              type="number"
-              placeholder="To"
-              value={filters.yearMax}
-              onChange={(e) => setFilters((prev) => ({ ...prev, yearMax: e.target.value }))}
-              className="w-full px-2 py-1.5 rounded-lg border border-slate-200 text-xs"
-            />
-          </div>
+        <div className="flex flex-col justify-end gap-2.5">
+           <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">
+             Financial Basis
+           </label>
+           <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-xl border border-slate-200">
+             <button 
+                onClick={() => setFilters(prev => ({ ...prev, measure: 'commitment' }))}
+                className={`flex-1 py-1 px-3 rounded-lg text-[10px] font-bold transition-all ${filters.measure === 'commitment' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
+             >
+               COMMITMENTS
+             </button>
+             <button 
+                onClick={() => setFilters(prev => ({ ...prev, measure: 'disbursement' }))}
+                className={`flex-1 py-1 px-3 rounded-lg text-[10px] font-bold transition-all ${filters.measure === 'disbursement' ? 'bg-white text-blue-600 shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600 border border-transparent'}`}
+             >
+               DISBURSEMENTS
+             </button>
+           </div>
         </div>
       </div>
     </div>
