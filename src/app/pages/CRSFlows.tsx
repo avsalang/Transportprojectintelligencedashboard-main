@@ -234,15 +234,16 @@ export function CRSFlows() {
   );
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-slate-900 text-xl font-semibold">Donor-Recipient Flows</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
-            Follow the shape of transport finance from donors into recipient countries and regional recipients.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
+    <div className="p-8 bg-[#F9F9F9] min-h-screen font-opensans">
+      <div className="max-w-[1440px] mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <h1 className="text-[#002147] text-3xl font-black tracking-tighter uppercase font-lato">Donor-Recipient Flows</h1>
+            <p className="text-[#6B7280] text-[13px] mt-2 font-semibold">
+              Follow the shape of transport finance from donor institutions into recipient economies and regional programs.
+            </p>
+          </div>
+        <div className="flex items-center gap-4">
           {activeSelectionLabel ? (
             <button
               onClick={() => {
@@ -250,21 +251,21 @@ export function CRSFlows() {
                 setSelectedAgency(null);
                 setSelectedRecipient(null);
               }}
-              className="px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900"
+              className="px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl border border-[#E5E7EB] bg-white text-[#64748B] hover:text-[#002147] shadow-sm transition-all"
             >
-              Clear {activeSelectionType}
+              Clear {activeSelectionType} Isolate
             </button>
           ) : null}
-          <div className="inline-flex rounded-lg bg-slate-100 p-1">
+          <div className="inline-flex rounded-lg bg-white p-1 border border-[#E5E7EB] shadow-sm">
             <button
               onClick={() => setMeasure('commitment')}
-              className={`px-3 py-1.5 text-xs rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${measure === 'commitment' ? 'bg-[#002147] text-white shadow-md' : 'text-[#94A3B8] hover:text-[#002147]'}`}
             >
               Commitments
             </button>
             <button
               onClick={() => setMeasure('disbursement')}
-              className={`px-3 py-1.5 text-xs rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${measure === 'disbursement' ? 'bg-[#002147] text-white shadow-md' : 'text-[#94A3B8] hover:text-[#002147]'}`}
             >
               Disbursements
             </button>
@@ -272,24 +273,24 @@ export function CRSFlows() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Top Donor to Recipient Flows</p>
-          <p className="text-slate-400 text-xs mb-4">
-            Sankey view limited to the strongest donor, agency, and recipient pathways in the current filter state. Click a donor, agency, or recipient node to isolate it.
+      <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-10">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Institutional Flow Topology</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">
+            Follow the path from funder to implementing agency to recipient economy
           </p>
         {activeSelectionLabel ? (
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700 border border-emerald-200">
-            Showing only {activeSelectionType}: <span className="font-semibold">{activeSelectionLabel}</span>
+          <div className="mb-6 inline-flex items-center gap-3 rounded-full bg-[#00ADEF]/5 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-[#00ADEF] border border-[#00ADEF]/20 shadow-sm">
+            Isolated {activeSelectionType}: <span className="text-[#002147] underline decoration-[#00ADEF] decoration-2 underline-offset-4">{activeSelectionLabel}</span>
           </div>
         ) : null}
         {sankeyData.links.length ? (
           <div className="relative">
-            <ResponsiveContainer width="100%" height={460}>
+            <ResponsiveContainer width="100%" height={500}>
               <Sankey
                 data={coloredSankeyData}
-                nodePadding={26}
-                nodeWidth={14}
-                margin={{ top: 18, right: 240, left: 220, bottom: 18 }}
+                nodePadding={30}
+                nodeWidth={16}
+                margin={{ top: 20, right: 280, left: 240, bottom: 20 }}
                 node={nodeRenderer}
                 link={<FlowLink />}
                 onMouseEnter={handleSankeyMouseEnter}
@@ -298,71 +299,72 @@ export function CRSFlows() {
             </ResponsiveContainer>
             {hoveredItem ? (
               <div
-                className="pointer-events-none absolute z-10 -translate-y-1/2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-sm"
-                style={{ left: Math.min(hoveredItem.x + 12, 980), top: hoveredItem.y }}
+                className="pointer-events-none absolute z-10 -translate-y-1/2 rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-2xl scale-110 transition-transform"
+                style={{ left: Math.min(hoveredItem.x + 16, 900), top: hoveredItem.y }}
               >
-                <div className="font-medium text-slate-700">{hoveredItem.title}</div>
-                <div className="mt-1 text-slate-900">{hoveredItem.value}</div>
-                <div className="mt-0.5 text-slate-500">{hoveredItem.subtitle}</div>
+                <div className="text-[11px] font-black text-[#002147] uppercase tracking-widest font-lato">{hoveredItem.title}</div>
+                <div className="mt-2 text-lg font-black text-[#00ADEF] tabular-nums font-lato">{hoveredItem.value}</div>
+                <div className="mt-0.5 text-[9px] font-black text-[#94A3B8] uppercase tracking-widest">{hoveredItem.subtitle}</div>
               </div>
             ) : null}
           </div>
         ) : (
-          <div className="h-[460px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-sm text-slate-500">
-            No donor-recipient flows are available for the current filters.
+          <div className="h-[460px] rounded-xl bg-[#F9F9F9] border border-[#E5E7EB] flex flex-col items-center justify-center gap-4">
+             <div className="w-12 h-12 rounded-full border-4 border-white border-t-[#00ADEF] animate-spin" />
+             <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">Awaiting Institutional Context...</p>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Top Donors</p>
-          <p className="text-slate-400 text-xs mb-4">Top donors in the current filtered country-recipient portfolio</p>
+      <div className="grid grid-cols-3 gap-8">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Donors</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Funding source distribution</p>
           <ResponsiveContainer width="100%" height={donorChartHeight}>
-            <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+            <BarChart data={topDonors} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 20 }} barCategoryGap={10}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={15}>
                 {topDonors.map((row) => (
-                  <Cell key={row.label} fill="#0F766E" fillOpacity={0.86} />
+                  <Cell key={row.label} fill="#4E79A7" />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Top Agencies</p>
-          <p className="text-slate-400 text-xs mb-4">Top agencies in the current filtered country-recipient portfolio</p>
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Agencies</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Implementing departments</p>
           <ResponsiveContainer width="100%" height={agencyChartHeight}>
-            <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+            <BarChart data={topAgencies} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 20 }} barCategoryGap={10}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={15}>
                 {topAgencies.map((row) => (
-                  <Cell key={row.label} fill={AGENCY_COLOR} fillOpacity={0.86} />
+                  <Cell key={row.label} fill="#00ADEF" />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-xs mb-4">Top recipient countries in the current filtered portfolio</p>
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top economies</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Final portfolio destination</p>
           <ResponsiveContainer width="100%" height={recipientChartHeight}>
-            <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }} barCategoryGap={10}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+            <BarChart data={topRecipients} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 20 }} barCategoryGap={10}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={15}>
                 {topRecipients.map((row) => (
-                  <Cell key={row.label} fill="#059669" fillOpacity={0.86} />
+                  <Cell key={row.label} fill="#59A14F" />
                 ))}
               </Bar>
             </BarChart>
@@ -370,23 +372,21 @@ export function CRSFlows() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-        <p className="text-slate-800 text-sm font-semibold mb-1">Financing Instrument Mix</p>
-        <p className="text-slate-400 text-xs mb-4">How the filtered transport portfolio is delivered</p>
-        <ResponsiveContainer width="100%" height={260}>
-          <BarChart data={flowTypes}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
-            <XAxis dataKey="label" tick={<WrappedAxisTick maxChars={12} />} tickLine={false} axisLine={false} height={78} interval={0} />
-            <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-            <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-            <Bar dataKey={measure} radius={[6, 6, 0, 0]}>
+      <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+        <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Financing Instrument Mix</p>
+        <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Portfolio delivery modalities</p>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={flowTypes} margin={{ left: 10, right: 30, bottom: 40 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+            <XAxis dataKey="label" tick={<WrappedAxisTick maxChars={12} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} height={80} interval={0} />
+            <YAxis tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+            <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+            <Bar dataKey={measure} radius={[6, 6, 0, 0]} maxBarSize={40}>
               {flowTypes.map((row) => (
-                <Cell key={row.label} fill="#10B981" fillOpacity={0.84} />
+                <Cell key={row.label} fill="#002147" />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
-    </div>
   );
 }

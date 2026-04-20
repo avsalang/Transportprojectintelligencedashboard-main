@@ -14,15 +14,15 @@ export function CRSLayout() {
   return (
     <CRSFilterProvider>
       <div className="flex h-screen bg-[#F0F4F8] overflow-hidden">
-        <aside className="w-60 flex-shrink-0 bg-[#0D1B2A] flex flex-col">
+        <aside className="w-60 flex-shrink-0 bg-[#002147] flex flex-col border-r border-white/5">
           <div className="px-5 pt-6 pb-5 border-b border-white/10">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-[#00ADEF] flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
                 <Globe size={16} className="text-white" />
               </div>
               <div>
-                <p className="text-white text-sm font-semibold leading-tight">CRS Transport</p>
-                <p className="text-slate-400 text-[11px] leading-tight">Commitments · Disbursements · Flows</p>
+                <p className="text-white text-sm font-bold leading-tight tracking-tight">CRS Dashboard</p>
+                <p className="text-blue-300 text-[9px] font-black uppercase tracking-widest leading-tight">Institutional Portal</p>
               </div>
             </div>
           </div>
@@ -34,18 +34,18 @@ export function CRSLayout() {
                 to={to}
                 end={exact}
                 className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all group ${
+                   `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all group ${
                     isActive
-                      ? 'bg-emerald-600/20 text-white border border-emerald-500/30'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-white/5 border border-transparent'
+                      ? 'bg-white/10 text-white border border-white/10 shadow-sm'
+                      : 'text-blue-100/60 hover:text-white hover:bg-white/5 border border-transparent'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon size={16} className={isActive ? 'text-emerald-400' : 'text-slate-500 group-hover:text-slate-300'} />
-                    <span>{label}</span>
-                    {isActive && <ChevronRight size={12} className="ml-auto text-emerald-400/60" />}
+                    <Icon size={16} className={isActive ? 'text-[#00ADEF]' : 'text-blue-300/40 group-hover:text-blue-200'} />
+                    <span className="font-semibold">{label}</span>
+                    {isActive && <ChevronRight size={12} className="ml-auto text-blue-400/60" />}
                   </>
                 )}
               </NavLink>

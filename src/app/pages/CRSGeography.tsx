@@ -48,51 +48,50 @@ export function CRSGeography() {
   );
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="p-8 bg-[#F9F9F9] min-h-screen font-opensans">
+      <div className="max-w-[1440px] mx-auto space-y-8">
         <div>
-          <h1 className="text-slate-900 text-xl font-semibold">Recipient Geography</h1>
-          <p className="text-slate-500 text-sm mt-0.5">
-            Country totals on the map, with regional recipients broken out separately for analysis.
+          <h1 className="text-[#002147] text-3xl font-black tracking-tighter uppercase font-lato">Recipient Geography</h1>
+          <p className="text-[#6B7280] text-[13px] mt-2 font-semibold">
+            Country totals on the map, with regional recipients broken out separately for institutional analysis.
           </p>
         </div>
-      </div>
 
-      <div className="grid grid-cols-[1.8fr,1fr] gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
+      <div className="grid grid-cols-[1.8fr,1fr] gap-6">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md overflow-hidden">
+          <div className="px-8 py-6 border-b border-[#F3F4F6] flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
-              <p className="text-slate-900 text-sm font-semibold">Country Totals Map</p>
-              <p className="text-slate-400 text-xs mt-0.5">
+              <p className="text-[#002147] text-sm font-black uppercase font-lato">Country Totals Map</p>
+              <p className="text-[#94A3B8] text-[11px] mt-1 font-semibold">
                 Click a country point to sync the geography profile card.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="inline-flex rounded-lg bg-slate-100 p-1">
+              <div className="inline-flex rounded-lg bg-[#F9F9F9] p-1 border border-[#E5E7EB]">
                 <button
                   onClick={() => setMeasure('commitment')}
-                  className={`px-3 py-1.5 text-xs rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${measure === 'commitment' ? 'bg-[#002147] text-white shadow-md' : 'text-[#94A3B8] hover:text-[#002147]'}`}
                 >
                   Commitments
                 </button>
                 <button
                   onClick={() => setMeasure('disbursement')}
-                  className={`px-3 py-1.5 text-xs rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md transition-all ${measure === 'disbursement' ? 'bg-[#002147] text-white shadow-md' : 'text-[#94A3B8] hover:text-[#002147]'}`}
                 >
                   Disbursements
                 </button>
               </div>
-              <div className="inline-flex rounded-lg bg-slate-100 p-1">
+              <div className="inline-flex rounded-lg bg-[#F9F9F9] p-1 border border-[#E5E7EB]">
                 <button
                   onClick={() => setMapView('points')}
-                  className={`px-3 py-1.5 text-xs rounded-md flex items-center gap-1.5 ${mapView === 'points' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md flex items-center gap-2 transition-all ${mapView === 'points' ? 'bg-[#00ADEF] text-white shadow-md' : 'text-[#94A3B8]'}`}
                 >
                   <Orbit size={12} />
                   Points
                 </button>
                 <button
                   onClick={() => setMapView('heatmap')}
-                  className={`px-3 py-1.5 text-xs rounded-md flex items-center gap-1.5 ${mapView === 'heatmap' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+                  className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-md flex items-center gap-2 transition-all ${mapView === 'heatmap' ? 'bg-[#00ADEF] text-white shadow-md' : 'text-[#94A3B8]'}`}
                 >
                   <Flame size={12} />
                   Heatmap
@@ -104,59 +103,62 @@ export function CRSGeography() {
             points={countryPoints}
             measure={measure}
             viewMode={mapView}
-            height={500}
+            height={550}
             onCountrySelect={setSelectedCountry}
           />
         </div>
 
-        <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <MapPinned size={14} className="text-emerald-600" />
-              <p className="text-slate-900 text-sm font-semibold">Selected Country</p>
+        <div className="space-y-6">
+          <div className="bg-[#002147] rounded-xl border border-white/10 shadow-xl p-8 text-white relative overflow-hidden">
+             {/* Decoration */}
+             <div className="absolute -top-12 -right-12 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+             
+            <div className="flex items-center gap-2 mb-6 relative z-10">
+              <MapPinned size={16} className="text-[#00ADEF]" />
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#94A3B8] font-lato">Profile Insight</p>
             </div>
             {selectedCountryProfile ? (
-              <div className="space-y-3">
+              <div className="space-y-6 relative z-10">
                 <div>
-                  <p className="text-slate-900 text-lg font-semibold">{selectedCountryProfile.recipient}</p>
-                  <p className="text-slate-500 text-xs">{selectedCountryProfile.region}</p>
+                  <p className="text-3xl font-black tracking-tighter uppercase font-lato">{selectedCountryProfile.recipient}</p>
+                  <p className="text-[#94A3B8] text-[10px] font-black uppercase tracking-widest mt-1">{selectedCountryProfile.region}</p>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">Commitments</p>
-                    <p className="text-slate-900 text-sm font-semibold mt-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#94A3B8] mb-1.5">Commitments</p>
+                    <p className="text-white text-lg font-black tabular-nums font-lato">
                       {crsFmt.usdM(selectedCountryProfile.commitment)}
                     </p>
                   </div>
-                  <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                    <p className="text-[11px] uppercase tracking-wide text-slate-400">Disbursements</p>
-                    <p className="text-slate-900 text-sm font-semibold mt-1">
+                  <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#94A3B8] mb-1.5">Disbursements</p>
+                    <p className="text-white text-lg font-black tabular-nums font-lato">
                       {crsFmt.usdM(selectedCountryProfile.disbursement)}
                     </p>
                   </div>
                 </div>
-                <div className="rounded-xl bg-slate-50 border border-slate-200 p-3">
-                  <p className="text-[11px] uppercase tracking-wide text-slate-400">Records</p>
-                  <p className="text-slate-900 text-sm font-semibold mt-1">
+                <div className="rounded-xl bg-white/5 border border-white/5 p-4">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-[#94A3B8] mb-1.5">Transaction Records</p>
+                  <p className="text-[#00ADEF] text-xl font-black tabular-nums font-lato">
                     {crsFmt.num(selectedCountryProfile.count)}
                   </p>
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-slate-500">No country-level data is available under the current filters.</p>
+              <p className="text-sm text-[#94A3B8] font-semibold italic">No regional intelligence available for this selection.</p>
             )}
           </div>
 
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-            <p className="text-slate-900 text-sm font-semibold mb-1">Regional Recipients</p>
-            <p className="text-slate-400 text-xs mb-4">
-              `recipient_name` values ending with “, regional” are tracked here instead of on the country map.
+          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+            <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Regional Overlays</p>
+            <p className="text-[#94A3B8] text-[10px] font-bold mb-6">
+              Multi-recipient programs tracked separately
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {regionalRecipients.slice(0, 8).map((row) => (
-                <div key={row.label} className="flex items-center justify-between text-sm">
-                  <span className="text-slate-600 truncate pr-3">{row.label}</span>
-                  <span className="text-slate-900 font-medium">{crsFmt.usdM(row[measure])}</span>
+                <div key={row.label} className="flex items-center justify-between text-[11px] font-black border-b border-[#F3F4F6] pb-2 last:border-0">
+                  <span className="text-[#64748B] truncate pr-4 font-lato uppercase tracking-tight">{row.label}</span>
+                  <span className="text-[#002147] tabular-nums">{crsFmt.usdM(row[measure])}</span>
                 </div>
               ))}
             </div>
@@ -164,43 +166,42 @@ export function CRSGeography() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Top Recipient Countries</p>
-          <p className="text-slate-400 text-xs mb-4">Country-level totals by current measure</p>
-          <ResponsiveContainer width="100%" height={290}>
-            <BarChart data={topCountries} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={countryAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
+      <div className="grid grid-cols-2 gap-8">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Recipient Economies</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Direct country-level totals</p>
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={topCountries} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} width={countryAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={16}>
                 {topCountries.map((row) => (
-                  <Cell key={row.label} fill="#059669" fillOpacity={0.82} />
+                  <Cell key={row.label} fill="#002147" />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <p className="text-slate-800 text-sm font-semibold mb-1">Broad Region Distribution</p>
-          <p className="text-slate-400 text-xs mb-4">For country and regional recipients together</p>
-          <ResponsiveContainer width="100%" height={290}>
-            <BarChart data={broadRegions} layout="vertical" margin={{ top: 0, right: 8, left: 8, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-              <XAxis type="number" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={broadRegionAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-              <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={18}>
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8">
+          <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Broad Region Aggregates</p>
+          <p className="text-[#94A3B8] text-[10px] font-black uppercase mb-8">Macro-regional distribution</p>
+          <ResponsiveContainer width="100%" height={320}>
+            <BarChart data={broadRegions} layout="vertical" margin={{ top: 0, right: 30, left: 10, bottom: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
+              <XAxis type="number" tick={{ fontSize: 9, fill: '#94A3B8', fontWeight: 900 }} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} fontSize={9} fontWeight={900} fill="#64748B" />} tickLine={false} axisLine={false} width={broadRegionAxisWidth} interval={0} />
+              <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Bar dataKey={measure} radius={[0, 4, 4, 0]} maxBarSize={20}>
                 {broadRegions.map((row) => (
-                  <Cell key={row.label} fill="#0F766E" fillOpacity={0.82} />
+                  <Cell key={row.label} fill="#76B7B2" />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
-    </div>
   );
 }

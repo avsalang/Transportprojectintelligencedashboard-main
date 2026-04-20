@@ -30,6 +30,16 @@ import {
   buildFlowSankeyData,
 } from '../utils/crsAggregations';
 
+const ATO_COLORS = {
+  navy: '#002147',
+  cyan: '#00ADEF',
+  teal: '#76B7B2',
+  orange: '#F28E2B',
+  red: '#E15759',
+  green: '#59A14F',
+  slate: '#94a3b8'
+};
+
 type MapView = 'points' | 'heatmap';
 
 export function CRSOverview() {
@@ -91,179 +101,114 @@ export function CRSOverview() {
   }, [filteredFacts, activeMeasure]);
 
   return (
-    <div className="p-6 bg-slate-50/50 min-h-screen">
-      <div className="max-w-[1440px] mx-auto space-y-6">
-        <div className="flex items-center justify-between">
+    <div className="p-8 bg-[#F9F9F9] min-h-screen font-opensans">
+      <div className="max-w-[1440px] mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
-            <h1 className="text-slate-900 text-2xl font-bold tracking-tight">Transport Intelligence Overview</h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Global portfolio analytics focusing on <span className="text-slate-900 font-semibold">financial flows</span> and <span className="text-blue-600 font-semibold">sustainability shifts</span>.
+            <h1 className="text-[#002147] text-3xl font-black tracking-tighter uppercase font-lato">Transport Intelligence Overview</h1>
+            <p className="text-[#6B7280] text-[13px] mt-2 font-semibold">
+              Global portfolio analytics focusing on <span className="text-[#002147] font-black">financial flows</span> and <span className="text-[#00ADEF] font-black">sustainability shifts</span>.
             </p>
           </div>
-          <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm">
-             <div className="text-right">
-               <p className="text-slate-400 text-[10px] uppercase font-bold tracking-widest">Active Basis</p>
-               <p className="text-blue-600 text-xs font-bold capitalize">{isConstant ? 'Constant USD (Deflated)' : 'Current USD (Nominal)'}</p>
+          <div className="flex items-center gap-4 bg-white p-4 rounded-xl border border-[#E5E7EB] shadow-md">
+             <div>
+               <p className="text-[#94A3B8] text-[10px] uppercase font-black tracking-widest">Active Basis</p>
+               <p className="text-[#00ADEF] text-xs font-black capitalize">{isConstant ? 'Constant USD' : 'Current USD'}</p>
              </div>
-             <Activity size={18} className="text-blue-500" />
+             <Activity size={20} className="text-[#00ADEF]" />
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KPICard
             label="Total Amount"
             value={crsFmt.usdM(isConstant ? stats.commitment_defl : stats.commitment)}
             sub={`Gross ${measure}s in view`}
-            icon={<DollarSign size={15} />}
-            accent="blue"
+            icon={<DollarSign size={16} />}
+            accent="navy"
           />
           <KPICard
             label="Sustainability Share"
             value={`${sustainabilityTrend.length > 0 ? sustainabilityTrend.at(-1)?.sustainableShare.toFixed(1) : 0}%`}
             sub="Tagged for Climate/Mitigation"
-            icon={<Wind size={15} />}
-            accent="green"
+            icon={<Wind size={16} />}
+            accent="cyan"
           />
           <KPICard
             label="Mapped Economies"
             value={crsFmt.num(stats.countryRecipientCount)}
             sub="Official ADB standard economies"
-            icon={<Globe size={15} />}
-            accent="purple"
+            icon={<Globe size={16} />}
+            accent="teal"
           />
           <KPICard
             label="Total Records"
             value={crsFmt.num(filteredFacts.reduce((sum, f) => sum + f.count, 0))}
             sub="Individual project entries"
-            icon={<Waves size={15} />}
+            icon={<Waves size={16} />}
             accent="orange"
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr,1fr] gap-6">
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                  <p className="text-slate-900 text-sm font-bold">Investment Flows (Sankey)</p>
-                  <p className="text-slate-400 text-xs mt-0.5 font-medium">Donor ➔ Mode ➔ Recipient Region</p>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr,1fr] gap-8">
+          <div className="space-y-8">
+            <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md overflow-hidden flex flex-col">
+              <div className="p-6 border-b border-[#F3F4F6]">
+                <p className="text-[#002147] text-lg font-black uppercase font-lato">Investment Flows (Sankey)</p>
+                <p className="text-[#94A3B8] text-[11px] mt-1 font-bold uppercase tracking-widest text-[#00ADEF]">Donor ➔ Mode ➔ Recipient Region</p>
               </div>
-              <div className="h-[460px] p-4">
+              <div className="h-[480px] p-6">
                 <CRSSankey data={sankeyData} />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-               {/* Top Donors */}
-               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Donors</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Lending volume by sovereign source</p>
+               <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 shadow-md">
+                  <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Donors</p>
+                  <p className="text-[10px] text-[#94A3B8] mb-8 font-bold uppercase">Lending volume by source</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topDonors} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                            </XAxis>
-                           <YAxis 
-                              type="category" 
-                              dataKey="label" 
-                              tick={<TruncatedCategoryTick maxChars={20} />} 
-                              width={donorWidth} 
-                              tickLine={false} 
-                              axisLine={{ stroke: '#cbd5e1' }} 
-                              interval={0}
-                           >
-                              <Label 
-                                 value="Funding Source" 
-                                 angle={-90} 
-                                 position="insideLeft" 
-                                 offset={-50} 
-                                 fontSize={9} 
-                                 fontWeight={800} 
-                                 fill="#94a3b8" 
-                                 className="uppercase tracking-widest" 
-                                 style={{ textAnchor: 'middle' }}
-                              />
-                           </YAxis>
-                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px' }} />
-                           <Bar dataKey="value" fill="#0F766E" radius={[0, 4, 4, 0]} minBarSize={2} />
+                           <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={20} />} width={donorWidth} tickLine={false} axisLine={{ stroke: '#cbd5e1' }} interval={0} />
+                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                           <Bar dataKey="value" fill={ATO_COLORS.navy} radius={[0, 4, 4, 0]} />
                         </BarChart>
                      </ResponsiveContainer>
                   </div>
                </div>
 
-               {/* Top Agencies */}
-               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Agencies</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Technical implementing entities</p>
+               <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 shadow-md">
+                  <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Agencies</p>
+                  <p className="text-[10px] text-[#94A3B8] mb-8 font-bold uppercase">Implementing entities</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topAgencies} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                            </XAxis>
-                           <YAxis 
-                              type="category" 
-                              dataKey="label" 
-                              tick={<TruncatedCategoryTick maxChars={20} />} 
-                              width={agencyWidth} 
-                              tickLine={false} 
-                              axisLine={{ stroke: '#cbd5e1' }} 
-                              interval={0}
-                           >
-                              <Label 
-                                 value="Agency" 
-                                 angle={-90} 
-                                 position="insideLeft" 
-                                 offset={-50} 
-                                 fontSize={9} 
-                                 fontWeight={800} 
-                                 fill="#94a3b8" 
-                                 className="uppercase tracking-widest" 
-                                 style={{ textAnchor: 'middle' }}
-                              />
-                           </YAxis>
-                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px' }} />
-                           <Bar dataKey="value" fill="#3B82F6" radius={[0, 4, 4, 0]} minBarSize={2} />
+                           <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={20} />} width={agencyWidth} tickLine={false} axisLine={{ stroke: '#cbd5e1' }} interval={0} />
+                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                           <Bar dataKey="value" fill={ATO_COLORS.cyan} radius={[0, 4, 4, 0]} />
                         </BarChart>
                      </ResponsiveContainer>
                   </div>
                </div>
 
-               {/* Top Recipients */}
-               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                  <p className="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Top Recipients</p>
-                  <p className="text-[10px] text-slate-400 mb-6 font-medium">Primary destination economies</p>
+               <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 shadow-md">
+                  <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Top Recipients</p>
+                  <p className="text-[10px] text-[#94A3B8] mb-8 font-bold uppercase">Destination economies</p>
                   <div className="h-[280px]">
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topRecipients} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
-                           <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                           <XAxis type="number" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                              <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                            </XAxis>
-                           <YAxis 
-                              type="category" 
-                              dataKey="label" 
-                              tick={<TruncatedCategoryTick maxChars={20} />} 
-                              width={recipientWidth} 
-                              tickLine={false} 
-                              axisLine={{ stroke: '#cbd5e1' }} 
-                              interval={0}
-                           >
-                              <Label 
-                                 value="Recipient Economy" 
-                                 angle={-90} 
-                                 position="insideLeft" 
-                                 offset={-50} 
-                                 fontSize={9} 
-                                 fontWeight={800} 
-                                 fill="#94a3b8" 
-                                 className="uppercase tracking-widest" 
-                                 style={{ textAnchor: 'middle' }}
-                              />
-                           </YAxis>
-                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px' }} />
-                           <Bar dataKey="value" fill="#10B981" radius={[0, 4, 4, 0]} minBarSize={2} />
+                           <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={20} />} width={recipientWidth} tickLine={false} axisLine={{ stroke: '#cbd5e1' }} interval={0} />
+                           <Tooltip formatter={(v: number) => crsFmt.usdM(v)} contentStyle={{ fontSize: '10px', borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+                           <Bar dataKey="value" fill={ATO_COLORS.teal} radius={[0, 4, 4, 0]} />
                         </BarChart>
                      </ResponsiveContainer>
                   </div>
@@ -271,68 +216,57 @@ export function CRSOverview() {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-              <p className="text-slate-900 text-sm font-bold mb-1">Sustainability Trend</p>
-              <p className="text-slate-400 text-xs mb-5 font-medium">Sustainable-tagged finance vs total portfolio volume</p>
-              <ResponsiveContainer width="100%" height={240}>
+          <div className="space-y-8">
+            <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 shadow-md">
+              <p className="text-[#002147] text-lg font-black uppercase mb-1 font-lato">Sustainability Trend</p>
+              <p className="text-[#94A3B8] text-[11px] mb-8 font-bold uppercase tracking-widest text-[#59A14F]">Climate-tagged vs total portfolio</p>
+              <ResponsiveContainer width="100%" height={260}>
                 <AreaChart data={sustainabilityTrend} margin={{ top: 10, right: 30, left: 10, bottom: 20 }}>
                   <defs>
                      <linearGradient id="totalColor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#94a3b8" stopOpacity={0}/>
+                      <stop offset="5%" stopColor={ATO_COLORS.slate} stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor={ATO_COLORS.slate} stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="sustainableColor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                      <stop offset="5%" stopColor={ATO_COLORS.green} stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor={ATO_COLORS.green} stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis 
-                    dataKey="year" 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fill: '#64748b' }} 
-                    label={{ value: 'Transaction Year', position: 'insideBottom', offset: -10, fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
-                  />
-                  <YAxis 
-                    axisLine={false} 
-                    tickLine={false} 
-                    tick={{ fontSize: 10, fill: '#64748b' }} 
-                    tickFormatter={(v) => crsFmt.usdM(v)} 
-                    label={{ value: 'Volume (USD Millions)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}
-                    formatter={(v: number) => [crsFmt.usdM(v), 'Volume']}
-                  />
-                  <Area type="monotone" dataKey="total" stroke="#94a3b8" strokeWidth={2} fillOpacity={1} fill="url(#totalColor)" />
-                  <Area type="monotone" dataKey="sustainable" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#sustainableColor)" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                  <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }}>
+                    <Label value="Reporting Year" position="bottom" offset={0} fontSize={9} fontWeight={900} fill="#cbd5e1" className="uppercase tracking-widest" />
+                  </XAxis>
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} tickFormatter={(v) => crsFmt.usdM(v)}>
+                    <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={0} fontSize={9} fontWeight={900} fill="#cbd5e1" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                  </YAxis>
+                  <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(v: number) => crsFmt.usdM(v)} />
+                  <Area type="monotone" dataKey="total" stroke={ATO_COLORS.slate} strokeWidth={2} fillOpacity={1} fill="url(#totalColor)" />
+                  <Area type="monotone" dataKey="sustainable" stroke={ATO_COLORS.green} strokeWidth={3} fillOpacity={1} fill="url(#sustainableColor)" />
                 </AreaChart>
               </ResponsiveContainer>
 
-               <div className="mt-4 flex items-center justify-center gap-6">
-                  <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-slate-300" />
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Finance</span>
+               <div className="mt-8 flex items-center justify-center gap-8">
+                  <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-[#94A3B8]" />
+                      <span className="text-[10px] font-black text-[#6B7280] uppercase tracking-widest">Total Finance</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Sustainable Tagged</span>
+                  <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-[#59A14F]" />
+                      <span className="text-[10px] font-black text-[#59A14F] uppercase tracking-widest">Sustainable</span>
                   </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-              <p className="text-slate-900 text-sm font-bold mb-4 tracking-tight">Transport Mode Mix</p>
-              <div className="space-y-4">
+            <div className="bg-white rounded-xl border border-[#E5E7EB] p-6 shadow-md">
+              <p className="text-[#002147] text-lg font-black uppercase mb-6 font-lato">Transport Mode Mix</p>
+              <div className="space-y-6">
                 {modeSeries.map((mode) => (
                   <div key={mode.label}>
-                    <div className="flex justify-between text-xs mb-1.5 px-0.5">
-                      <span className="text-slate-700 font-semibold">{mode.label}</span>
-                      <span className="text-slate-900 font-bold">{crsFmt.usdM(mode[activeMeasure] ?? mode[measure])}</span>
+                    <div className="flex justify-between text-[11px] mb-2 px-0.5">
+                      <span className="text-[#374151] font-black uppercase tracking-tight">{mode.label}</span>
+                      <span className="text-[#002147] font-black tabular-nums">{crsFmt.usdM(mode[activeMeasure] ?? mode[measure])}</span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden p-[1px]">
+                    <div className="h-3 bg-[#F9F9F9] rounded-full overflow-hidden p-[2px] border border-[#F3F4F6]">
                       <div
                         className="h-full rounded-full transition-all duration-1000 ease-out shadow-sm"
                         style={{
@@ -348,13 +282,13 @@ export function CRSOverview() {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md overflow-hidden">
+            <div className="p-6 border-b border-[#F3F4F6] flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <p className="text-slate-900 text-sm font-bold">Spatial Concentration</p>
-                <p className="text-slate-400 text-xs mt-0.5 font-medium">Mapped economies standard totals</p>
+                <p className="text-[#002147] text-lg font-black uppercase font-lato">Spatial Concentration</p>
+                <p className="text-[#94A3B8] text-[11px] mt-1 font-bold uppercase tracking-widest text-[#00ADEF]">Mapped economies standard totals</p>
               </div>
-              <div className="text-slate-400 text-xs font-bold uppercase py-2">
+              <div className="text-[#002147] text-[10px] font-black bg-[#F9F9F9] px-4 py-2 rounded-lg border border-[#F3F4F6] uppercase tracking-widest">
                 Viewing: {measure === 'commitment' ? 'COMMITMENTS' : 'DISBURSEMENTS'}
               </div>
             </div>
@@ -362,7 +296,7 @@ export function CRSOverview() {
               points={mapPoints}
               viewMode={mapView}
               measure={measure}
-              height={480}
+              height={520}
               onCountrySelect={setSelectedCountry}
             />
         </div>

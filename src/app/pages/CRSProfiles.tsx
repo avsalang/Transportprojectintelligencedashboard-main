@@ -85,6 +85,8 @@ const ENTITY_META: Record<CRSEntityType, { label: string; description: string }>
   agency: { label: 'Implementing Agency', description: 'Technical departments, windows, or ministries.' },
 };
 
+const COLORS = ['#4E79A7', '#F28E2B', '#E15759', '#76B7B2', '#59A14F', '#EDC948', '#B07AA1', '#FF9DA7', '#9C755F', '#BAB0AC'];
+
 export function CRSProfiles() {
   const { filteredFacts, filters } = useCRSFilters();
   const measure = filters.measure;
@@ -274,24 +276,24 @@ export function CRSProfiles() {
   const pagedRecords = filteredRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (
-    <div className="p-6 bg-slate-50/50 min-h-screen">
-      <div className="max-w-[1440px] mx-auto space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="p-8 bg-[#F9F9F9] min-h-screen font-opensans">
+      <div className="max-w-[1440px] mx-auto space-y-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-slate-900 text-2xl font-bold tracking-tight">Portfolio Deep Dive</h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Select an entity to explore its underlying project ledger and <span className="font-semibold text-slate-700">micro-level financial composition</span>.
+            <h1 className="text-[#002147] text-3xl font-black tracking-tighter uppercase font-lato">Portfolio Deep Dive</h1>
+            <p className="text-[#6B7280] text-[13px] mt-2 font-semibold">
+              Select an entity to explore its underlying project ledger and <span className="font-black text-[#002147]">micro-level financial composition</span>.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 bg-white p-2 rounded-xl border border-[#E5E7EB] shadow-md">
             {(Object.keys(ENTITY_META) as CRSEntityType[]).map((type) => (
               <button
                 key={type}
                 onClick={() => setEntityType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`px-4 py-2 rounded-lg text-[11px] font-black uppercase tracking-widest transition-all ${
                   entityType === type 
-                    ? 'bg-slate-900 text-white shadow-md' 
-                    : 'text-slate-500 hover:bg-slate-50'
+                    ? 'bg-[#002147] text-white shadow-lg' 
+                    : 'text-[#94A3B8] hover:bg-[#F9F9F9]'
                 }`}
               >
                 {ENTITY_META[type].label}
@@ -300,23 +302,23 @@ export function CRSProfiles() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[320px,1fr] gap-8 items-start">
           {/* Sidebar Navigation */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col h-[calc(100vh-200px)] overflow-hidden">
-             <div className="p-4 border-b border-slate-50">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Filter Entity</p>
+          <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md flex flex-col h-[calc(100vh-200px)] overflow-hidden">
+             <div className="p-6 border-b border-[#F3F4F6]">
+                <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-4 font-lato">Filter Entity</p>
                 <input
                   type="text"
-                  placeholder={`Search ${entityType === 'country' ? 'ADB Economies' : ENTITY_META[entityType].label + 's'}...`}
+                  placeholder={`Search ${entityType === 'country' ? 'Economies' : ENTITY_META[entityType].label + 's'}...`}
                   value={entitySearch}
                   onChange={(e) => setEntitySearch(e.target.value)}
-                  className="w-full bg-slate-50 border-none rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                  className="w-full bg-[#F9F9F9] border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#00ADEF]/20 transition-all font-semibold"
                 />
              </div>
-             <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-200">
+             <div className="flex-1 overflow-y-auto p-3 scrollbar-thin scrollbar-thumb-[#E5E7EB]">
                {indexLoading ? (
                  <div className="space-y-2 p-2">
-                   {[1,2,3,4,5].map(i => <div key={i} className="h-10 bg-slate-50 rounded-lg animate-pulse" />)}
+                   {[1,2,3,4,5].map(i => <div key={i} className="h-12 bg-[#F9F9F9] rounded-lg animate-pulse" />)}
                  </div>
                ) : (
                  <div className="space-y-1">
@@ -324,13 +326,13 @@ export function CRSProfiles() {
                      <button
                        key={o.label}
                        onClick={() => setSelectedEntity(o.label)}
-                       className={`w-full text-left px-4 py-3 rounded-xl transition-all ${
+                       className={`w-full text-left px-4 py-3.5 rounded-xl transition-all ${
                          selectedEntity === o.label 
-                           ? 'bg-blue-50 text-blue-700 shadow-sm ring-1 ring-blue-100' 
-                           : 'hover:bg-slate-50 text-slate-600'
+                           ? 'bg-[#00ADEF]/10 text-[#002147] shadow-sm ring-1 ring-[#00ADEF]/20' 
+                           : 'hover:bg-[#F9F9F9] text-[#64748B] font-medium'
                        }`}
                      >
-                       <span className="text-xs font-bold truncate block">{o.label}</span>
+                       <span className="text-[11px] font-black uppercase tracking-tight truncate block">{o.label}</span>
                      </button>
                    ))}
                  </div>
@@ -339,129 +341,126 @@ export function CRSProfiles() {
           </div>
 
           {/* Main Profile content */}
-          <div className="space-y-6">
+          <div className="space-y-8">
             {!selectedEntity ? (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center h-[500px] flex flex-col items-center justify-center">
-                <Globe2 className="text-slate-200 w-16 h-16 mb-4" />
-                <h3 className="text-lg font-bold text-slate-800 tracking-tight">Select an entity to explore</h3>
-                <p className="text-slate-400 text-sm mt-2 max-w-sm font-medium">
-                  Deep dive into financial instruments, thematic distributions, and the full project ledger for a specific economy, region, or donor.
+              <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-12 text-center h-[600px] flex flex-col items-center justify-center">
+                <Globe2 className="text-[#E5E7EB] w-20 h-20 mb-6" />
+                <h3 className="text-xl font-black text-[#002147] tracking-tighter uppercase font-lato">Select an entity to explore</h3>
+                <p className="text-[#94A3B8] text-base mt-3 max-w-sm font-semibold">
+                  Deep dive into financial instruments, thematic distributions, and the full project ledger for a specific economy.
                 </p>
               </div>
             ) : (
-              <div className="space-y-6 animate-in fade-in duration-500">
+              <div className="space-y-8 animate-in fade-in duration-700">
                 {/* Profile Header Card */}
-                <div className="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                <div className="bg-[#002147] rounded-2xl p-10 text-white relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-end gap-8 shadow-2xl border border-white/5">
                    <div className="relative z-10">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/30">
+                      <span className="px-4 py-1.5 bg-[#00ADEF] rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#00ADEF]/20">
                         {ENTITY_META[entityType].label} PROFILE
                       </span>
-                      <h2 className="text-4xl font-black tracking-tighter mt-6 mb-2 leading-none uppercase">{selectedEntity}</h2>
-                      <p className="text-slate-400 text-xs font-medium uppercase tracking-widest">Global Transport Portfolio Deep Dive</p>
+                      <h2 className="text-5xl font-black tracking-tighter mt-8 mb-3 leading-none uppercase font-lato">{selectedEntity}</h2>
+                      <p className="text-[#94A3B8] text-xs font-black uppercase tracking-[0.2em] font-lato">Asian Transport Observatory • Portfolio Audit</p>
                    </div>
-                   <div className="flex gap-8 border-t md:border-t-0 md:border-l border-white/10 pt-6 md:pt-0 md:pl-8 relative z-10">
+                   <div className="flex gap-12 border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-12 relative z-10">
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Amount</p>
-                        <p className="text-3xl font-black text-white tabular-nums">{crsFmt.usdM(stats[measure])}</p>
+                        <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-2 font-lato">Standard Volume</p>
+                        <p className="text-4xl font-black text-white tabular-nums tracking-tighter font-lato">{crsFmt.usdM(stats[measure])}</p>
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Total Records</p>
-                        <p className="text-3xl font-black text-white tabular-nums">{crsFmt.num(stats.count)}</p>
+                        <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-2 font-lato">Total Records</p>
+                        <p className="text-3xl font-black text-white tabular-nums tracking-tighter font-lato">{crsFmt.num(stats.count)}</p>
                       </div>
                    </div>
+                   {/* Background Decorative Element */}
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32" />
                 </div>
 
-                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* 1. Momentum Trend */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Portfolio Momentum</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Historical investment trajectory ($M USD)</p>
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8 overflow-hidden">
+                       <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Portfolio Momentum</p>
+                       <p className="text-[10px] text-[#94A3B8] font-black uppercase mb-8">Historical trajectory ($M USD)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <AreaChart data={yearlySeries} margin={{ left: 10, right: 30, bottom: 40 }}>
                                 <defs>
                                    <linearGradient id="colorCommit" x1="0" y1="0" x2="0" y2="1">
-                                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                      <stop offset="5%" stopColor="#00ADEF" stopOpacity={0.2}/>
+                                      <stop offset="95%" stopColor="#00ADEF" stopOpacity={0}/>
                                    </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="year" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Reporting Year" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                                <XAxis dataKey="year" fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false}>
+                                   <Label value="Reporting Year" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                                 </XAxis>
-                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
-                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
-                                <Legend 
-                                   verticalAlign="top" 
-                                   align="right" 
-                                   iconType="circle" 
-                                   wrapperStyle={{ fontSize: '9px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', paddingBottom: '20px' }}
-                                />
-                                <Area name="Commitment" type="monotone" dataKey="commitment" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorCommit)" />
-                                <Area name="Disbursement" type="monotone" dataKey="disbursement" stroke="#10b981" strokeWidth={1} fill="transparent" strokeDasharray="4 4" />
+                                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', paddingBottom: '30px' }} />
+                                <Area name="Commitment" type="monotone" dataKey="commitment" stroke="#00ADEF" strokeWidth={3} fillOpacity={1} fill="url(#colorCommit)" />
+                                <Area name="Disbursement" type="monotone" dataKey="disbursement" stroke="#002147" strokeWidth={2} fill="transparent" strokeDasharray="5 5" />
                              </AreaChart>
                           </ResponsiveContainer>
                        </div>
                     </div>
 
                     {/* 2. Top Sub-Partners */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">
-                          { (entityType === 'donor' || entityType === 'agency') ? 'Top Recipient Economies' : 'Primary Funding Sources' }
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8 overflow-hidden">
+                       <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">
+                          { (entityType === 'donor' || entityType === 'agency') ? 'Top Recipient Economies' : 'Institutional Funding Sources' }
                        </p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Core institutional network topography</p>
+                       <p className="text-[10px] text-[#94A3B8] font-black uppercase mb-8">Core network topography</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={partnershipSeries} layout="vertical" margin={{ left: 10, right: 30, bottom: 40 }}>
-                                <XAxis type="number" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                <XAxis type="number" fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                                 </XAxis>
-                                <YAxis type="category" dataKey="label" fontSize={9} fontWeight={800} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Partner Entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis type="category" dataKey="label" fontSize={9} fontWeight={900} width={120} axisLine={{ stroke: '#e2e8f0' }} tickLine={false}>
+                                   <Label value="Partner Entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
-                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
-                                <Bar dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Bar dataKey="value" fill="#002147" radius={[0, 4, 4, 0]} />
                              </BarChart>
                           </ResponsiveContainer>
                        </div>
                     </div>
 
                     {/* 3. Strategic Pillar Mix */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Standard Pillar Distribution</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Aggregate focus across standardized ATO sectors</p>
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8 overflow-hidden">
+                       <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Standard Pillar Distribution</p>
+                       <p className="text-[10px] text-[#94A3B8] font-black uppercase mb-8">Portfolio focus across pillars</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={pillarSeries} margin={{ left: 10, right: 30, bottom: 40 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="label" fontSize={9} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
-                                   <Label value="Standard Transport Pillars" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
+                                <XAxis dataKey="label" fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false}>
+                                   <Label value="ATO Standard Pillars" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                                 </XAxis>
-                                <YAxis fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Volume ($M USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
-                                <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
-                                <Bar dataKey="value" fill="#0f766e" radius={[4, 4, 0, 0]} />
+                                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }} formatter={(v: number) => crsFmt.usdM(v)} />
+                                <Bar dataKey="value" fill="#76B7B2" radius={[4, 4, 0, 0]} />
                              </BarChart>
                           </ResponsiveContainer>
                        </div>
                     </div>
 
                     {/* 4. Sub-Sector Alignment Matrix */}
-                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
-                       <p className="text-slate-900 text-[10px] font-black uppercase tracking-widest mb-1">Strategic Alignment Matrix</p>
-                       <p className="text-xs text-slate-400 font-bold mb-6">Transport Sub-Sector volume vs Sustainability Score (%)</p>
+                    <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md p-8 overflow-hidden">
+                       <p className="text-[#002147] text-[11px] font-black uppercase tracking-widest mb-1 font-lato">Sustainability Alignment Matrix</p>
+                       <p className="text-[10px] text-[#94A3B8] font-black uppercase mb-8">Volume vs Sustainability Score (%)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <ScatterChart margin={{ left: 10, right: 30, bottom: 40 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                <XAxis type="number" dataKey="volume" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Sub-Sector Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" />
+                                <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" />
+                                <XAxis type="number" dataKey="volume" fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
+                                   <Label value="Sub-Sector Volume ($M USD)" position="bottom" offset={20} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" />
                                 </XAxis>
-                                <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} fontWeight={700} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
-                                   <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={800} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
+                                <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} fontWeight={900} axisLine={{ stroke: '#e2e8f0' }} tickLine={false} unit="%">
+                                   <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fontWeight={900} fill="#94a3b8" className="uppercase tracking-widest" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip 
                                    cursor={{ strokeDasharray: '3 3' }}
@@ -469,21 +468,23 @@ export function CRSProfiles() {
                                       if (active && payload && payload.length) {
                                          const data = payload[0].payload;
                                          return (
-                                            <div className="bg-white p-3 border border-slate-200 shadow-xl rounded-xl">
-                                               <p className="text-[11px] font-black text-slate-900 uppercase mb-1">{data.label}</p>
-                                               <p className="text-[10px] text-slate-500 font-bold">
-                                                 Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
-                                               </p>
-                                               <p className="text-[10px] text-slate-500 font-bold">
-                                                 Sustainability: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
-                                               </p>
+                                            <div className="bg-white p-4 border border-[#E5E7EB] shadow-2xl rounded-xl">
+                                               <p className="text-[11px] font-black text-[#002147] uppercase mb-2 tracking-widest font-lato">{data.label}</p>
+                                               <div className="space-y-1">
+                                                 <p className="text-[10px] text-[#64748B] font-black">
+                                                   VOLUME: <span className="text-[#002147]">{crsFmt.usdM(data.volume)}</span>
+                                                 </p>
+                                                 <p className="text-[10px] text-[#64748B] font-black">
+                                                   SUSTAINABILITY: <span className="text-[#59A14F]">{data.sustainabilityScore}%</span>
+                                                 </p>
+                                               </div>
                                             </div>
                                          );
                                       }
                                       return null;
                                    }}
                                 />
-                                <Scatter data={bubbleData} fill="#10b981" fillOpacity={0.5} />
+                                <Scatter data={bubbleData} fill="#59A14F" fillOpacity={0.6} />
                              </ScatterChart>
                           </ResponsiveContainer>
                        </div>
@@ -543,129 +544,132 @@ export function CRSProfiles() {
                          </div>
                       </div>
                    </div>
-                 </div>
-
-                {/* Transaction Ledger */}
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                   <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <p className="text-slate-900 text-sm font-bold">Transaction Ledger</p>
-                        <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[10px] font-bold text-slate-500">{filteredRecords.length} results</span>
-                      </div>
-                      <div className="flex items-center gap-4">
-                         <div className="flex items-center gap-1.5 h-7">
-                            <button 
-                               onClick={() => setPage(p => Math.max(1, p - 1))} 
-                               disabled={page === 1} 
-                               className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
-                            >←</button>
-                            <span className="text-[10px] font-black text-slate-600 w-12 text-center">{page}</span>
-                            <button 
-                               onClick={() => setPage(p => p + 1)} 
-                               disabled={page >= Math.ceil(filteredRecords.length / rowsPerPage)} 
-                               className="w-7 h-7 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 disabled:opacity-30 hover:bg-slate-50"
-                            >→</button>
-                         </div>
-                      </div>
-                   </div>
-                   <div className="overflow-x-auto min-h-[400px]">
-                     {recordsLoading ? (
-                       <div className="p-20 flex flex-col items-center justify-center gap-4">
-                          <div className="w-8 h-8 border-3 border-slate-100 border-t-blue-500 rounded-full animate-spin" />
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Streaming Ledger Fragments...</p>
+                 </div>                 {/* Transaction Ledger */}
+                 <div className="bg-white rounded-xl border border-[#E5E7EB] shadow-md overflow-hidden">
+                    <div className="px-8 py-6 bg-[#F9F9F9] border-b border-[#F3F4F6] flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                       <div className="flex items-center gap-3">
+                         <p className="text-[#002147] text-lg font-black uppercase font-lato">Transaction Ledger</p>
+                         <span className="px-3 py-1 bg-white border border-[#E5E7EB] rounded-lg text-[10px] font-black text-[#94A3B8] uppercase tracking-widest">{filteredRecords.length} results</span>
                        </div>
-                     ) : (
-                       <table className="w-full border-collapse">
-                         <thead>
-                           <tr className="bg-slate-50/20 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
-                             <th className="px-6 py-4 text-left">Year</th>
-                             <th className="px-6 py-4 text-left">Donor / Agency</th>
-                             <th className="px-6 py-4 text-left">Amount</th>
-                             <th className="px-6 py-4 text-left">Project Title</th>
-                           </tr>
-                         </thead>
-                         <tbody className="divide-y divide-slate-50">
-                           {pagedRecords.map((record) => (
-                             <tr key={record.id} onClick={() => setActiveRecord(record)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-                               <td className="px-6 py-4 text-[11px] font-bold text-slate-500 tabular-nums">{record.year}</td>
-                               <td className="px-6 py-4">
-                                  <div className="max-w-[200px]">
-                                    <p className="text-[11px] font-black text-slate-800 line-clamp-1">{record.donor}</p>
-                                    <p className="text-[10px] text-slate-400 font-bold truncate">{record.agency}</p>
-                                  </div>
-                               </td>
-                               <td className="px-6 py-4 text-[11px] font-black text-slate-900 tabular-nums">
-                                  {crsFmt.usdM(record[activeMeasure] || 0)}
-                               </td>
-                               <td className="px-6 py-4">
-                                  <p className="text-[11px] font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
-                                  <p className="text-[9px] text-slate-400 font-medium uppercase mt-0.5">{record.mode} • {record.purpose}</p>
-                               </td>
-                             </tr>
-                           ))}
-                         </tbody>
-                       </table>
-                     )}
-                   </div>
-                </div>
+                       <div className="flex items-center gap-6">
+                          <div className="flex items-center gap-2 h-10">
+                             <button 
+                                onClick={() => setPage(p => Math.max(1, p - 1))} 
+                                disabled={page === 1} 
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#E5E7EB] text-[#94A3B8] disabled:opacity-30 hover:bg-[#F9F9F9] shadow-sm transition-all"
+                             >←</button>
+                             <span className="text-[11px] font-black text-[#002147] w-12 text-center font-lato">{page}</span>
+                             <button 
+                                onClick={() => setPage(p => p + 1)} 
+                                disabled={page >= Math.ceil(filteredRecords.length / rowsPerPage)} 
+                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-[#E5E7EB] text-[#94A3B8] disabled:opacity-30 hover:bg-[#F9F9F9] shadow-sm transition-all"
+                             >→</button>
+                          </div>
+                       </div>
+                    </div>
+                    <div className="overflow-x-auto min-h-[500px]">
+                      {recordsLoading ? (
+                        <div className="p-32 flex flex-col items-center justify-center gap-6">
+                           <div className="w-12 h-12 border-4 border-[#F9F9F9] border-t-[#00ADEF] rounded-full animate-spin shadow-lg" />
+                           <p className="text-[11px] font-black text-[#94A3B8] uppercase tracking-[0.2em] font-lato">Streaming Institutional Records...</p>
+                        </div>
+                      ) : (
+                        <table className="w-full border-collapse">
+                          <thead>
+                            <tr className="bg-[#F9F9F9] text-[10px] font-black text-[#94A3B8] uppercase tracking-widest border-b border-[#F3F4F6]">
+                              <th className="px-8 py-5 text-left font-lato">Year</th>
+                              <th className="px-8 py-5 text-left font-lato">Source / Agency</th>
+                              <th className="px-8 py-5 text-left font-lato">Volume</th>
+                              <th className="px-8 py-5 text-left font-lato">Project Narrative</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[#F3F4F6]">
+                            {pagedRecords.map((record) => (
+                              <tr key={record.id} onClick={() => setActiveRecord(record)} className="hover:bg-[#F9F9F9] transition-all group cursor-pointer">
+                                <td className="px-8 py-5 text-[11px] font-bold text-[#64748B] tabular-nums font-lato">{record.year}</td>
+                                <td className="px-8 py-5">
+                                   <div className="max-w-[240px]">
+                                     <p className="text-[12px] font-black text-[#002147] line-clamp-1 uppercase font-lato">{record.donor}</p>
+                                     <p className="text-[10px] text-[#94A3B8] font-bold truncate uppercase tracking-tight">{record.agency}</p>
+                                   </div>
+                                </td>
+                                <td className="px-8 py-5 text-[12px] font-black text-[#002147] tabular-nums font-lato">
+                                   {crsFmt.usdM(record[activeMeasure] || 0)}
+                                </td>
+                                <td className="px-8 py-5">
+                                   <p className="text-[11px] font-bold text-[#334155] group-hover:text-[#00ADEF] transition-colors line-clamp-1 uppercase tracking-tight">{record.title}</p>
+                                   <p className="text-[9px] text-[#94A3B8] font-black uppercase mt-1 tracking-widest">{record.mode} • {record.purpose}</p>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                 </div>
               </div>
             )}
           </div>
         </div>
 
         <Sheet open={!!activeRecord} onOpenChange={() => setActiveRecord(null)}>
-          <SheetContent className="sm:max-w-xl border-l border-slate-200 bg-white/95 backdrop-blur-xl p-0">
+          <SheetContent className="sm:max-w-xl border-l border-[#E5E7EB] bg-white p-0 shadow-2xl">
              {activeRecord && (
-                <div className="h-full flex flex-col">
-                   <div className="bg-slate-900 p-8 text-white">
-                      <span className="px-3 py-1 bg-blue-500 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg shadow-blue-500/20">Project Detail Review</span>
-                      <h2 className="text-2xl font-black tracking-tighter mt-4 leading-tight">{activeRecord.title}</h2>
+                <div className="h-full flex flex-col font-opensans">
+                   <div className="bg-[#002147] p-10 text-white relative overflow-hidden">
+                      <span className="px-4 py-1.5 bg-[#00ADEF] rounded-full text-[10px] font-black tracking-widest uppercase shadow-xl shadow-[#00ADEF]/20 relative z-10">Transaction Audit</span>
+                      <h2 className="text-3xl font-black tracking-tighter mt-8 leading-tight font-lato uppercase relative z-10">{activeRecord.title}</h2>
+                      <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24" />
                    </div>
-                   <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                      <div className="grid grid-cols-2 gap-4">
-                         <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100/50">
-                            <p className="text-[10px] font-bold text-blue-600 uppercase mb-1">Commitment</p>
-                            <p className="text-xl font-black text-blue-900 tabular-nums">{crsFmt.usdM(activeRecord.commitment)}</p>
+                   <div className="flex-1 overflow-y-auto p-10 space-y-10">
+                      <div className="grid grid-cols-2 gap-6">
+                         <div className="p-6 bg-[#F9F9F9] rounded-xl border border-[#E5E7EB] shadow-sm">
+                            <p className="text-[10px] font-black text-[#64748B] uppercase tracking-widest mb-2 font-lato">Commitment</p>
+                            <p className="text-2xl font-black text-[#002147] tabular-nums tracking-tighter font-lato">{crsFmt.usdM(activeRecord.commitment)}</p>
                          </div>
-                         <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100/50">
-                            <p className="text-[10px] font-bold text-emerald-600 uppercase mb-1">Disbursement</p>
-                            <p className="text-xl font-black text-emerald-900 tabular-nums">{crsFmt.usdM(activeRecord.disbursement)}</p>
-                         </div>
-                      </div>
-                      <div className="space-y-4">
-                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">Institutional Identification</h4>
-                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Source Donor</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.donor}</p>
-                            </div>
-                            <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Reporting Agency</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.agency}</p>
-                            </div>
-                            <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Recipient Economy</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.recipient}</p>
-                            </div>
-                            <div>
-                               <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Transport Mode</p>
-                               <p className="text-xs font-bold text-slate-800">{activeRecord.mode}</p>
-                            </div>
+                         <div className="p-6 bg-[#00ADEF]/5 rounded-xl border border-[#00ADEF]/10 shadow-sm">
+                            <p className="text-[10px] font-black text-[#00ADEF] uppercase tracking-widest mb-2 font-lato">Disbursement</p>
+                            <p className="text-2xl font-black text-[#00ADEF] tabular-nums tracking-tighter font-lato">{crsFmt.usdM(activeRecord.disbursement)}</p>
                          </div>
                       </div>
-                      <div className="space-y-4">
-                         <h4 className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
-                           <Info size={14} className="text-slate-400" /> Narrative Metadata
+                      <div className="space-y-6">
+                         <h4 className="text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.25em] border-b border-[#F3F4F6] pb-3 font-lato">Institutional Intelligence</h4>
+                         <div className="grid grid-cols-2 gap-8">
+                            <div>
+                               <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-1.5 font-lato">Funding Source</p>
+                               <p className="text-[11px] font-black text-[#002147] uppercase font-lato">{activeRecord.donor}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-1.5 font-lato">Implementing Agency</p>
+                               <p className="text-[11px] font-black text-[#002147] uppercase font-lato">{activeRecord.agency}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-1.5 font-lato">Recipient Economy</p>
+                               <p className="text-[11px] font-black text-[#002147] uppercase font-lato">{activeRecord.recipient}</p>
+                            </div>
+                            <div>
+                               <p className="text-[10px] font-black text-[#94A3B8] uppercase tracking-widest mb-1.5 font-lato">Standard Mode</p>
+                               <p className="text-[11px] font-black text-[#002147] uppercase font-lato">{activeRecord.mode}</p>
+                            </div>
+                         </div>
+                      </div>
+                      <div className="space-y-6">
+                         <h4 className="flex items-center gap-2 text-[10px] font-black text-[#94A3B8] uppercase tracking-[0.25em] border-b border-[#F3F4F6] pb-3 font-lato">
+                           <Info size={16} className="text-[#00ADEF]" /> Narrative Metadata
                          </h4>
-                         <p className="text-sm leading-relaxed text-slate-600 font-medium bg-slate-50 p-4 rounded-xl border border-slate-100">
+                         <div className="text-[13px] leading-relaxed text-[#334155] font-semibold bg-[#F9F9F9] p-6 rounded-xl border border-[#F3F4F6] prose prose-slate">
                            {activeRecord.short_description || "No granular descriptive metadata available for this transaction."}
-                         </p>
+                         </div>
                       </div>
+                   </div>
+                   <div className="p-8 border-t border-[#F3F4F6] bg-[#F9F9F9]">
+                      <p className="text-[10px] font-black text-[#94A3B8] text-center uppercase tracking-widest">Asian Transport Observatory • Transaction ID: {activeRecord.id}</p>
                    </div>
                 </div>
              )}
           </SheetContent>
         </Sheet>
+/Sheet>
       </div>
     </div>
   );
