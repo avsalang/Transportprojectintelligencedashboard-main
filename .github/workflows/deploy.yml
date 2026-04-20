@@ -1,7 +1,12 @@
-name: Legacy Deploy Dashboard
+name: ATO Dashboard Deploy
 
 on:
+  push:
+    branches: ["dashboard-v2"]
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: read
@@ -22,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
