@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Overview', exact: true },
   { to: '/insights', label: 'Strategic insights', exact: false },
   { to: '/profiles', label: 'Portfolio profiles', exact: false },
+  { to: '/list', label: 'Full project list', exact: false },
 ];
 
 export function CRSLayout() {

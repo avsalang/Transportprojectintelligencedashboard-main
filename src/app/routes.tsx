@@ -5,6 +5,7 @@ import { CRSGeography } from './pages/CRSGeography';
 import { CRSFlows } from './pages/CRSFlows';
 import { CRSProfiles } from './pages/CRSProfiles';
 import { CRSInsights } from './pages/CRSInsights';
+import { CRSFullList } from './pages/CRSFullList';
 
 // Hash routing keeps the static build portable across hosts like GitHub Pages.
 export const router = createHashRouter([
@@ -17,6 +18,7 @@ export const router = createHashRouter([
       { path: 'flows', Component: CRSFlows },
       { path: 'profiles', Component: CRSProfiles },
       { path: 'insights', Component: CRSInsights },
+      { path: 'list', Component: CRSFullList },
     ],
   },
   {
