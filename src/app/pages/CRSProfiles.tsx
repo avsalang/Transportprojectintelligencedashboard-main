@@ -25,6 +25,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popove
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, summarizeFacts } from '../utils/crsAggregations';
+import { matchesCRSFilters } from '../utils/crsFiltering';
+import { ATO_ECONOMIES } from '../data/atoEconomies';
 
 type CRSEntityType = 'country' | 'regionalRecipient' | 'broadRegion' | 'donor' | 'agency';
 
@@ -43,6 +45,7 @@ type CRSRecord = {
   commitment_defl: number;
   disbursement_defl: number;
   title: string;
+  description: string;
   short_description: string;
   purpose: string;
   mode: string;
@@ -67,7 +70,7 @@ type CRSRecordIndex = {
 };
 
 const ENTITY_META: Record<CRSEntityType, { label: string; description: string }> = {
-  country: { label: 'ADB Economy', description: 'Deep dive into official ADB standard economies.' },
+  country: { label: 'Economy', description: 'Deep dive into official standard economies.' },
   regionalRecipient: { label: 'Regional Recipient', description: 'Rollups of multi-country regional programs.' },
   broadRegion: { label: 'Broad Region', description: 'Macro-regional transport investment trends.' },
   donor: { label: 'Funding Source', description: 'Top-level contributing nations or institutions.' },
@@ -172,11 +175,7 @@ export function CRSProfiles() {
 
   const filteredRecords = useMemo(() => {
     let result = allRecords.filter(r => {
-        if (filters.donors.length && !filters.donors.includes(r.donor)) return false;
-        if (filters.regions.length && !filters.regions.includes(r.region)) return false;
-        if (filters.recipients.length && !filters.recipients.includes(r.recipient)) return false;
-        if (filters.modes.length && !filters.modes.includes(r.mode)) return false;
-        if (r.year && (r.year < filters.yearMin || r.year > filters.yearMax)) return false;
+        if (!matchesCRSFilters(r, filters, ATO_ECONOMIES)) return false;
         
         if (entityType === 'country' && (r.recipient_scope !== 'economy' || r.recipient !== selectedEntity)) return false;
         if (entityType === 'regionalRecipient' && (r.recipient_scope !== 'regional' || r.recipient !== selectedEntity)) return false;
@@ -193,7 +192,7 @@ export function CRSProfiles() {
         return (r.title || '').toLowerCase().includes(q) ||
                (r.donor || '').toLowerCase().includes(q) ||
                (r.recipient || '').toLowerCase().includes(q) ||
-               (r.short_description || '').toLowerCase().includes(q) ||
+               (r.description || r.short_description || '').toLowerCase().includes(q) ||
                String(r.year || '').includes(q);
       });
       result.sort((a, b) => {
@@ -373,7 +372,7 @@ export function CRSProfiles() {
                                <input
                                   type="text"
                                   autoFocus
-                                  placeholder={`Search ${ENTITY_META[entityType].label === 'ADB Economy' ? 'ADB Economies' : ENTITY_META[entityType].label + 's'}...`}
+                                  placeholder={`Search ${ENTITY_META[entityType].label === 'Economy' ? 'Economies' : ENTITY_META[entityType].label + 's'}...`}
                                   value={entitySearch}
                                   onChange={(e) => setEntitySearch(e.target.value)}
                                   className="w-full bg-transparent border-none p-0 text-base focus:ring-0 font-medium placeholder:text-slate-400"
@@ -443,7 +442,7 @@ export function CRSProfiles() {
                     {/* 1. Momentum Trend */}
                     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
                        <h3 className="text-slate-900 mb-1">Portfolio momentum</h3>
-                       <p className="text-[14px] text-slate-500 mb-6">Historical investment trajectory ($m usd)</p>
+                       <p className="text-[14px] text-slate-500 mb-6">Historical investment trajectory (million USD)</p>
                        <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
                              <AreaChart data={yearlySeries} margin={{ left: 10, right: 30, bottom: 40 }}>
@@ -458,7 +457,7 @@ export function CRSProfiles() {
                                    <Label value="Reporting year" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
                                 <YAxis fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($m usd)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
+                                   <Label value="Volume (million USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                                 <Legend 
@@ -484,7 +483,7 @@ export function CRSProfiles() {
                           <ResponsiveContainer width="100%" height="100%">
                              <BarChart data={partnershipSeries} layout="vertical" margin={{ left: 10, right: 30, bottom: 40 }}>
                                 <XAxis type="number" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
+                                   <Label value="Volume (million USD)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
                                 <YAxis type="category" dataKey="label" fontSize={9} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false}>
                                    <Label value="Partner entity" angle={-90} position="insideLeft" offset={-60} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
@@ -508,7 +507,7 @@ export function CRSProfiles() {
                                    <Label value="Standard transport pillars" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
                                 <YAxis fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Volume ($m usd)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
+                                   <Label value="Volume (million USD)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
                                 </YAxis>
                                 <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
                                 <Bar dataKey="value" fill="#0f766e" radius={[4, 4, 0, 0]} />
@@ -526,7 +525,7 @@ export function CRSProfiles() {
                              <ScatterChart margin={{ left: 10, right: 30, bottom: 40 }}>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                                 <XAxis type="number" dataKey="volume" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                                   <Label value="Sub-sector volume ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
+                                   <Label value="Sub-sector volume (million USD)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                                 </XAxis>
                                 <YAxis type="number" dataKey="sustainabilityScore" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
                                    <Label value="Sustainability (%)" angle={-90} position="insideLeft" offset={-40} fontSize={9} fill="#64748b" style={{ textAnchor: 'middle' }} />
@@ -567,7 +566,7 @@ export function CRSProfiles() {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={sectorMix} layout="vertical" margin={{ left: 10, right: 60, bottom: 40 }}>
                             <XAxis type="number" fontSize={9} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                               <Label value="Project volumes ($m usd)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
+                               <Label value="Project volumes (million USD)" position="bottom" offset={20} fontSize={9} fill="#64748b" />
                             </XAxis>
                             <YAxis type="category" dataKey="name" fontSize={9} width={120} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} />
                             <Tooltip formatter={(v: number) => crsFmt.usdM(v)} />
@@ -700,9 +699,12 @@ export function CRSProfiles() {
                                  <td className="px-6 py-5 text-left">
                                     <div className="max-w-[400px] space-y-1">
                                       <p className="text-[14px] font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{record.title}</p>
-                                      <p className="text-[12px] text-slate-500 line-clamp-2 leading-relaxed h-8">
-                                        {record.short_description || "No description available."}
-                                      </p>
+                                      <div className="relative">
+                                        <p className="text-[12px] text-slate-500 line-clamp-2 leading-relaxed h-8">
+                                          {record.description || record.short_description || "No description available."}
+                                        </p>
+                                        <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white/80 to-transparent pointer-events-none group-hover:from-slate-50/80 transition-colors" />
+                                      </div>
                                     </div>
                                  </td>
                                  <td className="px-6 py-5">
@@ -798,10 +800,10 @@ export function CRSProfiles() {
                          </div>
                       </div>
                       <div className="space-y-6">
-                         <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Project Narrative</h3>
+                         <h3 className="flex items-center gap-2 text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Description</h3>
                          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-inner">
                             <p className="text-base leading-relaxed text-slate-700 font-medium whitespace-pre-wrap">
-                              {activeRecord.short_description || "No granular descriptive metadata available for this transaction."}
+                              {activeRecord.description || activeRecord.short_description || "Detailed descriptive metadata not available for this record."}
                             </p>
                          </div>
                       </div>

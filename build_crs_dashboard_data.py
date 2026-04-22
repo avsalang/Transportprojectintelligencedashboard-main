@@ -201,8 +201,8 @@ def main():
             biodiversity = parse_int(row.get("biodiversity")) or 0
             drr = parse_int(row.get("drr")) or 0
 
-            title = clean_text(row.get("project_title")) or ""
-            description = clean_text(row.get("short_description")) or ""
+            title = clean_text(row.get("project_title")) or clean_text(row.get("short_description")) or ""
+            description = clean_text(row.get("long_description")) or ""
 
             key = (
                 year or 0,
@@ -442,7 +442,7 @@ def main():
 
     donor_options = [d["donor"] for d in donor_summary[:80]]
     mode_options = sorted({row["mode"] for row in facts_list})
-    region_options = sorted({row["region"] for row in facts_list if row["region"]})
+    region_options = sorted({row["region"] for row in facts_list if row["region"]} | {"Asia-Pacific (ATO)"})
     region_detail_options = sorted({row["recipient_region_detail"] for row in facts_list if row["recipient_region_detail"]})
 
     overview_stats = {

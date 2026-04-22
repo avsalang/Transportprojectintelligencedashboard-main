@@ -153,7 +153,7 @@ export function CRSOverview() {
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topDonors} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
                            <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
+                              <Label value="Volume (million USD)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -189,7 +189,7 @@ export function CRSOverview() {
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topAgencies} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
                            <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
+                              <Label value="Volume (million USD)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -225,7 +225,7 @@ export function CRSOverview() {
                      <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={topRecipients} layout="vertical" margin={{ left: 10, right: 20, bottom: 40 }}>
                            <XAxis type="number" fontSize={11} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                              <Label value="Volume ($m usd)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
+                              <Label value="Volume (million USD)" position="bottom" offset={20} fontSize={11} fill="#64748b" />
                            </XAxis>
                            <YAxis 
                               type="category" 
@@ -284,7 +284,7 @@ export function CRSOverview() {
                     tickLine={false} 
                     tick={{ fontSize: 15, fill: '#64748b' }} 
                     tickFormatter={(v) => crsFmt.usdM(v)} 
-                    label={{ value: 'Volume ($m usd)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 13, fill: '#94a3b8' }}
+                    label={{ value: 'Volume (million USD)', angle: -90, position: 'insideLeft', offset: 0, dx: -10, fontSize: 13, fill: '#94a3b8' }}
                   />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)' }}

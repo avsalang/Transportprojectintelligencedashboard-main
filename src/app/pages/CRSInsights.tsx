@@ -157,18 +157,18 @@ export function CRSInsights() {
             {/* 2. Execution Parity (Scatter) */}
             <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm flex flex-col h-[550px]">
                <h3 className="text-base text-slate-900 flex items-center gap-2 mb-10">
-                 Execution parity ($m usd)
+                 Execution parity (million USD)
                </h3>
                <div className="flex-1 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                       <XAxis type="number" dataKey="commitment" domain={[0, maxVal]} fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                         <Label value="Aggregate Commitment ($M USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                         <Label value="Aggregate Commitment (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
                       </XAxis>
                       <YAxis type="number" dataKey="disbursement" domain={[0, maxVal]} fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
                          <Label 
-                            value="Aggregate Disbursement ($M USD)" 
+                            value="Aggregate Disbursement (million USD)" 
                             angle={-90} 
                             position="insideLeft" 
                             offset={-30} 
@@ -201,7 +201,7 @@ export function CRSInsights() {
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                       <XAxis type="number" dataKey="volume" fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                         <Label value="Portfolio Commitment Scale ($M USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                         <Label value="Portfolio Commitment Scale (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
                       </XAxis>
                       <YAxis type="number" dataKey="greenShare" fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
                          <Label 
@@ -233,7 +233,7 @@ export function CRSInsights() {
           <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm overflow-hidden h-[650px] flex flex-col">
              <div className="mb-14">
                 <h3 className="text-lg text-slate-900 flex items-center gap-3">
-                  Investment by sector ($m usd)
+                  Investment by sector (million USD)
                 </h3>
                 <p className="text-[14px] text-slate-500 mt-2">Cumulative portfolio distribution across transport sectors</p>
              </div>
@@ -243,7 +243,7 @@ export function CRSInsights() {
                   <BarChart data={data.stackedData} layout="vertical" barSize={35} margin={{ left: 50, right: 30, bottom: 60 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                     <XAxis type="number" fontSize={11} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(v) => crsFmt.usdM(v)}>
-                       <Label value="Cumulative Portfolio Volume ($M USD)" position="bottom" offset={40} fontSize={11} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                       <Label value="Cumulative Portfolio Volume (million USD)" position="bottom" offset={40} fontSize={11} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
                     </XAxis>
                     <YAxis dataKey="label" type="category" width={220} fontSize={11} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tick={{ fill: '#475569' }}>
                        <Label 

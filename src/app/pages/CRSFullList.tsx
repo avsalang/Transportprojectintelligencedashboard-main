@@ -3,6 +3,8 @@ import { Search, Loader2, Info, Check, X } from 'lucide-react';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
+import { matchesCRSFilters } from '../utils/crsFiltering';
+import { ATO_ECONOMIES } from '../data/atoEconomies';
 
 type CRSRecord = {
   id: number;
@@ -19,6 +21,7 @@ type CRSRecord = {
   commitment_defl: number;
   disbursement_defl: number;
   title: string;
+  description: string;
   short_description: string;
   purpose: string;
   mode: string;
@@ -106,15 +109,7 @@ export function CRSFullList() {
 
   // 3. Intelligent Search & Filtering
   const filteredRecords = useMemo(() => {
-    let result = allLoadedRecords.filter(r => {
-      // Apply Global Sidebar Filters
-      if (filters.donors.length && !filters.donors.includes(r.donor)) return false;
-      if (filters.regions.length && !filters.regions.includes(r.region)) return false;
-      if (filters.recipients.length && !filters.recipients.includes(r.recipient)) return false;
-      if (filters.modes.length && !filters.modes.includes(r.mode)) return false;
-      if (r.year && (r.year < filters.yearMin || r.year > filters.yearMax)) return false;
-      return true;
-    });
+    let result = allLoadedRecords.filter(r => matchesCRSFilters(r, filters, ATO_ECONOMIES));
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -122,7 +117,7 @@ export function CRSFullList() {
         const title = (r.title || '').toLowerCase();
         const donor = (r.donor || '').toLowerCase();
         const recipient = (r.recipient || '').toLowerCase();
-        const desc = (r.short_description || '').toLowerCase();
+        const desc = (r.description || r.short_description || '').toLowerCase();
         const year = String(r.year || '');
 
         // Simple weighted multi-field search
@@ -258,9 +253,13 @@ export function CRSFullList() {
                           <p className="text-[15px] font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1">
                             {record.title}
                           </p>
-                          <p className="text-[13px] text-slate-500 line-clamp-2 leading-relaxed">
-                            {record.short_description || "No description available."}
-                          </p>
+                          <div className="relative">
+                            <p className="text-[13px] text-slate-500 line-clamp-2 leading-relaxed">
+                              {record.description || record.short_description || "No description available."}
+                            </p>
+                            {/* Fade effect for long text */}
+                            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-t from-white/80 to-transparent pointer-events-none group-hover:from-slate-50/80 transition-colors" />
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-5">
@@ -374,10 +373,10 @@ export function CRSFullList() {
                   </div>
 
                   <div className="space-y-6">
-                     <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Project Narrative</h3>
+                     <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Description</h3>
                      <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 shadow-inner">
                         <p className="text-base leading-relaxed text-slate-700 font-medium whitespace-pre-wrap">
-                          {activeRecord.short_description || "Detailed descriptive metadata not available for this record."}
+                          {activeRecord.description || activeRecord.short_description || "Detailed descriptive metadata not available for this record."}
                         </p>
                      </div>
                   </div>
