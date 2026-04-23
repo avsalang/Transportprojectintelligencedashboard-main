@@ -1,7 +1,8 @@
 import { X } from 'lucide-react';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { CheckboxDropdown } from './CheckboxDropdown';
-import { TimeSlider } from './TimeSlider';
+import { YearRangeSelector } from './YearRangeSelector';
+// import { TimeSlider } from './TimeSlider';
 
 export function CRSGlobalFilters() {
   const { 
@@ -101,6 +102,15 @@ export function CRSGlobalFilters() {
         />
 
         <div className="lg:col-span-1">
+          <YearRangeSelector
+            label="Year Range"
+            min={1973}
+            max={2024}
+            yearMin={filters.yearMin}
+            yearMax={filters.yearMax}
+            onChange={(min, max) => setFilters(prev => ({ ...prev, yearMin: min, yearMax: max }))}
+          />
+          {/* 
           <TimeSlider
             label="Year Range"
             min={1973}
@@ -109,6 +119,7 @@ export function CRSGlobalFilters() {
             yearMax={filters.yearMax}
             onChange={(min, max) => setFilters(prev => ({ ...prev, yearMin: min, yearMax: max }))}
           />
+          */}
         </div>
 
         <div className="flex flex-col justify-end gap-2.5">
