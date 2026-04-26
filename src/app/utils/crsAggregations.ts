@@ -1,4 +1,5 @@
 import { CRS_COUNTRY_MAP_POINTS, CRS_FACTS, CRSFact } from '../data/crsData';
+import { CRS_SECTOR6_OPTIONS, getSustainabilityTags } from './crsFiltering';
 
 export type CRSMeasure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
 
@@ -101,6 +102,109 @@ export function aggregateFacts(
     entry.count += fact.count;
   });
   return [...grouped.values()].sort((a, b) => b.commitment - a.commitment);
+}
+
+export function aggregateSustainabilityTags(facts: CRSFact[]): AggregateRow[] {
+  const grouped = new Map<string, AggregateRow>(
+    CRS_SECTOR6_OPTIONS.map((tag) => [
+      tag,
+      {
+        label: tag,
+        commitment: 0,
+        disbursement: 0,
+        commitment_defl: 0,
+        disbursement_defl: 0,
+        count: 0,
+      },
+    ]),
+  );
+
+  facts.forEach((fact) => {
+    const tags = getSustainabilityTags(fact);
+    tags.forEach((tag) => {
+      const entry = grouped.get(tag)!;
+      entry.commitment += fact.commitment;
+      entry.disbursement += fact.disbursement;
+      entry.commitment_defl += fact.commitment_defl ?? fact.commitment;
+      entry.disbursement_defl += fact.disbursement_defl ?? fact.disbursement;
+      entry.count += fact.count;
+    });
+  });
+
+  return [...grouped.values()].sort((a, b) => b.commitment - a.commitment);
+}
+
+export function buildSustainabilityStackByDonor(facts: CRSFact[], limit = 8) {
+  const donorRows = aggregateFacts(facts, (fact) => fact.donor).slice(0, limit);
+  const donorSet = new Set(donorRows.map((item) => item.label));
+
+  const rowMap = new Map(
+    donorRows.map((item) => [
+      item.label,
+      {
+        label: item.label,
+        commitment: item.commitment,
+        disbursement: item.disbursement,
+        Mitigation: 0,
+        Adaptation: 0,
+        Gender: 0,
+        DRR: 0,
+        Biodiversity: 0,
+        Environment: 0,
+      },
+    ]),
+  );
+
+  facts.forEach((fact) => {
+    if (!donorSet.has(fact.donor)) return;
+    const row = rowMap.get(fact.donor);
+    if (!row) return;
+    getSustainabilityTags(fact).forEach((tag) => {
+      row[tag as keyof typeof row] = Number(row[tag as keyof typeof row]) + fact.commitment;
+    });
+  });
+
+  return [...rowMap.values()].sort((a, b) => b.commitment - a.commitment);
+}
+
+function normalizeMode(mode?: string) {
+  const lower = (mode || 'Other').toLowerCase();
+  if (lower.includes('road')) return 'Road';
+  if (lower.includes('rail')) return 'Rail';
+  if (lower.includes('air') || lower.includes('aviation')) return 'Aviation';
+  if (lower.includes('water') || lower.includes('sea') || lower.includes('river') || lower.includes('maritime')) return 'Water';
+  return 'Other';
+}
+
+export function buildModeStackByDonor(facts: CRSFact[], limit = 8) {
+  const donorRows = aggregateFacts(facts, (fact) => fact.donor).slice(0, limit);
+  const donorSet = new Set(donorRows.map((item) => item.label));
+
+  const rowMap = new Map(
+    donorRows.map((item) => [
+      item.label,
+      {
+        label: item.label,
+        commitment: item.commitment,
+        disbursement: item.disbursement,
+        Road: 0,
+        Rail: 0,
+        Aviation: 0,
+        Water: 0,
+        Other: 0,
+      },
+    ]),
+  );
+
+  facts.forEach((fact) => {
+    if (!donorSet.has(fact.donor)) return;
+    const row = rowMap.get(fact.donor);
+    if (!row) return;
+    const mode = normalizeMode(fact.mode);
+    row[mode as keyof typeof row] = Number(row[mode as keyof typeof row]) + fact.commitment;
+  });
+
+  return [...rowMap.values()].sort((a, b) => b.commitment - a.commitment);
 }
 
 export function buildYearSeries(facts: CRSFact[]) {
@@ -225,20 +329,20 @@ export function buildFlowSankeyData(
   topRecipients = 10,
 ) {
   const MIN_VISIBLE_FLOW_VALUE = 0.05;
-  const economyFacts = facts.filter((fact) => fact.recipient_scope === 'economy');
-  const uniqueDonors = new Set(economyFacts.map((fact) => fact.donor));
-  const uniqueRecipients = new Set(economyFacts.map((fact) => fact.recipient));
+  const scopedFacts = facts.filter((fact) => fact.recipient_scope === 'economy' || fact.recipient_scope === 'regional');
+  const uniqueDonors = new Set(scopedFacts.map((fact) => fact.donor));
+  const uniqueRecipients = new Set(scopedFacts.map((fact) => fact.recipient));
   const isRecipientFocus = uniqueRecipients.size === 1;
   const isDonorFocus = uniqueDonors.size === 1;
   const donorLimit = isRecipientFocus ? 7 : isDonorFocus ? 1 : Math.min(topDonors, 5);
   const agencyLimit = isRecipientFocus ? 6 : isDonorFocus ? 5 : Math.min(topAgencies, 6);
   const recipientLimit = isRecipientFocus ? 1 : isDonorFocus ? 7 : Math.min(topRecipients, 8);
-  const donorTotals = aggregateFacts(economyFacts, (fact) => fact.donor).slice(0, donorLimit);
-  const recipientTotals = aggregateFacts(economyFacts, (fact) => fact.recipient).slice(0, recipientLimit);
+  const donorTotals = aggregateFacts(scopedFacts, (fact) => fact.donor).slice(0, donorLimit);
+  const recipientTotals = aggregateFacts(scopedFacts, (fact) => fact.recipient).slice(0, recipientLimit);
 
   const donorSet = new Set(donorTotals.map((item) => item.label));
   const recipientSet = new Set(recipientTotals.map((item) => item.label));
-  const constrainedFacts = economyFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
+  const constrainedFacts = scopedFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
   const tripletTotals = aggregateFacts(constrainedFacts, (fact) => `${fact.donor}|||${fact.agency}|||${fact.recipient}`);
   const selectedTriplets = new Set<string>();
   const addTriplets = (entries: typeof tripletTotals, limit: number) => {
@@ -332,8 +436,10 @@ export function buildFlowSankeyData(
   const links = [...donorAgencyLinks, ...agencyRecipientLinks]
     .filter((link) => nodeIndex.has(link.sourceId) && nodeIndex.has(link.targetId))
     .map((link) => ({
-      source: link.sourceId,
-      target: link.targetId,
+      source: nodeIndex.get(link.sourceId)!,
+      target: nodeIndex.get(link.targetId)!,
+      sourceId: link.sourceId,
+      targetId: link.targetId,
       sourceName: link.sourceName,
       targetName: link.targetName,
       value: link.value,
@@ -344,7 +450,7 @@ export function buildFlowSankeyData(
     .map((item) => ({
       ...item,
       visibleValue: links
-        .filter((link) => link.source === `donor::${item.label}`)
+        .filter((link) => link.sourceId === `donor::${item.label}`)
         .reduce((sum, link) => sum + link.value, 0),
     }))
     .filter((item) => item.visibleValue > 0)
@@ -361,10 +467,10 @@ export function buildFlowSankeyData(
     .map((item) => {
       const nodeId = `agency::${item.label}`;
       const outgoing = links
-        .filter((link) => link.source === nodeId)
+        .filter((link) => link.sourceId === nodeId)
         .reduce((sum, link) => sum + link.value, 0);
       const incoming = links
-        .filter((link) => link.target === nodeId)
+        .filter((link) => link.targetId === nodeId)
         .reduce((sum, link) => sum + link.value, 0);
       return {
         ...item,
@@ -385,7 +491,7 @@ export function buildFlowSankeyData(
     .map((item) => ({
       ...item,
       visibleValue: links
-        .filter((link) => link.target === `recipient::${item.label}`)
+        .filter((link) => link.targetId === `recipient::${item.label}`)
         .reduce((sum, link) => sum + link.value, 0),
     }))
     .filter((item) => item.visibleValue > 0)

@@ -1,41 +1,55 @@
 export type CRSFilters = {
   donors: string[];
-  regions: string[];
   recipients: string[];
   modes: string[];
-  scopes: string[];
+  sectors: string[];
   yearMin: number;
   yearMax: number;
-  isConstantUSD: boolean;
-  climateMitigation: number | null; // 0, 1, 2
-  climateAdaptation: number | null;
-  gender: number | null;
   measure: 'commitment' | 'disbursement';
 };
+
+export const CRS_SECTOR6_OPTIONS = [
+  'Mitigation',
+  'Adaptation',
+  'Gender',
+  'DRR',
+  'Biodiversity',
+  'Environment',
+] as const;
+
+export function isAsiaRegionalRecipient(recipient: string | undefined, scope: string | undefined): boolean {
+  if (scope !== 'regional' || !recipient) return false;
+  const text = recipient.toLowerCase();
+  return text.includes(', regional') && text.includes('asia');
+}
+
+export function isATOScopedRecipient(record: any, atoEconomies: string[]): boolean {
+  if (record.recipient_scope === 'economy') {
+    return atoEconomies.includes(record.recipient);
+  }
+  return isAsiaRegionalRecipient(record.recipient, record.recipient_scope);
+}
+
+export function getSustainabilityTags(record: any): string[] {
+  const tags: string[] = [];
+  if ((record.climate_mitigation ?? 0) > 0) tags.push('Mitigation');
+  if ((record.climate_adaptation ?? 0) > 0) tags.push('Adaptation');
+  if ((record.gender ?? 0) > 0) tags.push('Gender');
+  if ((record.drr ?? 0) > 0) tags.push('DRR');
+  if ((record.biodiversity ?? 0) > 0) tags.push('Biodiversity');
+  if ((record.environment ?? 0) > 0) tags.push('Environment');
+  return tags;
+}
 
 export function matchesCRSFilters(
   record: any,
   filters: CRSFilters,
   atoEconomies: string[]
 ): boolean {
+  if (!isATOScopedRecipient(record, atoEconomies)) return false;
+
   // Donor filter
   if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
-
-  // Region filter (with specialized ATO logic)
-  if (filters.regions.length) {
-    const hasATO = filters.regions.includes('Asia-Pacific (ATO)');
-    const otherRegions = filters.regions.filter((r) => r !== 'Asia-Pacific (ATO)');
-
-    let matchesRegion = false;
-    if (otherRegions.length && otherRegions.includes(record.region || 'Unknown')) {
-      matchesRegion = true;
-    }
-    if (hasATO && atoEconomies.includes(record.recipient)) {
-      matchesRegion = true;
-    }
-
-    if (!matchesRegion) return false;
-  }
 
   // Recipient filter
   if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;
@@ -43,9 +57,11 @@ export function matchesCRSFilters(
   // Mode filter
   if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
 
-  // Scope filter
-  const recipientScope = record.recipient_scope || 'economy';
-  if (filters.scopes.length && !filters.scopes.includes(recipientScope)) return false;
+  // Sustainability tag filter
+  if (filters.sectors.length) {
+    const recordTags = getSustainabilityTags(record);
+    if (!filters.sectors.some((tag) => recordTags.includes(tag))) return false;
+  }
 
   // Year filter
   if (record.year && (record.year < filters.yearMin || record.year > filters.yearMax)) return false;

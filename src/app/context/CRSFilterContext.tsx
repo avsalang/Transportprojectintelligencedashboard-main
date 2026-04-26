@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
-import { CRS_DONOR_OPTIONS, CRS_FACTS, CRS_MODE_OPTIONS, CRS_REGION_OPTIONS, CRSFact } from '../data/crsData';
+import { CRS_DONOR_OPTIONS, CRS_FACTS, CRS_MODE_OPTIONS, CRSFact } from '../data/crsData';
 import { ATO_ECONOMIES } from '../data/atoEconomies';
-import { CRSFilters, matchesCRSFilters } from '../utils/crsFiltering';
+import { CRSFilters, CRS_SECTOR6_OPTIONS, isATOScopedRecipient, matchesCRSFilters } from '../utils/crsFiltering';
 
 export type { CRSFilters };
 
@@ -11,23 +11,18 @@ type CRSFilterContextValue = {
   resetFilters: () => void;
   filteredFacts: CRSFact[];
   donorOptions: string[];
-  regionOptions: string[];
   recipientOptions: string[];
   modeOptions: string[];
+  sectorOptions: string[];
 };
 
 const DEFAULT_FILTERS: CRSFilters = {
   donors: [],
-  regions: [],
   recipients: [],
   modes: [],
-  scopes: [],
+  sectors: [],
   yearMin: 1973,
   yearMax: 2024,
-  isConstantUSD: false,
-  climateMitigation: null,
-  climateAdaptation: null,
-  gender: null,
   measure: 'commitment',
 };
 
@@ -41,10 +36,11 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
   const [filters, setFiltersState] = useState<CRSFilters>(DEFAULT_FILTERS);
 
   const value = useMemo<CRSFilterContextValue>(() => {
-    const filteredFacts = applyFilters(CRS_FACTS, filters);
-    const recipientOptionSource = CRS_FACTS.filter((fact) => {
-      if (fact.recipient_scope !== 'economy') return false;
-      return matchesCRSFilters(fact, filters, ATO_ECONOMIES);
+    const atoScopedFacts = CRS_FACTS.filter((fact) => isATOScopedRecipient(fact, ATO_ECONOMIES));
+    const filteredFacts = applyFilters(atoScopedFacts, filters);
+    const recipientOptionSource = atoScopedFacts.filter((fact) => {
+      const recipientFiltersCleared = { ...filters, recipients: [] };
+      return matchesCRSFilters(fact, recipientFiltersCleared, ATO_ECONOMIES);
     });
     const recipientOptions = [...new Set(recipientOptionSource.map((fact) => fact.recipient).filter(Boolean))].sort((a, b) =>
       a.localeCompare(b),
@@ -56,9 +52,9 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
       resetFilters: () => setFiltersState(DEFAULT_FILTERS),
       filteredFacts,
       donorOptions: CRS_DONOR_OPTIONS,
-      regionOptions: CRS_REGION_OPTIONS,
       recipientOptions,
       modeOptions: CRS_MODE_OPTIONS,
+      sectorOptions: [...CRS_SECTOR6_OPTIONS],
     };
   }, [filters]);
 

@@ -21,3 +21,20 @@ textarea,
 svg text {
   font-family: var(--app-font-family) !important;
 }
+
+.text-xs,
+.text-sm,
+[class*="text-[10px]"],
+[class*="text-[11px]"],
+[class*="text-[12px]"],
+[class*="text-[13px]"],
+[class*="text-[14px]"],
+[class*="text-[15px]"] {
+  font-size: 1rem !important;
+  line-height: 1.45 !important;
+}
+
+.recharts-cartesian-axis-tick-value,
+.recharts-text {
+  font-size: 1rem !important;
+}

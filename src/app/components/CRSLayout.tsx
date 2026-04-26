@@ -1,14 +1,12 @@
 import { NavLink, Outlet } from 'react-router';
 import { ChevronRight } from 'lucide-react';
-import { CRS_OVERVIEW_STATS, crsFmt } from '../data/crsData';
 import { CRSFilterProvider } from '../context/CRSFilterContext';
 import { CRSGlobalFilters } from './CRSGlobalFilters';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Overview', exact: true },
-  { to: '/insights', label: 'Strategic insights', exact: false },
-  { to: '/profiles', label: 'Portfolio profiles', exact: false },
-  { to: '/list', label: 'Full project list', exact: false },
+  { to: '/donor-profile', label: 'Donor Profile', exact: false },
+  { to: '/recipient-profile', label: 'Recipient Profile', exact: false },
 ];
 
 export function CRSLayout() {
@@ -22,9 +20,9 @@ export function CRSLayout() {
                 <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="w-full h-full object-contain rounded-full" />
               </div>
               <div>
-                <p className="text-white text-base leading-tight tracking-tight">CRS dashboard</p>
+                <p className="text-white text-base leading-tight tracking-tight">OECD CRS Transport Funding</p>
                 <p className="text-blue-300 text-[10px] tracking-wider leading-snug mt-1 max-w-[140px]">
-                   Visualization and Analysis by the Asian Transport Observatory (ATO)
+                  An ATO visualization and analysis of OECD CRS transport-related funding
                 </p>
               </div>
             </div>
@@ -55,13 +53,7 @@ export function CRSLayout() {
           </nav>
 
           <div className="px-5 py-4 border-t border-white/10">
-            <p className="text-slate-400 text-[13px]">
-              {crsFmt.num(CRS_OVERVIEW_STATS.recipientCount)} economies · {crsFmt.num(CRS_OVERVIEW_STATS.donorCount)} donors
-            </p>
-            <p className="text-slate-500 text-[12px] mt-0.5">
-              ${crsFmt.usdM(CRS_OVERVIEW_STATS.totalCommitment)} commitments
-            </p>
-            <div className="mt-4 pt-4 border-t border-white/5">
+            <div>
               <p className="text-[11px] text-blue-300/40 mb-1.5">Data source</p>
               <a 
                 href="https://data-explorer.oecd.org/vis?lc=en&tm=crs&pg=0&snb=25&df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_CRS%40DF_CRS&df[ag]=OECD.DCD.FSD&df[vs]=1.6&dq=DAC..1000.100._T._T.D.Q._T..&lom=LASTNPERIODS&lo=5&to[TIME_PERIOD]=false"
