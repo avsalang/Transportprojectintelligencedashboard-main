@@ -24,6 +24,17 @@ export function CRSGlobalFilters() {
     (filters.yearMin > 1973 ? 1 : 0) +
     (filters.yearMax < 2024 ? 1 : 0);
 
+  const recipientOptionGroups = [
+    {
+      title: 'ATO Economies',
+      options: recipientOptions.filter((option) => !option.includes(', regional')),
+    },
+    {
+      title: 'Asia Regional Recipients',
+      options: recipientOptions.filter((option) => option.includes(', regional')),
+    },
+  ].filter((group) => group.options.length > 0);
+
   return (
     <div className="px-6 py-4 border-b border-slate-200 bg-white/95 backdrop-blur-md sticky top-0 z-30 shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -66,6 +77,7 @@ export function CRSGlobalFilters() {
         <CheckboxDropdown
           label="Recipient"
           options={recipientOptions}
+          optionGroups={recipientOptionGroups}
           selected={filters.recipients}
           onChange={(val) => setFilters(prev => ({ ...prev, recipients: val }))}
         />
@@ -78,7 +90,7 @@ export function CRSGlobalFilters() {
         />
 
         <CheckboxDropdown
-          label="Sustainability Tag"
+          label="CRS Tag"
           options={sectorOptions}
           selected={filters.sectors}
           onChange={(val) => setFilters(prev => ({ ...prev, sectors: val }))}

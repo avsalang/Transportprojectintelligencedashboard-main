@@ -194,7 +194,7 @@ export function CRSInsights() {
             {/* 3. Strategic Alignment (Bubble) */}
             <div className="bg-white p-10 rounded-sm border border-slate-200 shadow-sm flex flex-col h-[550px]">
                <h3 className="text-base text-slate-900 flex items-center gap-2 mb-10">
-                 Sustainability alignment
+                 CRS tag alignment
                </h3>
                <div className="flex-1 w-full">
                   <ResponsiveContainer width="100%" height="100%">
@@ -205,7 +205,7 @@ export function CRSInsights() {
                       </XAxis>
                       <YAxis type="number" dataKey="greenShare" fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
                          <Label 
-                            value="Sustainability Intensity (%)" 
+                            value="CRS Tag Intensity (%)" 
                             angle={-90} 
                             position="insideLeft" 
                             offset={-30} 

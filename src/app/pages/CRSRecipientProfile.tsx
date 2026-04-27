@@ -277,8 +277,8 @@ export function CRSRecipientProfile() {
             maxChars={24}
           />
           <CRSRankingCard
-            title="Sustainability Tags"
-            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment tags."
+            title="CRS Tags"
+            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment CRS tags."
             data={sectorSeries}
             measure={measure}
             color="#F59E0B"
@@ -442,7 +442,7 @@ export function CRSRecipientProfile() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">Thematic markers</p>
+                    <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">CRS marker hints</p>
                     <div className="flex flex-wrap gap-2">
                       <ThemeFlag active={activeRecord.climate_mitigation} label="Mitigation" />
                       <ThemeFlag active={activeRecord.climate_adaptation} label="Adaptation" />

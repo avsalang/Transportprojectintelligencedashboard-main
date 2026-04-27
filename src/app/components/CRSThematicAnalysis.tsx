@@ -168,7 +168,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
       <section className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-lg text-slate-900">Sustainability alignment trends</h2>
+              <h2 className="text-lg text-slate-900">CRS tag alignment trends</h2>
             <p className="text-[15px] text-slate-500 font-normal mt-0.5">Tracking markers and climate alignment over time</p>
           </div>
           <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-medium">
@@ -235,7 +235,7 @@ export function CRSThematicAnalysis({ facts, isConstant }: Props) {
         
         {/* 100% Stacked Sustainability share */}
         <div className="mt-12">
-           <h3 className="text-sm text-slate-700 mb-4">Sustainability-tagged vs conventional finance (%)</h3>
+              <h3 className="text-sm text-slate-700 mb-4">CRS-tagged vs conventional finance (%)</h3>
            <div className="h-[240px] bg-slate-50/50 rounded-xl p-4 border border-slate-100 overflow-hidden">
              <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={trendData} stackOffset="expand" margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>

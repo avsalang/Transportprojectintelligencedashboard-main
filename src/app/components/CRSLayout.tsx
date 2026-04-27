@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/', label: 'Overview', exact: true },
   { to: '/donor-profile', label: 'Donor Profile', exact: false },
   { to: '/recipient-profile', label: 'Recipient Profile', exact: false },
+  { to: '/un-decade', label: 'UN Decade', exact: false },
 ];
 
 export function CRSLayout() {

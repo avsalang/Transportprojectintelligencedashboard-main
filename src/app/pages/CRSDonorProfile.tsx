@@ -146,8 +146,8 @@ export function CRSDonorProfile() {
             maxChars={24}
           />
           <CRSRankingCard
-            title="Sustainability Tags"
-            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment tags."
+            title="CRS Tags"
+            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment CRS tags."
             data={sectorSeries}
             measure={measure}
             color="#F59E0B"

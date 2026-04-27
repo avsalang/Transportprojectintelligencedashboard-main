@@ -19,6 +19,27 @@ import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearSeries, summarizeFacts } from '../utils/crsAggregations';
 
+function StackedModeTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const rows = payload.filter((item: any) => Number(item.value) > 0);
+  if (!rows.length) return null;
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
+      <p className="mb-2 text-[13px] font-semibold text-slate-900">{label}</p>
+      <div className="space-y-1.5">
+        {rows.map((item: any) => (
+          <div key={item.dataKey} className="flex items-center justify-between gap-5 text-[12px]">
+            <span style={{ color: item.color }}>{item.dataKey}</span>
+            <span className="font-medium text-slate-700">{crsFmt.usdM(Number(item.value))}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 border-t border-slate-100 pt-1.5 text-[11px] text-slate-400">Commitments</p>
+    </div>
+  );
+}
+
 export function CRSOverview() {
   const { filteredFacts, filters } = useCRSFilters();
   const measure = filters.measure;
@@ -117,7 +138,7 @@ export function CRSOverview() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 12, fill: '#64748B' }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
                   <YAxis type="category" dataKey="label" width={220} tickLine={false} axisLine={false} tick={{ fontSize: 12, fill: '#334155' }} interval={0} />
-                  <Tooltip formatter={(value: number) => [crsFmt.usdM(value), 'Amount']} />
+                  <Tooltip content={<StackedModeTooltip />} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="Road" stackId="modes" fill="#2563EB" />
                   <Bar dataKey="Rail" stackId="modes" fill="#10B981" />
@@ -145,8 +166,8 @@ export function CRSOverview() {
             color="#8B5CF6"
           />
           <CRSRankingCard
-            title="Sustainability Tag Totals"
-            subtitle="Total tagged volume by sustainability marker in the current filtered portfolio."
+            title="CRS Tag Totals"
+            subtitle="Total tagged volume by CRS marker in the current filtered portfolio."
             data={sectorSeries}
             measure={measure}
             color="#0EA5E9"

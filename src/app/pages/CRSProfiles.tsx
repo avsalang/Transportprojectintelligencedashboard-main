@@ -542,7 +542,7 @@ export function CRSProfiles() {
                                                  Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
                                                </p>
                                                <p className="text-[15px] text-slate-500">
-                                                 Sustainability: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
+                              CRS Tags: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
                                                </p>
                                             </div>
                                          );
@@ -577,7 +577,7 @@ export function CRSProfiles() {
                    </div>
 
                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-6">
-                      <h3 className="text-slate-900 w-full text-left mb-1">Sustainability alignment score</h3>
+                  <h3 className="text-slate-900 w-full text-left mb-1">CRS tag alignment score</h3>
                       <p className="text-[14px] text-slate-500 w-full text-left mb-6">Share of projects with thematic markers</p>
                       <div className="relative w-48 h-48 mx-auto">
                          <svg className="absolute top-0 left-0 w-full h-full transform -rotate-90" viewBox="0 0 192 192">
@@ -780,7 +780,7 @@ export function CRSProfiles() {
                          </div>
                       </div>
                       <div className="space-y-6">
-                         <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Sustainability Alignment</h3>
+              <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">CRS Tag Alignment</h3>
                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             {[
                               { l: 'Mitigation', v: activeRecord.climate_mitigation },

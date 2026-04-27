@@ -352,7 +352,7 @@ export function CRSFullList() {
                   </div>
 
                   <div className="space-y-6">
-                     <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">Sustainability Alignment</h3>
+              <h3 className="text-[14px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-3">CRS Tag Alignment</h3>
                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                         {[
                           { l: 'Mitigation', v: activeRecord.climate_mitigation },
