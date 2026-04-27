@@ -249,6 +249,9 @@ export function CRSDecade() {
             <div className="mb-5">
               <h2 className="text-slate-900 text-base font-semibold">Theme Mix Over Time</h2>
               <p className="text-slate-500 text-[13px] mt-1">Annual tagged {activeMeasureLabel} by focus area.</p>
+              <p className="text-slate-400 text-[12px] mt-1">
+                Stacked values show theme-tagged volume; records with multiple themes are counted once in each applicable focus area.
+              </p>
             </div>
             <ResponsiveContainer width="100%" height={360}>
               <AreaChart data={trend} margin={{ top: 10, right: 18, left: 4, bottom: 0 }}>
