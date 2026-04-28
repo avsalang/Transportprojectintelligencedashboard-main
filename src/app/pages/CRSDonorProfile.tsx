@@ -3,6 +3,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -13,7 +14,15 @@ import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
-import { aggregateFacts, aggregateSustainabilityTags, buildYearSeries, summarizeFacts } from '../utils/crsAggregations';
+import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
+
+const MODE_AREA_COLORS = {
+  Rail: '#10B981',
+  Road: '#2563EB',
+  Water: '#8B5CF6',
+  Aviation: '#F59E0B',
+  Other: '#EC4899',
+};
 
 export function CRSDonorProfile() {
   const { filteredFacts, filters, donorOptions } = useCRSFilters();
@@ -35,14 +44,14 @@ export function CRSDonorProfile() {
   const stats = useMemo(() => summarizeFacts(donorFacts), [donorFacts]);
   const donorRecipients = useMemo(() => new Set(donorFacts.map((fact) => fact.recipient)).size, [donorFacts]);
   const donorAgencies = useMemo(() => new Set(donorFacts.map((fact) => fact.agency)).size, [donorFacts]);
-  const disbursementRatio = stats.commitment > 0 ? (stats.disbursement / stats.commitment) * 100 : 0;
 
-  const yearlySeries = useMemo(() => buildYearSeries(donorFacts), [donorFacts]);
+  const yearlyModeStack = useMemo(() => buildYearModeStack(donorFacts, measure), [donorFacts, measure]);
   const recipientSeries = useMemo(() => aggregateFacts(donorFacts, (fact) => fact.recipient).slice(0, 10), [donorFacts]);
   const agencySeries = useMemo(() => aggregateFacts(donorFacts, (fact) => fact.agency).slice(0, 10), [donorFacts]);
   const modeSeries = useMemo(() => aggregateFacts(donorFacts, (fact) => fact.mode).slice(0, 8), [donorFacts]);
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(donorFacts), [donorFacts]);
   const financingSeries = useMemo(() => aggregateFacts(donorFacts, (fact) => fact.flow).slice(0, 8), [donorFacts]);
+  const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
 
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
@@ -70,42 +79,33 @@ export function CRSDonorProfile() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
           <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment)} />
           <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement)} />
           <KPICard label="Recipients" value={crsFmt.num(donorRecipients)} />
           <KPICard label="Agencies" value={crsFmt.num(donorAgencies)} />
           <KPICard label="Records" value={crsFmt.num(stats.count)} />
-          <KPICard label="Disbursement Ratio" value={`${disbursementRatio.toFixed(1)}%`} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
             <h2 className="text-slate-900 text-lg tracking-tight">Funding Over Time</h2>
             <p className="text-slate-500 text-[14px] mt-1 mb-4">
-              Yearly {measure === 'commitment' ? 'commitments' : 'disbursements'} from the selected donor.
+              Yearly {measureLabel} from the selected donor by transport mode.
             </p>
             <div className="h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={yearlySeries} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="donor-area-gradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#0F766E" stopOpacity={0.35} />
-                      <stop offset="100%" stopColor="#0F766E" stopOpacity={0.03} />
-                    </linearGradient>
-                  </defs>
+                <AreaChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}>
                   <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" />
                   <XAxis dataKey="year" tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} />
                   <YAxis tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
-                  <Tooltip formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
-                  <Area
-                    type="monotone"
-                    dataKey={measure}
-                    stroke="#0F766E"
-                    strokeWidth={2.5}
-                    fill="url(#donor-area-gradient)"
-                    dot={false}
-                  />
+                  <Tooltip formatter={(value: number, name: string) => [crsFmt.usdM(value), name]} />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="Road" stackId="modes" stroke={MODE_AREA_COLORS.Road} fill={MODE_AREA_COLORS.Road} fillOpacity={0.72} strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="Water" stackId="modes" stroke={MODE_AREA_COLORS.Water} fill={MODE_AREA_COLORS.Water} fillOpacity={0.72} strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="Aviation" stackId="modes" stroke={MODE_AREA_COLORS.Aviation} fill={MODE_AREA_COLORS.Aviation} fillOpacity={0.72} strokeWidth={1.5} />
+                  <Area type="monotone" dataKey="Other" stackId="modes" stroke={MODE_AREA_COLORS.Other} fill={MODE_AREA_COLORS.Other} fillOpacity={0.72} strokeWidth={1.5} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>

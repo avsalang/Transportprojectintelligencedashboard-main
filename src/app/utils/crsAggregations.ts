@@ -230,6 +230,32 @@ export function buildYearSeries(facts: CRSFact[]) {
   return [...byYear.values()].sort((a, b) => Number(a.year) - Number(b.year));
 }
 
+export function buildYearModeStack(facts: CRSFact[], measure: CRSMeasure) {
+  const byYear = new Map<
+    number,
+    { year: string; Road: number; Rail: number; Aviation: number; Water: number; Other: number }
+  >();
+
+  facts.forEach((fact) => {
+    if (!byYear.has(fact.year)) {
+      byYear.set(fact.year, {
+        year: String(fact.year),
+        Road: 0,
+        Rail: 0,
+        Aviation: 0,
+        Water: 0,
+        Other: 0,
+      });
+    }
+
+    const entry = byYear.get(fact.year)!;
+    const mode = normalizeMode(fact.mode);
+    entry[mode as keyof Omit<typeof entry, 'year'>] += fact[measure] ?? 0;
+  });
+
+  return [...byYear.values()].sort((a, b) => Number(a.year) - Number(b.year));
+}
+
 export function buildSustainabilityTrend(facts: CRSFact[], isConstant = false) {
   const byYear = new Map<number, { 
     year: string; 

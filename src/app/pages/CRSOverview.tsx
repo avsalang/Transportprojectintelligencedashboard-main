@@ -17,9 +17,17 @@ import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
-import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearSeries, summarizeFacts } from '../utils/crsAggregations';
+import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 
-function StackedModeTooltip({ active, payload, label }: any) {
+const MODE_AREA_COLORS = {
+  Rail: '#10B981',
+  Road: '#2563EB',
+  Water: '#8B5CF6',
+  Aviation: '#F59E0B',
+  Other: '#EC4899',
+};
+
+function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitments' }: any) {
   if (!active || !payload?.length) return null;
   const rows = payload.filter((item: any) => Number(item.value) > 0);
   if (!rows.length) return null;
@@ -35,7 +43,7 @@ function StackedModeTooltip({ active, payload, label }: any) {
           </div>
         ))}
       </div>
-      <p className="mt-2 border-t border-slate-100 pt-1.5 text-[11px] text-slate-400">Commitments</p>
+      <p className="mt-2 border-t border-slate-100 pt-1.5 text-[11px] text-slate-400">{measureLabel}</p>
     </div>
   );
 }
@@ -45,15 +53,14 @@ export function CRSOverview() {
   const measure = filters.measure;
   const stats = useMemo(() => summarizeFacts(filteredFacts), [filteredFacts]);
   const countryPoints = useMemo(() => buildCountryMapPoints(filteredFacts), [filteredFacts]);
-  const yearlySeries = useMemo(() => buildYearSeries(filteredFacts), [filteredFacts]);
+  const yearlyModeStack = useMemo(() => buildYearModeStack(filteredFacts, measure), [filteredFacts, measure]);
   const topRecipients = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.recipient).slice(0, 10), [filteredFacts]);
   const topDonors = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.donor).slice(0, 10), [filteredFacts]);
   const modeSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.mode).slice(0, 10), [filteredFacts]);
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(filteredFacts), [filteredFacts]);
   const donorModeStack = useMemo(() => buildModeStackByDonor(filteredFacts, 8), [filteredFacts]);
   const financingSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.flow).slice(0, 10), [filteredFacts]);
-
-  const disbursementRatio = stats.commitment > 0 ? (stats.disbursement / stats.commitment) * 100 : 0;
+  const measureLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
 
   return (
     <div className="p-6 bg-slate-50/50 min-h-screen">
@@ -63,13 +70,12 @@ export function CRSOverview() {
           <p className="text-slate-500 mt-1">ATO-focused CRS transport finance across selected recipients, donors, and years.</p>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
           <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment)} sub="Total commitments in view" />
           <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement)} sub="Total disbursements in view" />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
           <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Funding sources in view" />
           <KPICard label="Records" value={crsFmt.num(stats.count)} sub="CRS transaction lines" />
-          <KPICard label="Disbursement Ratio" value={`${disbursementRatio.toFixed(1)}%`} sub="Disbursement divided by commitment" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr,1fr] gap-6">
@@ -102,28 +108,19 @@ export function CRSOverview() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr,1fr] gap-6">
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
             <p className="text-slate-900 text-sm font-semibold mb-1">Funding Over Time</p>
-            <p className="text-slate-400 text-xs mb-4">Commitments and disbursements by year in the current filtered portfolio.</p>
+            <p className="text-slate-400 text-xs mb-4">{measureLabel} by year and transport mode in the current filtered portfolio.</p>
             <ResponsiveContainer width="100%" height={320}>
-              <AreaChart data={yearlySeries} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
-                <defs>
-                  <linearGradient id="overviewCommitment" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.22} />
-                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="overviewDisbursement" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.22} />
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
+              <AreaChart data={yearlyModeStack} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
                 <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
                 <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} tickFormatter={(value: number) => crsFmt.usdM(value)} />
-                <Tooltip
-                  contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
-                  formatter={(value: number) => [crsFmt.usdM(value), 'Amount']}
-                />
-                <Area type="monotone" dataKey="commitment" stroke="#2563EB" strokeWidth={2} fill="url(#overviewCommitment)" />
-                <Area type="monotone" dataKey="disbursement" stroke="#10B981" strokeWidth={2} fill="url(#overviewDisbursement)" />
+                <Tooltip content={<StackedModeTooltip measureLabel={measureLabel} />} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />
+                <Area type="monotone" dataKey="Road" stackId="modes" stroke={MODE_AREA_COLORS.Road} fill={MODE_AREA_COLORS.Road} fillOpacity={0.72} strokeWidth={1.5} />
+                <Area type="monotone" dataKey="Water" stackId="modes" stroke={MODE_AREA_COLORS.Water} fill={MODE_AREA_COLORS.Water} fillOpacity={0.72} strokeWidth={1.5} />
+                <Area type="monotone" dataKey="Aviation" stackId="modes" stroke={MODE_AREA_COLORS.Aviation} fill={MODE_AREA_COLORS.Aviation} fillOpacity={0.72} strokeWidth={1.5} />
+                <Area type="monotone" dataKey="Other" stackId="modes" stroke={MODE_AREA_COLORS.Other} fill={MODE_AREA_COLORS.Other} fillOpacity={0.72} strokeWidth={1.5} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
