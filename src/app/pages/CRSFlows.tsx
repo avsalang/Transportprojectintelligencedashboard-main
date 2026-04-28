@@ -42,7 +42,7 @@ function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure)
       y: coordinate.y,
       title: `${entry.sourceName} → ${entry.targetName}`,
       value: crsFmt.usdM(entry.value),
-      subtitle: measure === 'commitment' ? 'Commitments' : 'Disbursements',
+      subtitle: measure.includes('commitment') ? 'Commitments' : 'Disbursements',
     };
   }
 
@@ -53,7 +53,7 @@ function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure)
     y: coordinate.y,
     title: node.name,
     value: crsFmt.usdM(node.totalValue),
-    subtitle: measure === 'commitment' ? `${node.role} commitments in current filters` : `${node.role} disbursements in current filters`,
+    subtitle: measure.includes('commitment') ? `${node.role} commitments in current filters` : `${node.role} disbursements in current filters`,
   };
 }
 
@@ -127,7 +127,7 @@ function FlowLink(props: any) {
 
 export function CRSFlows() {
   const { filteredFacts } = useCRSFilters();
-  const [measure, setMeasure] = useState<CRSMeasure>('commitment');
+  const [measure, setMeasure] = useState<CRSMeasure>('commitment_defl');
   const [selectedDonor, setSelectedDonor] = useState<string | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
   const [selectedRecipient, setSelectedRecipient] = useState<string | null>(null);
@@ -173,7 +173,7 @@ export function CRSFlows() {
       color: nodes[link.source]?.color ?? DONOR_COLORS[0],
     }));
     return { ...sankeyData, nodes, links };
-  }, [sankeyData]);
+  }, [measure, sankeyData, sankeyFacts]);
   const topDonors = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.donor).slice(0, 12), [sankeyFacts]);
   const topAgencies = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.agency).slice(0, 12), [sankeyFacts]);
   const topRecipients = useMemo(() => aggregateFacts(sankeyFacts, (fact) => fact.recipient).slice(0, 12), [sankeyFacts]);
@@ -257,14 +257,14 @@ export function CRSFlows() {
           ) : null}
           <div className="inline-flex rounded-lg bg-slate-100 p-1">
             <button
-              onClick={() => setMeasure('commitment')}
-              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              onClick={() => setMeasure('commitment_defl')}
+              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure.includes('commitment') ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
             >
               Commitments
             </button>
             <button
-              onClick={() => setMeasure('disbursement')}
-              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
+              onClick={() => setMeasure('disbursement_defl')}
+              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure.includes('disbursement') ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
             >
               Disbursements
             </button>
@@ -323,7 +323,7 @@ export function CRSFlows() {
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={donorAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topDonors.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.86} />
@@ -341,7 +341,7 @@ export function CRSFlows() {
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={agencyAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topAgencies.map((row) => (
                   <Cell key={row.label} fill={AGENCY_COLOR} fillOpacity={0.86} />
@@ -359,7 +359,7 @@ export function CRSFlows() {
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<TruncatedCategoryTick maxChars={22} />} tickLine={false} axisLine={false} width={recipientAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topRecipients.map((row) => (
                   <Cell key={row.label} fill="#059669" fillOpacity={0.86} />
@@ -378,7 +378,7 @@ export function CRSFlows() {
             <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
             <XAxis dataKey="label" tick={<WrappedAxisTick maxChars={12} />} tickLine={false} axisLine={false} height={78} interval={0} />
             <YAxis tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-            <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+            <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
             <Bar dataKey={measure} radius={[6, 6, 0, 0]}>
               {flowTypes.map((row) => (
                 <Cell key={row.label} fill="#10B981" fillOpacity={0.84} />

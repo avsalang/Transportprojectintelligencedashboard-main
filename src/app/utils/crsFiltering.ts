@@ -1,11 +1,13 @@
 export type CRSFilters = {
   donors: string[];
+  agencies: string[];
   recipients: string[];
   modes: string[];
+  flows: string[];
   sectors: string[];
   yearMin: number;
   yearMax: number;
-  measure: 'commitment' | 'disbursement';
+  measure: 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
 };
 
 export const CRS_SECTOR6_OPTIONS = [
@@ -51,11 +53,17 @@ export function matchesCRSFilters(
   // Donor filter
   if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
 
+  // Agency filter
+  if (filters.agencies.length && !filters.agencies.includes(record.agency || 'Unknown')) return false;
+
   // Recipient filter
   if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;
 
   // Mode filter
   if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
+
+  // Flow / financial instrument filter
+  if (filters.flows.length && !filters.flows.includes(record.flow || 'Unknown')) return false;
 
   // Sustainability tag filter
   if (filters.sectors.length) {

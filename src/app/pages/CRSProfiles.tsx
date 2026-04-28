@@ -106,8 +106,7 @@ export function CRSProfiles() {
   const [isEntityDropdownOpen, setIsEntityDropdownOpen] = useState(false);
   const [registrySearchQuery, setRegistrySearchQuery] = useState('');
 
-  const isConstant = filters.isConstantUSD;
-  const activeMeasure = isConstant ? (measure === 'commitment' ? 'commitment_defl' : 'disbursement_defl') : measure;
+  const activeMeasure = measure.includes('commitment') ? 'commitment_defl' : 'disbursement_defl';
 
   useEffect(() => {
     async function loadIndex() {

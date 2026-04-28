@@ -20,7 +20,7 @@ type MapView = 'points' | 'heatmap';
 
 export function CRSGeography() {
   const { filteredFacts } = useCRSFilters();
-  const [measure, setMeasure] = useState<CRSMeasure>('commitment');
+  const [measure, setMeasure] = useState<CRSMeasure>('commitment_defl');
   const [mapView, setMapView] = useState<MapView>('points');
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
@@ -70,14 +70,14 @@ export function CRSGeography() {
             <div className="flex items-center gap-2">
               <div className="inline-flex rounded-lg bg-slate-100 p-1">
                 <button
-                  onClick={() => setMeasure('commitment')}
-                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure === 'commitment' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                  onClick={() => setMeasure('commitment_defl')}
+                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure.includes('commitment') ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Commitments
                 </button>
                 <button
-                  onClick={() => setMeasure('disbursement')}
-                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure === 'disbursement' ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                  onClick={() => setMeasure('disbursement_defl')}
+                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure.includes('disbursement') ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
                 >
                   Disbursements
                 </button>
@@ -125,13 +125,13 @@ export function CRSGeography() {
                   <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
                     <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Commitments</p>
                     <p className="text-slate-900 text-xl font-semibold tabular-nums">
-                      {crsFmt.usdM(selectedCountryProfile.commitment)}
+                      {crsFmt.usdM(selectedCountryProfile.commitment_defl)}
                     </p>
                   </div>
                   <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
                     <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Disbursements</p>
                     <p className="text-slate-900 text-xl font-semibold tabular-nums">
-                      {crsFmt.usdM(selectedCountryProfile.disbursement)}
+                      {crsFmt.usdM(selectedCountryProfile.disbursement_defl)}
                     </p>
                   </div>
                 </div>
@@ -173,7 +173,7 @@ export function CRSGeography() {
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={countryAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
                 {topCountries.map((row) => (
                   <Cell key={row.label} fill="#059669" fillOpacity={0.82} />
@@ -191,7 +191,7 @@ export function CRSGeography() {
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 15, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
               <YAxis type="category" dataKey="label" tick={<WrappedCategoryTick maxChars={18} />} tickLine={false} axisLine={false} width={broadRegionAxisWidth} interval={0} />
-              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']} />
+              <Tooltip contentStyle={{ fontSize: 15, borderRadius: 8, border: '1px solid #E2E8F0' }} formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']} />
               <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={18}>
                 {broadRegions.map((row) => (
                   <Cell key={row.label} fill="#0F766E" fillOpacity={0.82} />

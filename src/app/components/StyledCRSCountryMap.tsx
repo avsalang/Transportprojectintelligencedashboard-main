@@ -3,12 +3,14 @@ import maplibregl, { GeoJSONSource, LngLatBounds } from 'maplibre-gl';
 import { ATO_STYLE_URL, atoMapFallbackStyle } from '../map/atoMapStyle';
 
 type MapViewMode = 'points' | 'heatmap';
-type Measure = 'commitment' | 'disbursement';
+type Measure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
 
 export interface CRSCountryPoint {
   recipient: string;
   commitment: number;
   disbursement: number;
+  commitment_defl: number;
+  disbursement_defl: number;
   count: number;
   lat: number;
   lng: number;
@@ -19,8 +21,14 @@ const SOURCE_ID = 'crs-country-source';
 const POINT_LAYER_ID = 'crs-country-points';
 const HEAT_LAYER_ID = 'crs-country-heat';
 
+function pointValue(point: CRSCountryPoint, measure: Measure) {
+  if (measure === 'commitment') return point.commitment_defl ?? point.commitment;
+  if (measure === 'disbursement') return point.disbursement_defl ?? point.disbursement;
+  return point[measure] ?? 0;
+}
+
 function buildFeatureCollection(points: CRSCountryPoint[], measure: Measure) {
-  const values = points.map((point) => (measure === 'commitment' ? point.commitment : point.disbursement));
+  const values = points.map((point) => pointValue(point, measure));
   const maxValue = Math.max(...values, 1);
   return {
     type: 'FeatureCollection' as const,
@@ -35,16 +43,18 @@ function buildFeatureCollection(points: CRSCountryPoint[], measure: Measure) {
         region: point.region,
         commitment: point.commitment,
         disbursement: point.disbursement,
+        commitment_defl: point.commitment_defl,
+        disbursement_defl: point.disbursement_defl,
         count: point.count,
-        value: measure === 'commitment' ? point.commitment : point.disbursement,
+        value: pointValue(point, measure),
         radius_score: Math.max(
           0.12,
           Math.min(
-            Math.sqrt(Math.max(measure === 'commitment' ? point.commitment : point.disbursement, 0) / maxValue),
+            Math.sqrt(Math.max(pointValue(point, measure), 0) / maxValue),
             1,
           ),
         ),
-        weight: Math.max(0.2, Math.min(Math.log10(Math.max(measure === 'commitment' ? point.commitment : point.disbursement, 1)) / 4, 1)),
+        weight: Math.max(0.2, Math.min(Math.log10(Math.max(pointValue(point, measure), 1)) / 4, 1)),
       },
     })),
   };
@@ -177,7 +187,7 @@ export function StyledCRSCountryMap({
       const props = feature.properties as any;
       popupRef.current
         .setLngLat((feature.geometry as any).coordinates.slice())
-        .setHTML(`<div style="font-size:12px;line-height:1.4"><div style="font-weight:600;margin-bottom:2px">${props.recipient}</div><div>${props.region}</div><div>${measure === 'commitment' ? 'Commitment' : 'Disbursement'}: $${Number(props.value).toFixed(1)}M</div></div>`)
+        .setHTML(`<div style="font-size:12px;line-height:1.4"><div style="font-weight:600;margin-bottom:2px">${props.recipient}</div><div>${props.region}</div><div>${measure.includes('commitment') ? 'Commitment' : 'Disbursement'}: $${Number(props.value).toFixed(1)}M</div></div>`)
         .addTo(map);
     });
 

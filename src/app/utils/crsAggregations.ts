@@ -12,6 +12,12 @@ type AggregateRow = {
   count: number;
 };
 
+function factValue(fact: CRSFact, measure: CRSMeasure) {
+  if (measure === 'commitment') return fact.commitment_defl ?? fact.commitment;
+  if (measure === 'disbursement') return fact.disbursement_defl ?? fact.disbursement;
+  return fact[measure] ?? 0;
+}
+
 const countryCoordinateLookup = new Map(
   CRS_COUNTRY_MAP_POINTS.map((point) => [
     point.recipient,
@@ -201,7 +207,7 @@ export function buildModeStackByDonor(facts: CRSFact[], limit = 8) {
     const row = rowMap.get(fact.donor);
     if (!row) return;
     const mode = normalizeMode(fact.mode);
-    row[mode as keyof typeof row] = Number(row[mode as keyof typeof row]) + fact.commitment;
+    row[mode as keyof typeof row] = Number(row[mode as keyof typeof row]) + (fact.commitment_defl ?? fact.commitment);
   });
 
   return [...rowMap.values()].sort((a, b) => b.commitment - a.commitment);
@@ -250,7 +256,7 @@ export function buildYearModeStack(facts: CRSFact[], measure: CRSMeasure) {
 
     const entry = byYear.get(fact.year)!;
     const mode = normalizeMode(fact.mode);
-    entry[mode as keyof Omit<typeof entry, 'year'>] += fact[measure] ?? 0;
+    entry[mode as keyof Omit<typeof entry, 'year'>] += factValue(fact, measure);
   });
 
   return [...byYear.values()].sort((a, b) => Number(a.year) - Number(b.year));
@@ -312,7 +318,7 @@ export function buildSustainabilityTrend(facts: CRSFact[], isConstant = false) {
 export function buildCountryMapPoints(facts: CRSFact[]) {
   const grouped = new Map<
     string,
-    { recipient: string; region: string; commitment: number; disbursement: number; count: number }
+    { recipient: string; region: string; commitment: number; disbursement: number; commitment_defl: number; disbursement_defl: number; count: number }
   >();
 
   facts.forEach((fact) => {
@@ -325,12 +331,16 @@ export function buildCountryMapPoints(facts: CRSFact[]) {
         region: coords.region || fact.region,
         commitment: 0,
         disbursement: 0,
+        commitment_defl: 0,
+        disbursement_defl: 0,
         count: 0,
       });
     }
     const entry = grouped.get(fact.recipient)!;
     entry.commitment += fact.commitment;
     entry.disbursement += fact.disbursement;
+    entry.commitment_defl += fact.commitment_defl ?? fact.commitment;
+    entry.disbursement_defl += fact.disbursement_defl ?? fact.disbursement;
     entry.count += fact.count;
   });
 
@@ -415,8 +425,8 @@ export function buildFlowSankeyData(
 
     const donorAgencyKey = `${fact.donor}|||${fact.agency}`;
     const agencyRecipientKey = `${fact.agency}|||${fact.recipient}`;
-    donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + fact[measure]);
-    agencyRecipientLinkMap.set(agencyRecipientKey, (agencyRecipientLinkMap.get(agencyRecipientKey) ?? 0) + fact[measure]);
+    donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + factValue(fact, measure));
+    agencyRecipientLinkMap.set(agencyRecipientKey, (agencyRecipientLinkMap.get(agencyRecipientKey) ?? 0) + factValue(fact, measure));
   });
 
   const donorAgencyLinks = [...donorAgencyLinkMap.entries()]
@@ -482,8 +492,10 @@ export function buildFlowSankeyData(
     .filter((item) => item.visibleValue > 0)
     .map((item) => ({
       label: item.label,
-      commitment: measure === 'commitment' ? item.visibleValue : 0,
-      disbursement: measure === 'disbursement' ? item.visibleValue : 0,
+      commitment: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement: measure.includes('disbursement') ? item.visibleValue : 0,
+      commitment_defl: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement_defl: measure.includes('disbursement') ? item.visibleValue : 0,
       count: item.count,
       value: item.visibleValue,
     }))
@@ -506,8 +518,10 @@ export function buildFlowSankeyData(
     .filter((item) => item.visibleValue > 0)
     .map((item) => ({
       label: item.label,
-      commitment: measure === 'commitment' ? item.visibleValue : 0,
-      disbursement: measure === 'disbursement' ? item.visibleValue : 0,
+      commitment: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement: measure.includes('disbursement') ? item.visibleValue : 0,
+      commitment_defl: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement_defl: measure.includes('disbursement') ? item.visibleValue : 0,
       count: item.count,
       value: item.visibleValue,
     }))
@@ -523,8 +537,10 @@ export function buildFlowSankeyData(
     .filter((item) => item.visibleValue > 0)
     .map((item) => ({
       label: item.label,
-      commitment: measure === 'commitment' ? item.visibleValue : 0,
-      disbursement: measure === 'disbursement' ? item.visibleValue : 0,
+      commitment: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement: measure.includes('disbursement') ? item.visibleValue : 0,
+      commitment_defl: measure.includes('commitment') ? item.visibleValue : 0,
+      disbursement_defl: measure.includes('disbursement') ? item.visibleValue : 0,
       count: item.count,
       value: item.visibleValue,
     }))
@@ -581,8 +597,8 @@ export function buildStrategicInsights(facts: CRSFact[], activeMeasure: CRSMeasu
       });
     }
     const entry = entityMap.get(dKey)!;
-    entry.commitment += f.commitment;
-    entry.disbursement += f.disbursement;
+    entry.commitment += f.commitment_defl ?? f.commitment;
+    entry.disbursement += f.disbursement_defl ?? f.disbursement;
     entry.count += f.count;
     
     const isSustainable = 
@@ -594,15 +610,15 @@ export function buildStrategicInsights(facts: CRSFact[], activeMeasure: CRSMeasu
       (f.environment ?? 0) > 0;
 
     if (isSustainable) {
-      entry.sustainableCommitment += f.commitment;
+      entry.sustainableCommitment += f.commitment_defl ?? f.commitment;
     }
 
     if (!entry.modes.has(mKey)) {
       entry.modes.set(mKey, { commitment: 0, disbursement: 0 });
     }
     const mEntry = entry.modes.get(mKey)!;
-    mEntry.commitment += f.commitment;
-    mEntry.disbursement += f.disbursement;
+    mEntry.commitment += f.commitment_defl ?? f.commitment;
+    mEntry.disbursement += f.disbursement_defl ?? f.disbursement;
   });
 
   const entities = [...entityMap.values()].sort((a,b) => b.commitment - a.commitment);

@@ -13,9 +13,10 @@ import { Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
+import { CRSPageFilters } from '../components/CRSPageFilters';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
-import { useCRSFilters } from '../context/CRSFilterContext';
+import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 import { matchesCRSFilters } from '../utils/crsFiltering';
 import { ATO_ECONOMIES } from '../data/atoEconomies';
@@ -74,7 +75,7 @@ function ThemeFlag({ active, label }: { active: number; label: string }) {
 }
 
 export function CRSRecipientProfile() {
-  const { filteredFacts, filters } = useCRSFilters();
+  const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [recordIndex, setRecordIndex] = useState<CRSRecordIndex | null>(null);
@@ -210,9 +211,17 @@ export function CRSRecipientProfile() {
           </div>
         </div>
 
+        <CRSPageFilters
+          filters={filters}
+          setFilters={setFilters}
+          resetFilters={resetFilters}
+          enabled={['year', 'donor', 'agency', 'mode', 'sector', 'basis']}
+          recordCount={recipientFacts.length}
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment)} />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement)} />
+          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} />
+          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} />
           <KPICard label="Donors" value={crsFmt.num(donorCount)} />
           <KPICard label="Agencies" value={crsFmt.num(agencyCount)} />
           <KPICard label="Records" value={crsFmt.num(stats.count)} />

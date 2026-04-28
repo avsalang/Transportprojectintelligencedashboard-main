@@ -24,7 +24,7 @@ function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure)
       y: coordinate.y,
       title: `${entry.sourceName} → ${entry.targetName}`,
       value: crsFmt.usdM(entry.value),
-      subtitle: measure === 'commitment' ? 'Commitments' : 'Disbursements',
+      subtitle: measure.includes('commitment') ? 'Commitments' : 'Disbursements',
     };
   }
 
@@ -35,7 +35,7 @@ function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure)
     y: coordinate.y,
     title: node.name,
     value: crsFmt.usdM(node.totalValue),
-    subtitle: measure === 'commitment' ? `${node.role} commitments in current filters` : `${node.role} disbursements in current filters`,
+    subtitle: measure.includes('commitment') ? `${node.role} commitments in current filters` : `${node.role} disbursements in current filters`,
   };
 }
 

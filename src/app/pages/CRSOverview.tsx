@@ -15,8 +15,9 @@ import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
+import { CRSPageFilters } from '../components/CRSPageFilters';
 import { crsFmt } from '../data/crsData';
-import { useCRSFilters } from '../context/CRSFilterContext';
+import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 
 const MODE_AREA_COLORS = {
@@ -49,7 +50,7 @@ function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitment
 }
 
 export function CRSOverview() {
-  const { filteredFacts, filters } = useCRSFilters();
+  const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
   const stats = useMemo(() => summarizeFacts(filteredFacts), [filteredFacts]);
   const countryPoints = useMemo(() => buildCountryMapPoints(filteredFacts), [filteredFacts]);
@@ -70,9 +71,17 @@ export function CRSOverview() {
           <p className="text-slate-500 mt-1">ATO-focused CRS transport finance across selected recipients, donors, and years.</p>
         </div>
 
+        <CRSPageFilters
+          filters={filters}
+          setFilters={setFilters}
+          resetFilters={resetFilters}
+          enabled={['year', 'donor', 'recipient', 'mode', 'sector', 'basis']}
+          recordCount={filteredFacts.length}
+        />
+
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment)} sub="Total commitments in view" />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement)} sub="Total disbursements in view" />
+          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} sub="Total commitments in view" />
+          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} sub="Total disbursements in view" />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
           <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Funding sources in view" />
           <KPICard label="Records" value={crsFmt.num(stats.count)} sub="CRS transaction lines" />

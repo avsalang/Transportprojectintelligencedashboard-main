@@ -12,8 +12,9 @@ import {
 import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
+import { CRSPageFilters } from '../components/CRSPageFilters';
 import { crsFmt } from '../data/crsData';
-import { useCRSFilters } from '../context/CRSFilterContext';
+import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 
 const MODE_AREA_COLORS = {
@@ -25,9 +26,13 @@ const MODE_AREA_COLORS = {
 };
 
 export function CRSDonorProfile() {
-  const { filteredFacts, filters, donorOptions } = useCRSFilters();
+  const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
   const [selectedDonor, setSelectedDonor] = useState('');
+  const donorOptions = useMemo(
+    () => [...new Set(filteredFacts.map((fact) => fact.donor).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
+    [filteredFacts],
+  );
 
   useEffect(() => {
     if (!donorOptions.length) return;
@@ -79,9 +84,17 @@ export function CRSDonorProfile() {
           </div>
         </div>
 
+        <CRSPageFilters
+          filters={filters}
+          setFilters={setFilters}
+          resetFilters={resetFilters}
+          enabled={['year', 'recipient', 'agency', 'mode', 'sector', 'basis']}
+          recordCount={donorFacts.length}
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment)} />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement)} />
+          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} />
+          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} />
           <KPICard label="Recipients" value={crsFmt.num(donorRecipients)} />
           <KPICard label="Agencies" value={crsFmt.num(donorAgencies)} />
           <KPICard label="Records" value={crsFmt.num(stats.count)} />

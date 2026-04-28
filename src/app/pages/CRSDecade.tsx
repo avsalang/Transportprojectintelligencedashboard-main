@@ -14,10 +14,11 @@ import {
 } from 'recharts';
 import { Check, Circle, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
+import { CRSPageFilters } from '../components/CRSPageFilters';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { CRSDecadeRecord, CRSDecadeRecordIndex, CRSDecadeThemeId, CRS_DECADE_THEMES } from '../data/crsDecadeData';
-import { useCRSFilters } from '../context/CRSFilterContext';
+import { useCRSPageFilters } from '../context/CRSFilterContext';
 import {
   aggregateByTheme,
   buildDonorThemePortfolio,
@@ -82,7 +83,7 @@ function SingleValueTooltip({ active, payload, label, measureLabel }: any) {
 }
 
 export function CRSDecade() {
-  const { filters } = useCRSFilters();
+  const { filters, setFilters, resetFilters } = useCRSPageFilters();
   const [selectedThemes, setSelectedThemes] = useState<CRSDecadeThemeId[]>([]);
   const [records, setRecords] = useState<CRSDecadeRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -152,8 +153,8 @@ export function CRSDecade() {
   const pagedRecords = fullListRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   const taggedShare = stats.count > 0 ? (stats.taggedCount / stats.count) * 100 : 0;
-  const activeMeasureLabel = measure === 'commitment' ? 'commitments' : 'disbursements';
-  const activeMeasureTitle = measure === 'commitment' ? 'Commitments' : 'Disbursements';
+  const activeMeasureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
+  const activeMeasureTitle = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
 
   useEffect(() => {
     setPage(1);
@@ -212,6 +213,14 @@ export function CRSDecade() {
             })}
           </div>
         </div>
+
+        <CRSPageFilters
+          filters={filters}
+          setFilters={setFilters}
+          resetFilters={resetFilters}
+          enabled={['year', 'donor', 'recipient', 'mode', 'sector', 'basis']}
+          recordCount={filteredRecords.length}
+        />
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <KPICard label="Screened Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />

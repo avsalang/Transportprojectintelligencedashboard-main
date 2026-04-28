@@ -16,6 +16,8 @@ type RankingRow = {
   label: string;
   commitment: number;
   disbursement: number;
+  commitment_defl: number;
+  disbursement_defl: number;
   count: number;
 };
 
@@ -60,7 +62,7 @@ export function CRSRankingCard({
           />
           <Tooltip
             contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #E2E8F0' }}
-            formatter={(value: number) => [crsFmt.usdM(value), measure === 'commitment' ? 'Commitments' : 'Disbursements']}
+            formatter={(value: number) => [crsFmt.usdM(value), measure.includes('commitment') ? 'Commitments' : 'Disbursements']}
           />
           <Bar dataKey={measure} radius={[0, 3, 3, 0]} maxBarSize={15}>
             {data.map((row) => (

@@ -34,9 +34,8 @@ function getHeatmapColor(ratio: number) {
 
 export function CRSInsights() {
   const { filteredFacts, filters } = useCRSFilters();
-  const isConstant = filters.isConstantUSD;
   const measure = filters.measure;
-  const activeMeasure = isConstant ? (measure === 'commitment' ? 'commitment_defl' : 'disbursement_defl') : measure;
+  const activeMeasure = measure.includes('commitment') ? 'commitment_defl' : 'disbursement_defl';
 
   const data = useMemo(() => buildStrategicInsights(filteredFacts, activeMeasure), [filteredFacts, activeMeasure]);
   const stats = useMemo(() => summarizeFacts(filteredFacts), [filteredFacts]);
@@ -82,7 +81,7 @@ export function CRSInsights() {
            </div>
            <div className="bg-slate-50 px-6 py-4 rounded-xl border border-slate-200 min-w-[200px]">
               <p className="text-[14px] text-slate-500">Global deployment ratio</p>
-              <p className="text-2xl font-medium text-slate-900 tracking-tight">{((stats.disbursement / (stats.commitment || 1)) * 100).toFixed(1)}%</p>
+              <p className="text-2xl font-medium text-slate-900 tracking-tight">{((stats.disbursement_defl / (stats.commitment_defl || 1)) * 100).toFixed(1)}%</p>
            </div>
         </div>
 

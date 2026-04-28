@@ -55,9 +55,8 @@ export function CRSFullList() {
   const [page, setPage] = useState(1);
   const rowsPerPage = 50;
 
-  const isConstant = filters.isConstantUSD;
   const measure = filters.measure;
-  const activeMeasure = isConstant ? (measure === 'commitment' ? 'commitment_defl' : 'disbursement_defl') : measure;
+  const activeMeasure = measure.includes('commitment') ? 'commitment_defl' : 'disbursement_defl';
 
   // 1. Load the record index
   useEffect(() => {

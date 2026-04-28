@@ -1,7 +1,6 @@
 import { NavLink, Outlet } from 'react-router';
 import { ChevronRight } from 'lucide-react';
 import { CRSFilterProvider } from '../context/CRSFilterContext';
-import { CRSGlobalFilters } from './CRSGlobalFilters';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Overview', exact: true },
@@ -15,18 +14,8 @@ export function CRSLayout() {
     <CRSFilterProvider>
       <div className="flex h-screen bg-[#F0F4F8] overflow-hidden">
         <aside className="w-60 flex-shrink-0 bg-[#002147] flex flex-col border-r border-white/5">
-          <div className="px-5 pt-6 pb-5 border-b border-white/10">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-900/40 p-1">
-                <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="w-full h-full object-contain rounded-full" />
-              </div>
-              <div>
-                <p className="text-white text-base leading-tight tracking-tight">OECD CRS Transport Funding</p>
-                <p className="text-blue-300 text-[10px] tracking-wider leading-snug mt-1 max-w-[140px]">
-                  An ATO visualization and analysis of OECD CRS transport-related funding
-                </p>
-              </div>
-            </div>
+          <div className="px-5 py-5 border-b border-white/10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300/60">Navigation</p>
           </div>
 
           <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
@@ -69,7 +58,22 @@ export function CRSLayout() {
         </aside>
 
         <main className="flex-1 overflow-y-auto">
-          <CRSGlobalFilters />
+          <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-6 py-4 shadow-sm backdrop-blur-md">
+            <div className="flex items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm ring-1 ring-slate-200">
+                  <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="h-full w-full rounded-full object-contain" />
+                </div>
+                <div>
+                  <p className="text-xl font-semibold tracking-tight text-slate-900">OECD CRS Transport Funding</p>
+                  <p className="mt-0.5 text-[13px] text-slate-500">
+                    An ATO visualization and analysis of OECD CRS transport-related funding
+                  </p>
+                </div>
+              </div>
+              <div className="min-h-10 min-w-[220px]" aria-label="Title bar action area" />
+            </div>
+          </div>
           <Outlet />
         </main>
       </div>
