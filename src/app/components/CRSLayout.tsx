@@ -7,7 +7,57 @@ const NAV_ITEMS = [
   { to: '/donor-profile', label: 'Donor Profile', exact: false },
   { to: '/recipient-profile', label: 'Recipient Profile', exact: false },
   { to: '/un-decade', label: 'UN Decade', exact: false },
+  { to: '/about', label: 'About', exact: false },
 ];
+
+const SUPPORT_LOGOS = [
+  {
+    src: 'adb-logo.svg',
+    alt: 'Asian Development Bank',
+    href: 'https://www.adb.org/',
+    className: 'h-16 w-[315px]',
+  },
+  {
+    src: 'fcdo-logo.svg',
+    alt: 'Foreign, Commonwealth and Development Office',
+    href: 'https://www.gov.uk/government/organisations/foreign-commonwealth-development-office',
+    className: 'h-16 w-[300px]',
+  },
+  {
+    src: 'ccg-logo.png',
+    alt: 'Climate Compatible Growth',
+    href: 'https://climatecompatiblegrowth.com/',
+    className: 'h-20 w-20',
+  },
+];
+
+function SupportFooter() {
+  return (
+    <footer className="border-t border-slate-200 bg-white px-6 py-10">
+      <div className="mx-auto max-w-[1120px]">
+        <p className="mb-8 text-center text-2xl font-bold text-[#002B6C]">Developed with the support of</p>
+        <div className="flex flex-wrap items-center justify-center gap-x-14 gap-y-8">
+          {SUPPORT_LOGOS.map((logo) => (
+            <a
+              key={logo.src}
+              href={logo.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Visit ${logo.alt}`}
+              className="flex items-center justify-center rounded-lg p-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-4"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}${logo.src}`}
+                alt={logo.alt}
+                className={`${logo.className} object-contain`}
+              />
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
 
 export function CRSLayout() {
   return (
@@ -42,19 +92,7 @@ export function CRSLayout() {
             ))}
           </nav>
 
-          <div className="px-5 py-4 border-t border-white/10">
-            <div>
-              <p className="text-[11px] text-blue-300/40 mb-1.5">Data source</p>
-              <a 
-                href="https://data-explorer.oecd.org/vis?lc=en&tm=crs&pg=0&snb=25&df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_CRS%40DF_CRS&df[ag]=OECD.DCD.FSD&df[vs]=1.6&dq=DAC..1000.100._T._T.D.Q._T..&lom=LASTNPERIODS&lo=5&to[TIME_PERIOD]=false"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[12px] text-blue-200/60 hover:text-[#00ADEF] transition-colors font-medium flex items-center gap-1.5 underline decoration-blue-500/30 underline-offset-4"
-              >
-                OECD Credit Reporting System (CRS)
-              </a>
-            </div>
-          </div>
+          <div className="border-t border-white/10 px-5 py-4" aria-hidden="true" />
         </aside>
 
         <main className="flex-1 overflow-y-auto">
@@ -65,16 +103,21 @@ export function CRSLayout() {
                   <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="h-full w-full rounded-full object-contain" />
                 </div>
                 <div>
-                  <p className="text-xl font-semibold tracking-tight text-slate-900">OECD CRS Transport Funding</p>
+                  <p className="text-xl font-semibold tracking-tight text-slate-900">Asia and the Pacific Transport Development Finance Explorer</p>
                   <p className="mt-0.5 text-[13px] text-slate-500">
-                    An ATO visualization and analysis of OECD CRS transport-related funding
+                    An ATO visualization and analysis of OECD CRS transport-related funding to Asia and the Pacific
                   </p>
                 </div>
               </div>
               <div className="min-h-10 min-w-[220px]" aria-label="Title bar action area" />
             </div>
           </div>
-          <Outlet />
+          <div className="flex min-h-[calc(100vh-81px)] flex-col">
+            <div className="flex-1">
+              <Outlet />
+            </div>
+            <SupportFooter />
+          </div>
         </main>
       </div>
     </CRSFilterProvider>
