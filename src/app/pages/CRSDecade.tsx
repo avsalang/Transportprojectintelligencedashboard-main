@@ -12,7 +12,7 @@ import {
   Area,
   AreaChart,
 } from 'recharts';
-import { Check, Circle, Search } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, Circle, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { Sheet, SheetContent } from '../components/ui/sheet';
@@ -37,6 +37,30 @@ const THEME_COLORS: Record<CRSDecadeThemeId, string> = {
   urban_mobility_liveable_cities: '#8B5CF6',
   safe_and_secure: '#EF4444',
   science_technology_innovation: '#14B8A6',
+};
+
+type RecordSortKey = 'year' | 'record' | 'donor' | 'recipient' | 'mode' | 'themes' | 'amount';
+type SortDirection = 'asc' | 'desc';
+type RecordColumnFilters = Record<RecordSortKey, string>;
+
+const RECORD_COLUMNS: Array<{ key: RecordSortKey; label: string; align?: 'right' }> = [
+  { key: 'year', label: 'Year' },
+  { key: 'record', label: 'Record' },
+  { key: 'donor', label: 'Donor' },
+  { key: 'recipient', label: 'Recipient' },
+  { key: 'mode', label: 'Mode' },
+  { key: 'themes', label: 'UN Decade Themes' },
+  { key: 'amount', label: 'Amount', align: 'right' },
+];
+
+const EMPTY_RECORD_COLUMN_FILTERS: RecordColumnFilters = {
+  year: '',
+  record: '',
+  donor: '',
+  recipient: '',
+  mode: '',
+  themes: '',
+  amount: '',
 };
 
 function themeColor(label: string) {
@@ -91,6 +115,9 @@ export function CRSDecade() {
   const [activeRecord, setActiveRecord] = useState<CRSDecadeRecord | null>(null);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [recordSortKey, setRecordSortKey] = useState<RecordSortKey>('amount');
+  const [recordSortDirection, setRecordSortDirection] = useState<SortDirection>('desc');
+  const [recordColumnFilters, setRecordColumnFilters] = useState<RecordColumnFilters>(EMPTY_RECORD_COLUMN_FILTERS);
   const measure = filters.measure;
 
   useEffect(() => {
@@ -133,22 +160,64 @@ export function CRSDecade() {
   const modeThemeMatrix = useMemo(() => buildModeThemeMatrix(filteredRecords, measure), [filteredRecords, measure]);
   const donorThemePortfolio = useMemo(() => buildDonorThemePortfolio(filteredRecords, measure, 10), [filteredRecords, measure]);
   const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 12), [filteredRecords, measure]);
+  const recordThemeLabels = (record: CRSDecadeRecord) =>
+    CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
+  const recordColumnText = (record: CRSDecadeRecord, key: RecordSortKey) => {
+    switch (key) {
+      case 'year':
+        return String(record.year ?? '');
+      case 'record':
+        return [record.title, record.purpose, record.short_description, record.long_description].filter(Boolean).join(' ');
+      case 'donor':
+        return record.donor;
+      case 'recipient':
+        return record.recipient;
+      case 'mode':
+        return [record.mode, record.mode_detail].filter(Boolean).join(' ');
+      case 'themes':
+        return recordThemeLabels(record).join(' ');
+      case 'amount':
+        return String(record[measure] ?? 0);
+    }
+  };
+  const recordSortValue = (record: CRSDecadeRecord, key: RecordSortKey) => {
+    if (key === 'year') return record.year ?? 0;
+    if (key === 'amount') return record[measure] ?? 0;
+    return recordColumnText(record, key).toLowerCase();
+  };
   const fullListRecords = useMemo(() => {
     const query = recordSearch.trim().toLowerCase();
+    const activeColumnFilters = Object.entries(recordColumnFilters)
+      .map(([key, value]) => [key as RecordSortKey, value.trim().toLowerCase()] as const)
+      .filter(([, value]) => value.length > 0);
     return [...filteredRecords]
       .filter((record) => {
-        if (!query) return true;
-        return (
+        const matchesSearch = !query || (
           record.title.toLowerCase().includes(query) ||
           record.purpose.toLowerCase().includes(query) ||
+          record.short_description.toLowerCase().includes(query) ||
+          record.long_description.toLowerCase().includes(query) ||
           record.donor.toLowerCase().includes(query) ||
           record.agency.toLowerCase().includes(query) ||
           record.recipient.toLowerCase().includes(query) ||
+          record.mode.toLowerCase().includes(query) ||
+          recordThemeLabels(record).join(' ').toLowerCase().includes(query) ||
           String(record.year || '').includes(query)
         );
+        if (!matchesSearch) return false;
+        return activeColumnFilters.every(([key, value]) => recordColumnText(record, key).toLowerCase().includes(value));
       })
-      .sort((a, b) => (b[measure] ?? 0) - (a[measure] ?? 0));
-  }, [filteredRecords, measure, recordSearch]);
+      .sort((a, b) => {
+        const aValue = recordSortValue(a, recordSortKey);
+        const bValue = recordSortValue(b, recordSortKey);
+        const direction = recordSortDirection === 'asc' ? 1 : -1;
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return (aValue - bValue) * direction;
+        }
+        return String(aValue).localeCompare(String(bValue)) * direction;
+      });
+  }, [filteredRecords, measure, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey]);
   const totalPages = Math.max(1, Math.ceil(fullListRecords.length / rowsPerPage));
   const pagedRecords = fullListRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
@@ -158,7 +227,16 @@ export function CRSDecade() {
 
   useEffect(() => {
     setPage(1);
-  }, [filters, recordSearch, rowsPerPage, selectedThemes]);
+  }, [filters, recordColumnFilters, recordSearch, rowsPerPage, selectedThemes]);
+
+  function handleRecordSort(key: RecordSortKey) {
+    if (recordSortKey === key) {
+      setRecordSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+      return;
+    }
+    setRecordSortKey(key);
+    setRecordSortDirection(key === 'year' || key === 'amount' ? 'desc' : 'asc');
+  }
 
   function toggleTheme(theme: CRSDecadeThemeId) {
     setSelectedThemes((current) =>
@@ -182,6 +260,19 @@ export function CRSDecade() {
     ));
   }
 
+  function recordDescription(record: CRSDecadeRecord) {
+    return record.long_description || record.short_description || '';
+  }
+
+  function sortIcon(key: RecordSortKey) {
+    if (recordSortKey !== key) {
+      return <ChevronUp size={12} className="text-slate-300" />;
+    }
+    return recordSortDirection === 'asc'
+      ? <ChevronUp size={12} className="text-blue-600" />
+      : <ChevronDown size={12} className="text-blue-600" />;
+  }
+
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
       <div className="max-w-[1440px] mx-auto space-y-6">
@@ -189,9 +280,6 @@ export function CRSDecade() {
           <div>
             <p className="text-[13px] font-medium text-blue-600 mb-1">Prototype screening view</p>
             <h1 className="text-2xl text-slate-900 tracking-tight">UN Decade of Sustainable Transport</h1>
-            <p className="text-slate-500 mt-1 max-w-3xl">
-              ATO-relevant CRS transport funding screened against the six focus areas of the 2026-2035 implementation plan.
-            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             {CRS_DECADE_THEMES.map((theme) => {
@@ -381,19 +469,53 @@ export function CRSDecade() {
                   ))}
                 </select>
               </div>
+              {Object.values(recordColumnFilters).some(Boolean) ? (
+                <button
+                  onClick={() => setRecordColumnFilters(EMPTY_RECORD_COLUMN_FILTERS)}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] font-medium text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
+                >
+                  Clear column filters
+                </button>
+              ) : null}
             </div>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1120px] border-collapse">
               <thead>
                 <tr className="bg-slate-50/40 text-[12px] text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                  <th className="px-6 py-4 text-left">Year</th>
-                  <th className="px-6 py-4 text-left">Record</th>
-                  <th className="px-6 py-4 text-left">Donor</th>
-                  <th className="px-6 py-4 text-left">Recipient</th>
-                  <th className="px-6 py-4 text-left">Mode</th>
-                  <th className="px-6 py-4 text-left">UN Decade Themes</th>
-                  <th className="px-6 py-4 text-right">Amount</th>
+                  {RECORD_COLUMNS.map((column) => (
+                    <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
+                      <button
+                        type="button"
+                        onClick={() => handleRecordSort(column.key)}
+                        className={`inline-flex items-center gap-1.5 font-semibold transition-colors hover:text-slate-800 ${
+                          column.align === 'right' ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        <span>{column.label}</span>
+                        {sortIcon(column.key)}
+                      </button>
+                    </th>
+                  ))}
+                </tr>
+                <tr className="border-b border-slate-200 bg-slate-50/40">
+                  {RECORD_COLUMNS.map((column) => (
+                    <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
+                      <input
+                        value={recordColumnFilters[column.key]}
+                        onChange={(event) =>
+                          setRecordColumnFilters((current) => ({
+                            ...current,
+                            [column.key]: event.target.value,
+                          }))
+                        }
+                        placeholder={`Filter ${column.label.toLowerCase()}`}
+                        className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                          column.align === 'right' ? 'text-right' : 'text-left'
+                        }`}
+                      />
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -467,7 +589,6 @@ export function CRSDecade() {
                   Record detail
                 </span>
                 <h2 className="text-2xl text-white font-bold leading-tight mt-6 tracking-tight">{activeRecord.title}</h2>
-                <p className="text-blue-100/70 text-[14px] mt-4 line-clamp-3">{activeRecord.purpose || 'No purpose description available.'}</p>
               </div>
               <div className="flex-1 overflow-y-auto p-10 space-y-8">
                 <div>
@@ -523,6 +644,19 @@ export function CRSDecade() {
 
                 <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 text-[15px] leading-relaxed text-slate-700">
                   Tagged using CRS project text, purpose, mode, recipient context, and CRS markers against the six UN Decade focus areas.
+                </div>
+
+                <div>
+                  <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">Description</p>
+                  <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                    {recordDescription(activeRecord) ? (
+                      <p className="whitespace-pre-line text-[14px] leading-relaxed text-slate-700">
+                        {recordDescription(activeRecord)}
+                      </p>
+                    ) : (
+                      <p className="text-[14px] text-slate-500">No project description is available for this CRS record.</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

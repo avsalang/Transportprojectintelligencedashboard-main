@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { CheckboxDropdown } from './CheckboxDropdown';
 import { YearRangeSelector } from './YearRangeSelector';
+import { BasisDropdown } from './BasisDropdown';
 import { CRSFilters } from '../utils/crsFiltering';
 import { useCRSFilters } from '../context/CRSFilterContext';
 
@@ -128,31 +129,15 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
         ) : null}
 
         {enabledSet.has('basis') ? (
-          <div className="flex flex-col justify-end gap-1.5">
-            <label className="ml-1 block text-[14px] font-semibold uppercase tracking-widest text-slate-400">Basis</label>
-            <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 p-1">
-              <button
-                onClick={() => setFilters((prev) => ({ ...prev, measure: 'commitment_defl' }))}
-                className={`flex-1 rounded-lg border px-3 py-1.5 text-[11px] font-medium transition-all ${
-                  filters.measure.includes('commitment')
-                    ? 'border-slate-200 bg-white text-blue-600 shadow-sm'
-                    : 'border-transparent text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                Commitments
-              </button>
-              <button
-                onClick={() => setFilters((prev) => ({ ...prev, measure: 'disbursement_defl' }))}
-                className={`flex-1 rounded-lg border px-3 py-1.5 text-[11px] font-medium transition-all ${
-                  filters.measure.includes('disbursement')
-                    ? 'border-slate-200 bg-white text-blue-600 shadow-sm'
-                    : 'border-transparent text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                Disbursements
-              </button>
-            </div>
-          </div>
+          <BasisDropdown
+            value={filters.measure}
+            onChange={(measure) =>
+              setFilters((prev) => ({
+                ...prev,
+                measure,
+              }))
+            }
+          />
         ) : null}
       </div>
     </div>

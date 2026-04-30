@@ -27,6 +27,8 @@ export interface CRSDecadeRecord {
   commitment_defl: number;
   disbursement_defl: number;
   title: string;
+  short_description: string;
+  long_description: string;
   purpose: string;
   climate_mitigation: number;
   climate_adaptation: number;

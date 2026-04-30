@@ -541,7 +541,7 @@ export function CRSProfiles() {
                                                  Volume: <span className="text-slate-900">{crsFmt.usdM(data.volume)}</span>
                                                </p>
                                                <p className="text-[15px] text-slate-500">
-                              CRS Tags: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
+                              Sustainability-related Tags: <span className="text-emerald-600">{data.sustainabilityScore}%</span>
                                                </p>
                                             </div>
                                          );

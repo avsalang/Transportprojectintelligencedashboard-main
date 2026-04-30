@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
@@ -66,6 +66,28 @@ type CRSRecordIndex = {
   entityShardMap: Record<'country' | 'regionalRecipient', Record<string, number[]>>;
 };
 
+type RecipientRecordSortKey = 'year' | 'record' | 'donor' | 'agency' | 'mode' | 'amount';
+type SortDirection = 'asc' | 'desc';
+type RecipientRecordColumnFilters = Record<RecipientRecordSortKey, string>;
+
+const RECIPIENT_RECORD_COLUMNS: Array<{ key: RecipientRecordSortKey; label: string; align?: 'right' }> = [
+  { key: 'year', label: 'Year' },
+  { key: 'record', label: 'Record' },
+  { key: 'donor', label: 'Donor' },
+  { key: 'agency', label: 'Agency' },
+  { key: 'mode', label: 'Mode' },
+  { key: 'amount', label: 'Amount', align: 'right' },
+];
+
+const EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS: RecipientRecordColumnFilters = {
+  year: '',
+  record: '',
+  donor: '',
+  agency: '',
+  mode: '',
+  amount: '',
+};
+
 function ThemeFlag({ active, label }: { active: number; label: string }) {
   return (
     <div className={`px-2 py-1 rounded-lg text-[11px] border ${active > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
@@ -84,6 +106,9 @@ export function CRSRecipientProfile() {
   const [activeRecord, setActiveRecord] = useState<CRSRecord | null>(null);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [recordSortKey, setRecordSortKey] = useState<RecipientRecordSortKey>('amount');
+  const [recordSortDirection, setRecordSortDirection] = useState<SortDirection>('desc');
+  const [recordColumnFilters, setRecordColumnFilters] = useState<RecipientRecordColumnFilters>(EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS);
 
   const profileRecipientOptions = useMemo(
     () => [...new Set(filteredFacts.map((fact) => fact.recipient).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
@@ -159,28 +184,82 @@ export function CRSRecipientProfile() {
     [activeShardIds, recordChunks],
   );
 
+  const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
+    switch (key) {
+      case 'year':
+        return String(record.year ?? '');
+      case 'record':
+        return [record.title, record.description, record.short_description, record.purpose].filter(Boolean).join(' ');
+      case 'donor':
+        return record.donor;
+      case 'agency':
+        return record.agency;
+      case 'mode':
+        return [record.mode, record.mode_detail].filter(Boolean).join(' ');
+      case 'amount':
+        return String(record[measure] ?? 0);
+    }
+  };
+
+  const recordSortValue = (record: CRSRecord, key: RecipientRecordSortKey) => {
+    if (key === 'year') return record.year ?? 0;
+    if (key === 'amount') return record[measure] ?? 0;
+    return recordColumnText(record, key).toLowerCase();
+  };
+
   const filteredRecords = useMemo(() => {
     const query = recordSearch.trim().toLowerCase();
+    const activeColumnFilters = Object.entries(recordColumnFilters)
+      .map(([key, value]) => [key as RecipientRecordSortKey, value.trim().toLowerCase()] as const)
+      .filter(([, value]) => value.length > 0);
     const result = records.filter((record) => {
       if (!matchesCRSFilters(record, filters, ATO_ECONOMIES)) return false;
       if (record.recipient !== selectedRecipient) return false;
-      if (!query) return true;
-
-      return (
+      const matchesSearch = !query || (
         (record.title || '').toLowerCase().includes(query) ||
         (record.description || record.short_description || '').toLowerCase().includes(query) ||
         (record.donor || '').toLowerCase().includes(query) ||
         (record.agency || '').toLowerCase().includes(query) ||
+        (record.mode || '').toLowerCase().includes(query) ||
         String(record.year || '').includes(query)
       );
+      if (!matchesSearch) return false;
+      return activeColumnFilters.every(([key, value]) => recordColumnText(record, key).toLowerCase().includes(value));
     });
 
-    return result.sort((a, b) => (b[measure] || 0) - (a[measure] || 0));
-  }, [filters, measure, recordSearch, records, selectedRecipient]);
+    return result.sort((a, b) => {
+      const aValue = recordSortValue(a, recordSortKey);
+      const bValue = recordSortValue(b, recordSortKey);
+      const direction = recordSortDirection === 'asc' ? 1 : -1;
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return (aValue - bValue) * direction;
+      }
+      return String(aValue).localeCompare(String(bValue)) * direction;
+    });
+  }, [filters, measure, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey, records, selectedRecipient]);
 
   useEffect(() => {
     setPage(1);
-  }, [recordSearch, selectedRecipient]);
+  }, [recordColumnFilters, recordSearch, selectedRecipient]);
+
+  function handleRecordSort(key: RecipientRecordSortKey) {
+    if (recordSortKey === key) {
+      setRecordSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+      return;
+    }
+    setRecordSortKey(key);
+    setRecordSortDirection(key === 'year' || key === 'amount' ? 'desc' : 'asc');
+  }
+
+  function sortIcon(key: RecipientRecordSortKey) {
+    if (recordSortKey !== key) {
+      return <ChevronUp size={12} className="text-slate-300" />;
+    }
+    return recordSortDirection === 'asc'
+      ? <ChevronUp size={12} className="text-blue-600" />
+      : <ChevronDown size={12} className="text-blue-600" />;
+  }
 
   const pagedRecords = filteredRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   const totalPages = Math.max(1, Math.ceil(filteredRecords.length / rowsPerPage));
@@ -286,16 +365,16 @@ export function CRSRecipientProfile() {
             maxChars={24}
           />
           <CRSRankingCard
-            title="CRS Tags"
-            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment CRS tags."
+            title="Sustainability-related Tags"
+            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment sustainability-related tags."
             data={sectorSeries}
             measure={measure}
             color="#F59E0B"
             maxChars={24}
           />
           <CRSRankingCard
-            title="Financing Type"
-            subtitle="Funding types used in the selected recipient portfolio."
+            title="Finance Flow Type"
+            subtitle="Finance flow type by which development finance is provided."
             data={financingSeries}
             measure={measure}
             color="#334155"
@@ -357,6 +436,14 @@ export function CRSRecipientProfile() {
                   Next
                 </button>
               </div>
+              {Object.values(recordColumnFilters).some(Boolean) ? (
+                <button
+                  onClick={() => setRecordColumnFilters(EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS)}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] font-medium text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
+                >
+                  Clear column filters
+                </button>
+              ) : null}
             </div>
           </div>
 
@@ -364,12 +451,39 @@ export function CRSRecipientProfile() {
             <table className="w-full border-collapse">
               <thead>
                 <tr className="bg-slate-50/40 text-[12px] text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                  <th className="px-6 py-4 text-left">Year</th>
-                  <th className="px-6 py-4 text-left">Record</th>
-                  <th className="px-6 py-4 text-left">Donor</th>
-                  <th className="px-6 py-4 text-left">Agency</th>
-                  <th className="px-6 py-4 text-left">Mode</th>
-                  <th className="px-6 py-4 text-right">Amount</th>
+                  {RECIPIENT_RECORD_COLUMNS.map((column) => (
+                    <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
+                      <button
+                        type="button"
+                        onClick={() => handleRecordSort(column.key)}
+                        className={`inline-flex items-center gap-1.5 font-semibold transition-colors hover:text-slate-800 ${
+                          column.align === 'right' ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        <span>{column.label}</span>
+                        {sortIcon(column.key)}
+                      </button>
+                    </th>
+                  ))}
+                </tr>
+                <tr className="border-b border-slate-200 bg-slate-50/40">
+                  {RECIPIENT_RECORD_COLUMNS.map((column) => (
+                    <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
+                      <input
+                        value={recordColumnFilters[column.key]}
+                        onChange={(event) =>
+                          setRecordColumnFilters((current) => ({
+                            ...current,
+                            [column.key]: event.target.value,
+                          }))
+                        }
+                        placeholder={`Filter ${column.label.toLowerCase()}`}
+                        className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                          column.align === 'right' ? 'text-right' : 'text-left'
+                        }`}
+                      />
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">

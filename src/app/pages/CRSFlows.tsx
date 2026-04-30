@@ -12,6 +12,7 @@ import {
   Label,
 } from 'recharts';
 import { estimateCategoryAxisWidth, TruncatedCategoryTick, WrappedAxisTick } from '../components/ChartTicks';
+import { BasisDropdown } from '../components/BasisDropdown';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, buildFlowSankeyData, type CRSMeasure } from '../utils/crsAggregations';
@@ -255,20 +256,12 @@ export function CRSFlows() {
               Clear {activeSelectionType}
             </button>
           ) : null}
-          <div className="inline-flex rounded-lg bg-slate-100 p-1">
-            <button
-              onClick={() => setMeasure('commitment_defl')}
-              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure.includes('commitment') ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
-            >
-              Commitments
-            </button>
-            <button
-              onClick={() => setMeasure('disbursement_defl')}
-              className={`px-3 py-1.5 text-[15px] font-medium rounded-lg ${measure.includes('disbursement') ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'}`}
-            >
-              Disbursements
-            </button>
-          </div>
+          <BasisDropdown
+            label=""
+            value={measure}
+            onChange={(nextMeasure) => setMeasure(nextMeasure)}
+            className="w-56"
+          />
         </div>
       </div>
 

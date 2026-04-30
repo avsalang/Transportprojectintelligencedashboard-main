@@ -159,16 +159,16 @@ export function CRSDonorProfile() {
             maxChars={24}
           />
           <CRSRankingCard
-            title="CRS Tags"
-            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment CRS tags."
+            title="Sustainability-related Tags"
+            subtitle="Mitigation, adaptation, gender, DRR, biodiversity, and environment sustainability-related tags."
             data={sectorSeries}
             measure={measure}
             color="#F59E0B"
             maxChars={24}
           />
           <CRSRankingCard
-            title="Financing Type"
-            subtitle="Funding types used by the selected donor."
+            title="Finance Flow Type"
+            subtitle="Finance flow type by which development finance is provided."
             data={financingSeries}
             measure={measure}
             color="#334155"

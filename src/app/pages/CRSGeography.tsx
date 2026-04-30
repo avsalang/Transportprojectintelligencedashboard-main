@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import { Flame, MapPinned, Orbit } from 'lucide-react';
 import { estimateCategoryAxisWidth, WrappedCategoryTick } from '../components/ChartTicks';
+import { BasisDropdown } from '../components/BasisDropdown';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
 import { crsFmt } from '../data/crsData';
 import { useCRSFilters } from '../context/CRSFilterContext';
@@ -68,20 +69,12 @@ export function CRSGeography() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="inline-flex rounded-lg bg-slate-100 p-1">
-                <button
-                  onClick={() => setMeasure('commitment_defl')}
-                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure.includes('commitment') ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                  Commitments
-                </button>
-                <button
-                  onClick={() => setMeasure('disbursement_defl')}
-                  className={`px-3 py-1.5 text-[15px] font-medium rounded-md ${measure.includes('disbursement') ? 'bg-white text-slate-900 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                  Disbursements
-                </button>
-              </div>
+              <BasisDropdown
+                label=""
+                value={measure}
+                onChange={(nextMeasure) => setMeasure(nextMeasure)}
+                className="w-56"
+              />
               <div className="inline-flex rounded-lg bg-slate-100 p-1">
                 <button
                   onClick={() => setMapView('points')}

@@ -68,7 +68,6 @@ export function CRSOverview() {
       <div className="max-w-[1440px] mx-auto space-y-6">
         <div>
           <h1 className="text-2xl text-slate-900 tracking-tight">Overview</h1>
-          <p className="text-slate-500 mt-1">ATO-focused CRS transport finance across selected recipients, donors, and years.</p>
         </div>
 
         <CRSPageFilters
@@ -179,8 +178,8 @@ export function CRSOverview() {
             color="#0EA5E9"
           />
           <CRSRankingCard
-            title="Financing Type"
-            subtitle="Funding channels used in the current filtered portfolio."
+            title="Finance Flow Type"
+            subtitle="Finance flow type by which development finance is provided."
             data={financingSeries}
             measure={measure}
             color="#334155"
