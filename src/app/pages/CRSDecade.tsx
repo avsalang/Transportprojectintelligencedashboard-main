@@ -159,7 +159,7 @@ export function CRSDecade() {
   const trend = useMemo(() => buildThemeTrend(filteredRecords, measure), [filteredRecords, measure]);
   const modeThemeMatrix = useMemo(() => buildModeThemeMatrix(filteredRecords, measure), [filteredRecords, measure]);
   const donorThemePortfolio = useMemo(() => buildDonorThemePortfolio(filteredRecords, measure, 10), [filteredRecords, measure]);
-  const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 12), [filteredRecords, measure]);
+  const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 5), [filteredRecords, measure]);
   const recordThemeLabels = (record: CRSDecadeRecord) =>
     CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
   const recordColumnText = (record: CRSDecadeRecord, key: RecordSortKey) => {
@@ -319,7 +319,7 @@ export function CRSDecade() {
           <KPICard label="Focus Areas" value={crsFmt.num(CRS_DECADE_THEMES.length)} sub="UN Decade themes" />
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.25fr] gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-[1fr_0.95fr] gap-6 xl:items-start">
           <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
             <div className="mb-5">
               <h2 className="text-slate-900 text-base font-semibold">Theme Overview</h2>
@@ -327,8 +327,8 @@ export function CRSDecade() {
                 Total {activeMeasureLabel} tagged to each UN Decade focus area.
               </p>
             </div>
-            <ResponsiveContainer width="100%" height={360}>
-              <BarChart data={themeSeries} layout="vertical" margin={{ top: 0, right: 20, left: 42, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={themeSeries} layout="vertical" margin={{ top: 0, right: 20, left: 42, bottom: 0 }} barCategoryGap={12}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
                 <XAxis type="number" tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="label" width={190} tick={{ fontSize: 11, fill: '#334155' }} axisLine={false} tickLine={false} />
@@ -338,57 +338,6 @@ export function CRSDecade() {
                     <Cell key={entry.label} fill={themeColor(entry.label)} />
                   ))}
                 </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-            <div className="mb-5">
-              <h2 className="text-slate-900 text-base font-semibold">Theme Mix Over Time</h2>
-              <p className="text-slate-500 text-[13px] mt-1">Annual tagged {activeMeasureLabel} by focus area.</p>
-              <p className="text-slate-400 text-[12px] mt-1">
-                Stacked values show theme-tagged volume; records with multiple themes are counted once in each applicable focus area.
-              </p>
-            </div>
-            <ResponsiveContainer width="100%" height={360}>
-              <AreaChart data={trend} margin={{ top: 10, right: 18, left: 4, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                {CRS_DECADE_THEMES.map((theme) => (
-                  <Area
-                    key={theme.id}
-                    type="monotone"
-                    dataKey={theme.label}
-                    stackId="1"
-                    stroke={THEME_COLORS[theme.id]}
-                    fill={THEME_COLORS[theme.id]}
-                    fillOpacity={0.72}
-                  />
-                ))}
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 xl:grid-cols-[1fr_0.95fr] gap-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-            <div className="mb-5">
-              <h2 className="text-slate-900 text-base font-semibold">Focus Areas by Mode</h2>
-              <p className="text-slate-500 text-[13px] mt-1">Mode-level distribution of tagged {activeMeasureLabel}.</p>
-            </div>
-            <ResponsiveContainer width="100%" height={360}>
-              <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 4, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                <XAxis dataKey="mode" tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
-                <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
-                <Legend wrapperStyle={{ fontSize: 11 }} />
-                {CRS_DECADE_THEMES.map((theme) => (
-                  <Bar key={theme.id} dataKey={theme.label} stackId="themes" fill={THEME_COLORS[theme.id]} />
-                ))}
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -418,20 +367,82 @@ export function CRSDecade() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
           <div className="mb-5">
-            <h2 className="text-slate-900 text-base font-semibold">Theme Portfolio of Top Donors</h2>
+            <h2 className="text-slate-900 text-base font-semibold">Annual Focus Area Trends</h2>
             <p className="text-slate-500 text-[13px] mt-1">
-              Largest donors in the current view, split by UN Decade focus area.
+              Each panel shows annual tagged {activeMeasureLabel} for one UN Decade focus area.
             </p>
           </div>
-          <ResponsiveContainer width="100%" height={430}>
-            <BarChart data={donorThemePortfolio} layout="vertical" margin={{ top: 0, right: 18, left: 72, bottom: 0 }}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
+            {CRS_DECADE_THEMES.map((theme) => (
+              <div key={theme.id} className="rounded-xl border border-slate-100 bg-slate-50/40 p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: THEME_COLORS[theme.id] }} />
+                  <h3 className="text-[13px] font-semibold text-slate-800">{theme.label}</h3>
+                </div>
+                <ResponsiveContainer width="100%" height={190}>
+                  <AreaChart data={trend} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
+                    <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} width={52} />
+                    <Tooltip content={<SingleValueTooltip measureLabel={activeMeasureTitle} />} />
+                    <Area
+                      type="monotone"
+                      dataKey={theme.label}
+                      stroke={THEME_COLORS[theme.id]}
+                      fill={THEME_COLORS[theme.id]}
+                      fillOpacity={0.18}
+                      strokeWidth={2}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div className="mb-5">
+            <h2 className="text-slate-900 text-base font-semibold">Focus Areas by Transport Mode</h2>
+            <p className="text-slate-500 text-[13px] mt-1">
+              Clustered columns compare tagged {activeMeasureLabel} across UN Decade focus areas for each transport mode.
+            </p>
+          </div>
+          <ResponsiveContainer width="100%" height={390}>
+            <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 4, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+              <XAxis dataKey="mode" tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
+              <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
+              <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              {CRS_DECADE_THEMES.map((theme) => (
+                <Bar key={theme.id} dataKey={theme.label} fill={THEME_COLORS[theme.id]} radius={[4, 4, 0, 0]} />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div className="mb-5">
+            <h2 className="text-slate-900 text-base font-semibold">Focus Area Portfolio of Top Donors</h2>
+            <p className="text-slate-500 text-[13px] mt-1">
+              Clustered bars compare the UN Decade focus areas represented in each top donor portfolio.
+            </p>
+          </div>
+          <ResponsiveContainer width="100%" height={760}>
+            <BarChart
+              data={donorThemePortfolio}
+              layout="vertical"
+              margin={{ top: 0, right: 18, left: 72, bottom: 0 }}
+              barCategoryGap={24}
+              barGap={3}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
               <XAxis type="number" tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
               <YAxis type="category" dataKey="donor" width={260} tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
               <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               {CRS_DECADE_THEMES.map((theme) => (
-                <Bar key={theme.id} dataKey={theme.label} stackId="donorThemes" fill={THEME_COLORS[theme.id]} />
+                <Bar key={theme.id} dataKey={theme.label} fill={THEME_COLORS[theme.id]} radius={[0, 4, 4, 0]} barSize={8} />
               ))}
             </BarChart>
           </ResponsiveContainer>
