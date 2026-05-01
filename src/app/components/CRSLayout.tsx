@@ -96,20 +96,24 @@ export function CRSLayout() {
         </aside>
 
         <main className="flex-1 overflow-y-auto">
-          <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-6 py-4 shadow-sm backdrop-blur-md">
-            <div className="flex items-center justify-between gap-6">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-white p-1 shadow-sm ring-1 ring-slate-200">
-                  <img src={`${import.meta.env.BASE_URL}ATO_logo.jpg`} alt="ATO Logo" className="h-full w-full rounded-full object-contain" />
+          <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-6 py-3 shadow-sm backdrop-blur-md">
+            <div className="flex items-center justify-between gap-5">
+              <div className="flex min-w-0 items-center gap-5">
+                <div className="flex h-16 w-48 flex-shrink-0 items-center justify-center">
+                  <img
+                    src={`${import.meta.env.BASE_URL}ato-observatory-logo.svg`}
+                    alt="Asia and the Pacific Transport Observatory Logo"
+                    className="h-full w-full object-contain"
+                  />
                 </div>
-                <div>
-                  <p className="text-xl font-semibold tracking-tight text-slate-900">Asia and the Pacific Transport Development Finance Explorer</p>
-                  <p className="mt-0.5 text-[13px] text-slate-500">
+                <div className="min-w-0">
+                  <p className="text-lg font-semibold tracking-tight text-slate-900 xl:text-xl">Asia and the Pacific Transport Development Finance Explorer</p>
+                  <p className="mt-0.5 max-w-[780px] text-[12px] text-slate-500 xl:text-[13px]">
                     An ATO visualization and analysis of OECD CRS transport-related funding to Asia and the Pacific
                   </p>
                 </div>
               </div>
-              <div className="min-h-10 min-w-[220px]" aria-label="Title bar action area" />
+              <div className="hidden min-h-10 min-w-[120px] lg:block" aria-label="Title bar action area" />
             </div>
           </div>
           <div className="flex min-h-[calc(100vh-81px)] flex-col">

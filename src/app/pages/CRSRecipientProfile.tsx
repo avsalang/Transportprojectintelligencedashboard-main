@@ -16,6 +16,7 @@ import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
+import { CRSDecadeRecord, CRSDecadeRecordIndex } from '../data/crsDecadeData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 import { matchesCRSFilters } from '../utils/crsFiltering';
@@ -29,42 +30,7 @@ const MODE_AREA_COLORS = {
   Other: '#EC4899',
 };
 
-type CRSRecord = {
-  id: number;
-  year: number | null;
-  donor: string;
-  agency: string;
-  recipient: string;
-  recipient_scope: string;
-  region: string;
-  flow: string;
-  finance_type: string;
-  commitment: number;
-  disbursement: number;
-  commitment_defl: number;
-  disbursement_defl: number;
-  title: string;
-  description: string;
-  short_description: string;
-  purpose: string;
-  mode: string;
-  mode_detail: string;
-  climate_mitigation: number;
-  climate_adaptation: number;
-  gender: number;
-  biodiversity: number;
-  environment: number;
-  drr: number;
-};
-
-type CRSRecordIndex = {
-  chunks: Array<{
-    id: number;
-    file: string;
-    count: number;
-  }>;
-  entityShardMap: Record<'country' | 'regionalRecipient', Record<string, number[]>>;
-};
+type CRSRecord = CRSDecadeRecord;
 
 type RecipientRecordSortKey = 'year' | 'record' | 'donor' | 'agency' | 'mode' | 'amount';
 type SortDirection = 'asc' | 'desc';
@@ -100,8 +66,7 @@ export function CRSRecipientProfile() {
   const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
   const [selectedRecipient, setSelectedRecipient] = useState('');
-  const [recordIndex, setRecordIndex] = useState<CRSRecordIndex | null>(null);
-  const [recordChunks, setRecordChunks] = useState<Record<string, CRSRecord[]>>({});
+  const [records, setRecords] = useState<CRSRecord[]>([]);
   const [recordSearch, setRecordSearch] = useState('');
   const [activeRecord, setActiveRecord] = useState<CRSRecord | null>(null);
   const [page, setPage] = useState(1);
@@ -123,12 +88,27 @@ export function CRSRecipientProfile() {
   }, [profileRecipientOptions, selectedRecipient]);
 
   useEffect(() => {
-    async function loadIndex() {
-      const response = await fetch(`${import.meta.env.BASE_URL}data/crs-records/index.json`);
-      const data = await response.json();
-      setRecordIndex(data);
+    let cancelled = false;
+
+    async function loadRecords() {
+      const indexResponse = await fetch(`${import.meta.env.BASE_URL}data/crs-decade-records/index.json`);
+      const index: CRSDecadeRecordIndex = await indexResponse.json();
+      const chunks = await Promise.all(
+        index.chunks.map(async (chunk) => {
+          const response = await fetch(`${import.meta.env.BASE_URL}${chunk.file}`);
+          return (await response.json()) as CRSRecord[];
+        }),
+      );
+      if (!cancelled) {
+        setRecords(chunks.flat());
+      }
     }
-    loadIndex().catch((error) => console.error('Failed to load CRS record index', error));
+
+    loadRecords().catch((error) => console.error('Failed to load CRS record shards', error));
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const recipientFacts = useMemo(
@@ -147,42 +127,6 @@ export function CRSRecipientProfile() {
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(recipientFacts), [recipientFacts]);
   const financingSeries = useMemo(() => aggregateFacts(recipientFacts, (fact) => fact.flow).slice(0, 8), [recipientFacts]);
   const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
-
-  const recordEntityType = selectedRecipient.includes(', regional') ? 'regionalRecipient' : 'country';
-  const recordEntityKey = useMemo(
-    () => (recordEntityType === 'regionalRecipient' ? selectedRecipient.replace(/, regional$/, '') : selectedRecipient),
-    [recordEntityType, selectedRecipient],
-  );
-  const activeShardIds = useMemo(
-    () => recordIndex?.entityShardMap?.[recordEntityType]?.[recordEntityKey] ?? [],
-    [recordEntityKey, recordEntityType, recordIndex],
-  );
-
-  useEffect(() => {
-    async function loadMissingShards() {
-      if (!recordIndex || !activeShardIds.length) return;
-      const missingIds = activeShardIds.filter((id) => !recordChunks[String(id)]);
-      if (!missingIds.length) return;
-
-      const loaded = await Promise.all(
-        missingIds.map(async (id) => {
-          const chunk = recordIndex.chunks.find((entry) => entry.id === id);
-          if (!chunk) return [String(id), []] as const;
-          const response = await fetch(`${import.meta.env.BASE_URL}${chunk.file}`);
-          return [String(id), await response.json()] as const;
-        }),
-      );
-
-      setRecordChunks((current) => ({ ...current, ...Object.fromEntries(loaded) }));
-    }
-
-    loadMissingShards().catch((error) => console.error('Failed to load CRS record shards', error));
-  }, [activeShardIds, recordChunks, recordIndex]);
-
-  const records = useMemo(
-    () => activeShardIds.flatMap((id) => recordChunks[String(id)] ?? []),
-    [activeShardIds, recordChunks],
-  );
 
   const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
     switch (key) {
@@ -496,7 +440,7 @@ export function CRSRecipientProfile() {
                 ) : (
                   pagedRecords.map((record) => (
                     <tr
-                      key={record.id}
+                      key={record.row_number}
                       onClick={() => setActiveRecord(record)}
                       className="hover:bg-slate-50 cursor-pointer transition-colors"
                     >
