@@ -184,10 +184,10 @@ function TechnologyEnablerSankey({ data }: { data: ThemeSankeyData }) {
       </p>
       {coloredData.links.length ? (
         <div className="relative">
-          <ResponsiveContainer width="100%" height={760}>
+          <ResponsiveContainer width="100%" height={880}>
             <Sankey
               data={coloredData}
-              nodePadding={28}
+              nodePadding={34}
               nodeWidth={14}
               margin={{ top: 28, right: 260, left: 250, bottom: 28 }}
               node={<SankeyNode />}
@@ -208,7 +208,7 @@ function TechnologyEnablerSankey({ data }: { data: ThemeSankeyData }) {
           ) : null}
         </div>
       ) : (
-        <div className="flex h-[760px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
+        <div className="flex h-[880px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-500">
           No technology/enabler flow data is available.
         </div>
       )}
