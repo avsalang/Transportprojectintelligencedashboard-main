@@ -25,6 +25,8 @@ const MODE_AREA_COLORS = {
   Other: '#EC4899',
 };
 
+const CURRENCY_AXIS_WIDTH = 76;
+
 export function CRSDonorProfile() {
   const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
@@ -108,10 +110,10 @@ export function CRSDonorProfile() {
             </p>
             <div className="h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 8, bottom: 0 }}>
                   <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" />
                   <XAxis dataKey="year" tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} />
-                  <YAxis tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
+                  <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
                   <Tooltip formatter={(value: number, name: string) => [crsFmt.usdM(value), name]} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />

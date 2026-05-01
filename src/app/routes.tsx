@@ -4,6 +4,7 @@ import { CRSOverview } from './pages/CRSOverview';
 import { CRSDonorProfile } from './pages/CRSDonorProfile';
 import { CRSRecipientProfile } from './pages/CRSRecipientProfile';
 import { CRSDecade } from './pages/CRSDecade';
+import { ThemeExplorer } from './pages/ThemeExplorer';
 import { About } from './pages/About';
 
 // Hash routing keeps the static build portable across hosts like GitHub Pages.
@@ -16,6 +17,7 @@ export const router = createHashRouter([
       { path: 'donor-profile', Component: CRSDonorProfile },
       { path: 'recipient-profile', Component: CRSRecipientProfile },
       { path: 'un-decade', Component: CRSDecade },
+      { path: 'themes', Component: ThemeExplorer },
       { path: 'about', Component: About },
     ],
   },

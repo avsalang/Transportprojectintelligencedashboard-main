@@ -28,6 +28,8 @@ const MODE_AREA_COLORS = {
   Other: '#EC4899',
 };
 
+const CURRENCY_AXIS_WIDTH = 76;
+
 function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitments' }: any) {
   if (!active || !payload?.length) return null;
   const rows = payload.filter((item: any) => Number(item.value) > 0);
@@ -118,10 +120,10 @@ export function CRSOverview() {
             <p className="text-slate-900 text-sm font-semibold mb-1">Funding Over Time</p>
             <p className="text-slate-400 text-xs mb-4">{measureLabel} by year and transport mode in the current filtered portfolio.</p>
             <ResponsiveContainer width="100%" height={320}>
-              <AreaChart data={yearlyModeStack} margin={{ top: 10, right: 20, left: 10, bottom: 10 }}>
+              <AreaChart data={yearlyModeStack} margin={{ top: 10, right: 20, left: 8, bottom: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
                 <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} tickFormatter={(value: number) => crsFmt.usdM(value)} />
+                <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tick={{ fontSize: 10, fill: '#94A3B8' }} tickLine={false} axisLine={false} tickFormatter={(value: number) => crsFmt.usdM(value)} />
                 <Tooltip content={<StackedModeTooltip measureLabel={measureLabel} />} />
                 <Legend wrapperStyle={{ fontSize: 12 }} />
                 <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />

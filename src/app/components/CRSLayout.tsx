@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: '/donor-profile', label: 'Donor Profile', exact: false },
   { to: '/recipient-profile', label: 'Recipient Profile', exact: false },
   { to: '/un-decade', label: 'UN Decade', exact: false },
+  { to: '/themes', label: 'Themes', exact: false },
   { to: '/about', label: 'About', exact: false },
 ];
 

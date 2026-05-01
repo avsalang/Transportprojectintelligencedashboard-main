@@ -39,6 +39,8 @@ const THEME_COLORS: Record<CRSDecadeThemeId, string> = {
   science_technology_innovation: '#14B8A6',
 };
 
+const CURRENCY_AXIS_WIDTH = 76;
+
 type RecordSortKey = 'year' | 'record' | 'donor' | 'recipient' | 'mode' | 'themes' | 'amount';
 type SortDirection = 'asc' | 'desc';
 type RecordColumnFilters = Record<RecordSortKey, string>;
@@ -380,10 +382,10 @@ export function CRSDecade() {
                   <h3 className="text-[13px] font-semibold text-slate-800">{theme.label}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={190}>
-                  <AreaChart data={trend} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
+                  <AreaChart data={trend} margin={{ top: 6, right: 8, left: 8, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
                     <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} width={52} />
+                    <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
                     <Tooltip content={<SingleValueTooltip measureLabel={activeMeasureTitle} />} />
                     <Area
                       type="monotone"
@@ -408,10 +410,10 @@ export function CRSDecade() {
             </p>
           </div>
           <ResponsiveContainer width="100%" height={390}>
-            <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 4, bottom: 0 }}>
+            <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 8, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
               <XAxis dataKey="mode" tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
-              <YAxis tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
+              <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
               <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               {CRS_DECADE_THEMES.map((theme) => (
