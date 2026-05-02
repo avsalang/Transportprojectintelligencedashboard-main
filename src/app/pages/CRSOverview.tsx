@@ -5,6 +5,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  LabelList,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -17,6 +18,7 @@ import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { crsFmt } from '../data/crsData';
+import { LOW_CARBON_SCREENER_RANKING } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 
@@ -51,6 +53,18 @@ function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitment
   );
 }
 
+function ScreenerScoreTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const score = Number(payload[0].value);
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
+      <p className="text-[13px] font-semibold text-slate-900">{label}</p>
+      <p className="mt-1 text-[12px] text-slate-600">Screener score: <span className="font-medium text-slate-900">{score.toFixed(1)}</span></p>
+      <p className="mt-1 text-[11px] text-slate-400">Higher score follows the workbook's weighted screen.</p>
+    </div>
+  );
+}
+
 export function CRSOverview() {
   const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
@@ -63,6 +77,8 @@ export function CRSOverview() {
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(filteredFacts), [filteredFacts]);
   const donorModeStack = useMemo(() => buildModeStackByDonor(filteredFacts, 8), [filteredFacts]);
   const financingSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.flow).slice(0, 10), [filteredFacts]);
+  const lowCarbonRanking = useMemo(() => LOW_CARBON_SCREENER_RANKING, []);
+  const lowCarbonRankingHeight = Math.max(620, lowCarbonRanking.length * 25 + 80);
   const measureLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
 
   return (
@@ -187,6 +203,50 @@ export function CRSOverview() {
             color="#334155"
           />
         </div>
+
+        <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
+          <div className="mb-4 border-b border-sky-100 pb-4">
+            <p className="text-slate-900 text-base font-semibold">Low Carbon Transport Screener</p>
+            <p className="mt-1 max-w-[900px] text-sm text-slate-500">
+              Economy-level ranking from the low-carbon transport screening workbook. This is separate from the CRS finance filters above.
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-white p-5">
+            <p className="mb-1 text-sm font-semibold text-slate-900">Economy Ranking</p>
+            <p className="mb-4 text-xs text-slate-400">All economies by weighted screener score, sorted highest to lowest.</p>
+            <ResponsiveContainer width="100%" height={lowCarbonRankingHeight}>
+              <BarChart data={lowCarbonRanking} layout="vertical" margin={{ top: 0, right: 54, left: 16, bottom: 8 }} barCategoryGap={8}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  tick={{ fontSize: 12, fill: '#64748B' }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value: number) => value.toFixed(0)}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="economy"
+                  width={250}
+                  tick={{ fontSize: 11, fill: '#334155' }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval={0}
+                />
+                <Tooltip content={<ScreenerScoreTooltip />} />
+                <Bar dataKey="score" fill="#0EA5E9" fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={12}>
+                  <LabelList
+                    dataKey="score"
+                    position="right"
+                    formatter={(value: number) => value.toFixed(1)}
+                    style={{ fill: '#475569', fontSize: 11, fontWeight: 600 }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
       </div>
     </div>
   );

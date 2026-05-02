@@ -4,6 +4,11 @@ import {
   AreaChart,
   CartesianGrid,
   Legend,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -17,6 +22,7 @@ import { CRSPageFilters } from '../components/CRSPageFilters';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { CRSDecadeRecord, CRSDecadeRecordIndex } from '../data/crsDecadeData';
+import { LOW_CARBON_SCREENER_BY_ECONOMY } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 import { matchesCRSFilters } from '../utils/crsFiltering';
@@ -63,6 +69,37 @@ function ThemeFlag({ active, label }: { active: number; label: string }) {
     </div>
   );
 }
+
+function ScreenerRadarTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const row = payload[0].payload;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg">
+      <p className="font-semibold text-slate-900">{label}</p>
+      <p className="mt-1 text-slate-600">
+        Score: <span className="font-medium text-slate-900">{row.score.toFixed(1)}</span> / {row.maxScore.toFixed(1)}
+      </p>
+      <p className="mt-0.5 text-slate-500">{row.normalized.toFixed(1)}% of dimension maximum</p>
+    </div>
+  );
+}
+
+function OutwardPolarAngleTick({ x = 0, y = 0, cx = 0, cy = 0, payload }: any) {
+  const dx = x - cx;
+  const dy = y - cy;
+  const length = Math.sqrt(dx * dx + dy * dy) || 1;
+  const offset = 20;
+  const labelX = x + (dx / length) * offset;
+  const labelY = y + (dy / length) * offset;
+  const anchor = labelX > cx + 8 ? 'start' : labelX < cx - 8 ? 'end' : 'middle';
+
+  return (
+    <text x={labelX} y={labelY} textAnchor={anchor} dominantBaseline="middle" fill="#334155" fontSize={13} fontWeight={600}>
+      {payload?.value}
+    </text>
+  );
+}
+
 
 export function CRSRecipientProfile() {
   const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
@@ -128,6 +165,7 @@ export function CRSRecipientProfile() {
   const modeSeries = useMemo(() => aggregateFacts(recipientFacts, (fact) => fact.mode).slice(0, 8), [recipientFacts]);
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(recipientFacts), [recipientFacts]);
   const financingSeries = useMemo(() => aggregateFacts(recipientFacts, (fact) => fact.flow).slice(0, 8), [recipientFacts]);
+  const lowCarbonScreener = LOW_CARBON_SCREENER_BY_ECONOMY[selectedRecipient];
   const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
 
   const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
@@ -327,6 +365,47 @@ export function CRSRecipientProfile() {
             maxChars={24}
           />
         </div>
+
+        {lowCarbonScreener ? (
+          <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
+            <div className="mb-4 border-b border-sky-100 pb-4">
+              <p className="text-base font-semibold text-slate-900">Low Carbon Transport Screener</p>
+              <p className="mt-1 text-sm text-slate-500">
+                Economy-level score breakdown for {selectedRecipient}, separate from the CRS funding portfolio below.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.75fr_1.25fr]">
+              <div className="rounded-xl border border-slate-200 bg-white p-5">
+                <p className="text-sm font-semibold text-slate-900">Screener Score</p>
+                <p className="mt-3 text-4xl font-semibold tabular-nums text-slate-900">{lowCarbonScreener.score.toFixed(1)}</p>
+                <p className="mt-1 text-sm text-slate-500">Rank {lowCarbonScreener.rank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</p>
+                <p className="mt-4 text-xs leading-5 text-slate-400">
+                  Higher values follow the weighted low-carbon transport screening workbook.
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-5">
+                <p className="mb-1 text-sm font-semibold text-slate-900">Score Breakdown by Dimension</p>
+                <p className="mb-4 text-xs text-slate-400">Radar shows each dimension as percent of its maximum score.</p>
+                <ResponsiveContainer width="100%" height={360}>
+                  <RadarChart data={lowCarbonScreener.dimensions} outerRadius={125}>
+                    <PolarGrid stroke="#E2E8F0" />
+                    <PolarAngleAxis dataKey="shortLabel" tick={<OutwardPolarAngleTick />} />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94A3B8', fontSize: 10 }} tickCount={5} />
+                    <Tooltip content={<ScreenerRadarTooltip />} />
+                    <Radar
+                      name="Screener"
+                      dataKey="normalized"
+                      stroke="#0EA5E9"
+                      fill="#0EA5E9"
+                      fillOpacity={0.28}
+                      strokeWidth={2}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
