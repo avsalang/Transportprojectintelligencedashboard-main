@@ -4,6 +4,7 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  Customized,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -40,6 +41,39 @@ const THEME_COLORS: Record<CRSDecadeThemeId, string> = {
 };
 
 const CURRENCY_AXIS_WIDTH = 76;
+
+function DonorPortfolioDividers({ yAxisMap, offset, data }: any) {
+  const yAxis = yAxisMap ? (Object.values(yAxisMap)[0] as any) : null;
+  const scale = yAxis?.scale;
+  if (!scale || !offset || !data?.length) return null;
+
+  const positions = data
+    .map((row: any) => scale(row.donor))
+    .filter((value: number) => Number.isFinite(value))
+    .sort((a: number, b: number) => a - b);
+  const x1 = offset.left;
+  const x2 = offset.left + offset.width;
+
+  return (
+    <g aria-hidden="true">
+      {positions.slice(0, -1).map((position: number, index: number) => {
+        const next = positions[index + 1];
+        const y = position + (next - position) / 2;
+        return (
+          <line
+            key={`donor-divider-${index}`}
+            x1={x1}
+            x2={x2}
+            y1={y}
+            y2={y}
+            stroke="#CBD5E1"
+            strokeOpacity={0.9}
+          />
+        );
+      })}
+    </g>
+  );
+}
 
 type RecordSortKey = 'year' | 'record' | 'donor' | 'recipient' | 'mode' | 'themes' | 'amount';
 type SortDirection = 'asc' | 'desc';
@@ -443,6 +477,7 @@ export function CRSDecade() {
               <YAxis type="category" dataKey="donor" width={260} tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
               <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Customized component={(props: any) => <DonorPortfolioDividers {...props} data={donorThemePortfolio} />} />
               {CRS_DECADE_THEMES.map((theme) => (
                 <Bar key={theme.id} dataKey={theme.label} fill={THEME_COLORS[theme.id]} radius={[0, 4, 4, 0]} barSize={8} />
               ))}
