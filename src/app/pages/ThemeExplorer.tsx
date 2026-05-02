@@ -357,9 +357,7 @@ export function ThemeExplorer() {
       <div className="mx-auto max-w-[1440px] space-y-12">
         <div>
           <h1 className="text-2xl text-slate-900">Themes</h1>
-          <p className="mt-1 max-w-[920px] text-sm text-slate-500">
-            Thematic views built from tagged CRS transport records. E-mobility includes subtype tags; road safety is grouped as one theme for now.
-          </p>
+          <p className="mt-1 max-w-[920px] text-sm text-slate-500">Thematic views built from tagged CRS transport records.</p>
         </div>
 
         {THEME_SUMMARIES.map((theme, index) => (

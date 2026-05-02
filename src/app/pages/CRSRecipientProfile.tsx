@@ -370,18 +370,12 @@ export function CRSRecipientProfile() {
           <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
             <div className="mb-4 border-b border-sky-100 pb-4">
               <p className="text-base font-semibold text-slate-900">Low Carbon Transport Screener</p>
-              <p className="mt-1 text-sm text-slate-500">
-                Economy-level score breakdown for {selectedRecipient}, separate from the CRS funding portfolio below.
-              </p>
             </div>
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.75fr_1.25fr]">
               <div className="rounded-xl border border-slate-200 bg-white p-5">
                 <p className="text-sm font-semibold text-slate-900">Screener Score</p>
                 <p className="mt-3 text-4xl font-semibold tabular-nums text-slate-900">{lowCarbonScreener.score.toFixed(1)}</p>
                 <p className="mt-1 text-sm text-slate-500">Rank {lowCarbonScreener.rank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</p>
-                <p className="mt-4 text-xs leading-5 text-slate-400">
-                  Higher values follow the weighted low-carbon transport screening workbook.
-                </p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-5">
                 <p className="mb-1 text-sm font-semibold text-slate-900">Score Breakdown by Dimension</p>

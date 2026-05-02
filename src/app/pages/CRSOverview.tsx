@@ -60,7 +60,6 @@ function ScreenerScoreTooltip({ active, payload, label }: any) {
     <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
       <p className="text-[13px] font-semibold text-slate-900">{label}</p>
       <p className="mt-1 text-[12px] text-slate-600">Screener score: <span className="font-medium text-slate-900">{score.toFixed(1)}</span></p>
-      <p className="mt-1 text-[11px] text-slate-400">Higher score follows the workbook's weighted screen.</p>
     </div>
   );
 }
@@ -207,13 +206,10 @@ export function CRSOverview() {
         <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
           <div className="mb-4 border-b border-sky-100 pb-4">
             <p className="text-slate-900 text-base font-semibold">Low Carbon Transport Screener</p>
-            <p className="mt-1 max-w-[900px] text-sm text-slate-500">
-              Economy-level ranking from the low-carbon transport screening workbook. This is separate from the CRS finance filters above.
-            </p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <p className="mb-1 text-sm font-semibold text-slate-900">Economy Ranking</p>
-            <p className="mb-4 text-xs text-slate-400">All economies by weighted screener score, sorted highest to lowest.</p>
+            <p className="mb-4 text-xs text-slate-400">All economies sorted highest to lowest.</p>
             <ResponsiveContainer width="100%" height={lowCarbonRankingHeight}>
               <BarChart data={lowCarbonRanking} layout="vertical" margin={{ top: 0, right: 54, left: 16, bottom: 8 }} barCategoryGap={8}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
