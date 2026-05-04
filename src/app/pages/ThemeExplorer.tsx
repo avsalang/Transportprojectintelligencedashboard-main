@@ -119,6 +119,7 @@ function yearSeriesFor(records: ThemeRecord[], yearMin: number, yearMax: number)
 }
 
 function buildTechnologyEnablerSankey(records: ThemeRecord[], topDonorCount = 8, topRecipientCount = 10): ThemeSankeyData {
+  const MIN_VISIBLE_FLOW_VALUE = 0.05;
   const donorTotals = new Map<string, number>();
   const recipientTotals = new Map<string, number>();
   records.forEach((record) => {
@@ -152,12 +153,21 @@ function buildTechnologyEnablerSankey(records: ThemeRecord[], topDonorCount = 8,
     return Math.max(incoming, outgoing);
   };
 
-  const activeDonors = new Set([...donorTag.keys()].map((key) => key.split('|||')[0]));
-  const activeTags = new Set([
-    ...[...donorTag.keys()].map((key) => key.split('|||')[1]),
-    ...[...tagRecipient.keys()].map((key) => key.split('|||')[0]),
-  ]);
-  const activeRecipients = new Set([...tagRecipient.keys()].map((key) => key.split('|||')[1]));
+  const visibleDonorTagEntries = [...donorTag.entries()].filter(([, value]) => value >= MIN_VISIBLE_FLOW_VALUE);
+  const visibleTagRecipientEntries = [...tagRecipient.entries()].filter(([, value]) => value >= MIN_VISIBLE_FLOW_VALUE);
+  const visibleIncomingTags = new Set(visibleDonorTagEntries.map(([key]) => key.split('|||')[1]));
+  const visibleOutgoingTags = new Set(visibleTagRecipientEntries.map(([key]) => key.split('|||')[0]));
+  const activeTags = new Set([...visibleIncomingTags].filter((tag) => visibleOutgoingTags.has(tag)));
+  const activeDonors = new Set(
+    visibleDonorTagEntries
+      .filter(([key]) => activeTags.has(key.split('|||')[1]))
+      .map(([key]) => key.split('|||')[0]),
+  );
+  const activeRecipients = new Set(
+    visibleTagRecipientEntries
+      .filter(([key]) => activeTags.has(key.split('|||')[0]))
+      .map(([key]) => key.split('|||')[1]),
+  );
   const orderNodes = (items: string[], role: 'donor' | 'subtag' | 'recipient', otherLabel?: string) => [
     ...items.filter((item) => item !== otherLabel).sort((a, b) => totalFor(role, b) - totalFor(role, a) || a.localeCompare(b)),
     ...(otherLabel && items.includes(otherLabel) ? [otherLabel] : []),
@@ -169,15 +179,15 @@ function buildTechnologyEnablerSankey(records: ThemeRecord[], topDonorCount = 8,
   ];
   const nodeIndex = new Map(nodes.map((node, index) => [node.id, index]));
   const links = [
-    ...[...donorTag.entries()].map(([key, value]) => {
+    ...visibleDonorTagEntries.map(([key, value]) => {
       const [donor, tag] = key.split('|||');
       return { source: nodeIndex.get(`donor::${donor}`) ?? -1, target: nodeIndex.get(`subtag::${tag}`) ?? -1, sourceName: donor, targetName: tag, value };
     }),
-    ...[...tagRecipient.entries()].map(([key, value]) => {
+    ...visibleTagRecipientEntries.map(([key, value]) => {
       const [tag, recipient, flowType] = key.split('|||');
       return { source: nodeIndex.get(`subtag::${tag}`) ?? -1, target: nodeIndex.get(`recipient::${recipient}`) ?? -1, sourceName: tag, targetName: recipient, flowType, value };
     }),
-  ].filter((link) => link.source >= 0 && link.target >= 0 && link.value >= 0.05);
+  ].filter((link) => link.source >= 0 && link.target >= 0);
 
   return { nodes, links };
 }
