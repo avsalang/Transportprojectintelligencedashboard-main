@@ -100,7 +100,7 @@ export function Overview() {
           </p>
         </div>
         <div className="text-right">
-          <p className="text-slate-500 text-[15px] uppercase tracking-wide">Current mode taxonomy</p>
+          <p className="text-slate-500 text-[15px]">Current mode taxonomy</p>
           <p className="text-slate-700 text-base">Refined presentation categories</p>
         </div>
       </div>

@@ -42,7 +42,7 @@ export function About() {
     <div className="bg-slate-50/50 px-6 py-8">
       <div className="mx-auto max-w-[1040px] space-y-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-700">About</p>
+          <p className="text-sm font-semibold text-sky-700">About</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">Asia and the Pacific Transport Development Finance Explorer</h1>
           <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
             Search, compare, and interpret transport-related development finance across Asia and the Pacific.

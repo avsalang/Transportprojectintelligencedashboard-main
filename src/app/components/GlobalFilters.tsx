@@ -51,7 +51,7 @@ export function GlobalFilters() {
 
       <div className="grid grid-cols-6 gap-3 mt-4">
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">MDB</p>
+          <p className="text-[11px] text-slate-500 mb-2">MDB</p>
           <div className="space-y-1.5">
             {SOURCES.map((source) => (
               <label key={source} className="flex items-center gap-2 text-xs text-slate-700">
@@ -70,7 +70,7 @@ export function GlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Region</p>
+          <p className="text-[11px] text-slate-500 mb-2">Region</p>
           <select
             value=""
             onChange={(e) => {
@@ -102,7 +102,7 @@ export function GlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Mode</p>
+          <p className="text-[11px] text-slate-500 mb-2">Mode</p>
           <select
             value=""
             onChange={(e) => {
@@ -134,7 +134,7 @@ export function GlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Status</p>
+          <p className="text-[11px] text-slate-500 mb-2">Status</p>
           <select
             value=""
             onChange={(e) => {
@@ -168,7 +168,7 @@ export function GlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Approval year</p>
+          <p className="text-[11px] text-slate-500 mb-2">Approval year</p>
           <div className="flex items-center gap-2">
             <input
               type="number"
@@ -188,7 +188,7 @@ export function GlobalFilters() {
         </div>
 
         <div>
-          <p className="text-[11px] text-slate-500 uppercase tracking-wide mb-2">Map filters</p>
+          <p className="text-[11px] text-slate-500 mb-2">Map filters</p>
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-xs text-slate-700">
               <input

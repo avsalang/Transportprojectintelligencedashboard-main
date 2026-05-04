@@ -19,7 +19,7 @@ export function SourceBadge({ source, size = 'md' }: SourceBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center rounded font-semibold tracking-wide ${sizeClass}`}
+      className={`inline-flex items-center rounded font-semibold ${sizeClass}`}
       style={{ backgroundColor: `${color}18`, color, border: `1px solid ${color}30` }}
     >
       {label}

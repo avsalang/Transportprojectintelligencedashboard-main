@@ -116,20 +116,20 @@ export function CRSGeography() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
-                    <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Commitments</p>
+                    <p className="text-[14px] font-semibold text-slate-500 mb-1">Commitments</p>
                     <p className="text-slate-900 text-xl font-semibold tabular-nums">
                       {crsFmt.usdM(selectedCountryProfile.commitment_defl)}
                     </p>
                   </div>
                   <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
-                    <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Disbursements</p>
+                    <p className="text-[14px] font-semibold text-slate-500 mb-1">Disbursements</p>
                     <p className="text-slate-900 text-xl font-semibold tabular-nums">
                       {crsFmt.usdM(selectedCountryProfile.disbursement_defl)}
                     </p>
                   </div>
                 </div>
                 <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 shadow-sm">
-                  <p className="text-[14px] font-semibold uppercase tracking-widest text-slate-500 mb-1">Project Count</p>
+                  <p className="text-[14px] font-semibold text-slate-500 mb-1">Project Count</p>
                   <p className="text-slate-900 text-xl font-semibold tabular-nums">
                     {crsFmt.num(selectedCountryProfile.count)}
                   </p>

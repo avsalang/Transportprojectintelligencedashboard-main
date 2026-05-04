@@ -118,7 +118,7 @@ export function ProjectExplorer() {
                 ).map(([key, label]) => (
                   <th
                     key={key}
-                    className="text-left px-4 py-3 text-[15px] font-semibold text-slate-500 uppercase tracking-wide cursor-pointer select-none hover:text-slate-700 whitespace-nowrap"
+                    className="text-left px-4 py-3 text-[15px] font-semibold text-slate-500 cursor-pointer select-none hover:text-slate-700 whitespace-nowrap"
                     onClick={() => handleSort(key)}
                   >
                     <div className="flex items-center gap-1">
@@ -127,7 +127,7 @@ export function ProjectExplorer() {
                     </div>
                   </th>
                 ))}
-                <th className="px-4 py-3 text-[15px] font-semibold text-slate-500 uppercase tracking-wide text-center">
+                <th className="px-4 py-3 text-[15px] font-semibold text-slate-500 text-center">
                   Map
                 </th>
               </tr>

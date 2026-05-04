@@ -139,7 +139,7 @@ export function Geography() {
                 </div>
 
                 <div>
-                  <p className="text-[15px] text-slate-500 uppercase tracking-wide mb-2">Mode mix</p>
+                  <p className="text-[15px] text-slate-500 mb-2">Mode mix</p>
                   <div className="space-y-2">
                     {selectedCountryStats?.modes.slice(0, 5).map(([mode, count]) => (
                       <div key={mode}>
@@ -156,7 +156,7 @@ export function Geography() {
                 </div>
 
                 <div>
-                  <p className="text-[15px] text-slate-500 uppercase tracking-wide mb-2">MDB split</p>
+                  <p className="text-[15px] text-slate-500 mb-2">MDB split</p>
                   <div className="space-y-2">
                     {selectedCountryStats?.sources.map(([source, count]) => (
                       <div key={source}>
@@ -176,7 +176,7 @@ export function Geography() {
                 </div>
 
                 <div>
-                  <p className="text-[15px] text-slate-500 uppercase tracking-wide mb-2">Featured projects</p>
+                  <p className="text-[15px] text-slate-500 mb-2">Featured projects</p>
                   <div className="space-y-2.5">
                     {selectedCountryProjects.slice(0, 4).map((project) => (
                       <button

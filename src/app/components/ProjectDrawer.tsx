@@ -91,7 +91,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
             {/* Description */}
             {project.description && (
               <section>
-                <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3">
+                <h3 className="text-slate-500 text-[12px] font-medium mb-3">
                   Project Description
                 </h3>
                 <p className="text-slate-600 text-sm leading-relaxed bg-slate-50 rounded-lg p-3 border border-slate-100">
@@ -102,7 +102,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
 
             {/* Location */}
             <section>
-              <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3">
+              <h3 className="text-slate-500 text-[12px] font-medium mb-3">
                 Location
               </h3>
               <div className="space-y-2.5">
@@ -137,7 +137,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
 
             {/* Source provenance */}
             <section>
-              <h3 className="text-slate-500 text-[11px] uppercase tracking-wider font-medium mb-3 flex items-center gap-1.5">
+              <h3 className="text-slate-500 text-[12px] font-medium mb-3 flex items-center gap-1.5">
                 <ExternalLink size={12} />
                 Source Provenance
               </h3>
@@ -157,7 +157,7 @@ export function ProjectDrawer({ project, onClose }: ProjectDrawerProps) {
 function MetricCell({ label, value }: { label: string; value: string }) {
   return (
     <div className="bg-white px-4 py-3">
-      <div className="text-slate-400 text-[10px] uppercase tracking-wide mb-1">
+      <div className="text-slate-400 text-[11px] mb-1">
         {label}
       </div>
       <p className="text-slate-900 text-sm font-semibold truncate">{value}</p>

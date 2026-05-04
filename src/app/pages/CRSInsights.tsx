@@ -163,7 +163,7 @@ export function CRSInsights() {
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                       <XAxis type="number" dataKey="commitment" domain={[0, maxVal]} fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                         <Label value="Aggregate Commitment (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                         <Label value="Aggregate Commitment (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={700} fill="#64748b" />
                       </XAxis>
                       <YAxis type="number" dataKey="disbursement" domain={[0, maxVal]} fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
                          <Label 
@@ -174,7 +174,6 @@ export function CRSInsights() {
                             fontSize={10} 
                             fontWeight={900} 
                             fill="#64748b" 
-                            className="uppercase tracking-[0.1em]" 
                             style={{ textAnchor: 'middle' }}
                          />
                       </YAxis>
@@ -200,7 +199,7 @@ export function CRSInsights() {
                     <ScatterChart margin={{ top: 20, right: 30, bottom: 60, left: 40 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                       <XAxis type="number" dataKey="volume" fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tickFormatter={(v) => crsFmt.usdM(v)}>
-                         <Label value="Portfolio Commitment Scale (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                         <Label value="Portfolio Commitment Scale (million USD)" position="bottom" offset={30} fontSize={10} fontWeight={700} fill="#64748b" />
                       </XAxis>
                       <YAxis type="number" dataKey="greenShare" fontSize={10} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} unit="%">
                          <Label 
@@ -211,7 +210,6 @@ export function CRSInsights() {
                             fontSize={10} 
                             fontWeight={900} 
                             fill="#64748b" 
-                            className="uppercase tracking-[0.1em]" 
                             style={{ textAnchor: 'middle' }}
                          />
                       </YAxis>
@@ -242,7 +240,7 @@ export function CRSInsights() {
                   <BarChart data={data.stackedData} layout="vertical" barSize={35} margin={{ left: 50, right: 30, bottom: 60 }}>
                     <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                     <XAxis type="number" fontSize={11} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tick={{ fill: '#64748b' }} tickFormatter={(v) => crsFmt.usdM(v)}>
-                       <Label value="Cumulative Portfolio Volume (million USD)" position="bottom" offset={40} fontSize={11} fontWeight={900} fill="#64748b" className="uppercase tracking-[0.1em]" />
+                       <Label value="Cumulative Portfolio Volume (million USD)" position="bottom" offset={40} fontSize={11} fontWeight={700} fill="#64748b" />
                     </XAxis>
                     <YAxis dataKey="label" type="category" width={220} fontSize={11} fontWeight={800} axisLine={{ stroke: '#cbd5e1' }} tickLine={false} tick={{ fill: '#475569' }}>
                        <Label 
@@ -253,7 +251,6 @@ export function CRSInsights() {
                           fontSize={11} 
                           fontWeight={900} 
                           fill="#64748b" 
-                          className="uppercase tracking-[0.1em]" 
                           style={{ textAnchor: 'middle' }}
                        />
                     </YAxis>
@@ -290,7 +287,7 @@ export function CRSInsights() {
                        verticalAlign="top" 
                        align="right" 
                        iconType="square" 
-                       wrapperStyle={{ paddingBottom: '40px', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }} 
+                       wrapperStyle={{ paddingBottom: '40px', fontSize: '11px', fontWeight: 600 }} 
                     />
                     {data.modes.map((mode, i) => (
                       <Bar key={mode} dataKey={mode} stackId="a" fill={COLORS[i % COLORS.length]} radius={0} />
