@@ -530,7 +530,7 @@ export function CRSDecade() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1120px] border-collapse">
               <thead>
-                <tr className="bg-slate-50/40 text-[12px] text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
                   {RECORD_COLUMNS.map((column) => (
                     <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
                       <button
@@ -633,14 +633,14 @@ export function CRSDecade() {
           {activeRecord && (
             <div className="h-full flex flex-col">
               <div className="bg-slate-900 p-10 text-white">
-                <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-bold uppercase tracking-widest">
+                <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-semibold">
                   Record detail
                 </span>
                 <h2 className="text-2xl text-white font-bold leading-tight mt-6 tracking-tight">{activeRecord.title}</h2>
               </div>
               <div className="flex-1 overflow-y-auto p-10 space-y-8">
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">UN Decade themes</p>
+                  <p className="text-[12px] font-medium text-slate-500 mb-3">UN Decade themes</p>
                   <div className="flex flex-wrap gap-2">{themeChips(activeRecord)}</div>
                 </div>
 
@@ -659,14 +659,14 @@ export function CRSDecade() {
                     ['Year', activeRecord.year],
                   ].map(([label, value]) => (
                     <div key={label}>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">{label}</p>
+                      <p className="text-[12px] font-medium text-slate-500">{label}</p>
                       <p className="text-[15px] text-slate-900 mt-1">{value || 'Not specified'}</p>
                     </div>
                   ))}
                 </div>
 
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">CRS marker hints</p>
+                  <p className="text-[12px] font-medium text-slate-500 mb-3">CRS marker hints</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       ['Mitigation', activeRecord.climate_mitigation],
@@ -695,7 +695,7 @@ export function CRSDecade() {
                 </div>
 
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">Description</p>
+                  <p className="text-[12px] font-medium text-slate-500 mb-3">Description</p>
                   <div className="rounded-2xl border border-slate-200 bg-white p-5">
                     {recordDescription(activeRecord) ? (
                       <p className="whitespace-pre-line text-[14px] leading-relaxed text-slate-700">
