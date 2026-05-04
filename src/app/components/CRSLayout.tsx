@@ -66,7 +66,7 @@ export function CRSLayout() {
       <div className="flex h-screen bg-[#F0F4F8] overflow-hidden">
         <aside className="w-60 flex-shrink-0 bg-[#002147] flex flex-col border-r border-white/5">
           <div className="px-5 py-5 border-b border-white/10">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-blue-300/60">Navigation</p>
+            <p className="text-[12px] font-semibold text-blue-200/70">Navigation</p>
           </div>
 
           <nav className="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
@@ -109,9 +109,6 @@ export function CRSLayout() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg font-semibold tracking-tight text-slate-900 xl:text-xl">Asia and the Pacific Transport Development Finance Explorer</p>
-                  <p className="mt-0.5 max-w-[780px] text-[12px] text-slate-500 xl:text-[13px]">
-                    An ATO visualization and analysis of OECD CRS transport-related funding to Asia and the Pacific
-                  </p>
                 </div>
               </div>
               <div className="hidden min-h-10 min-w-[120px] lg:block" aria-label="Title bar action area" />

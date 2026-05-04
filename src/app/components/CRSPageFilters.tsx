@@ -43,7 +43,7 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="mb-4 flex items-center justify-between gap-4">
         <div>
-          <p className="text-[13px] font-semibold uppercase tracking-widest text-slate-400">Filters</p>
+          <p className="text-[13px] font-semibold text-slate-500">Filters</p>
           {typeof recordCount === 'number' ? (
             <p className="mt-0.5 text-[14px] text-slate-500">
               Analyzing <span className="font-medium text-slate-900">{recordCount.toLocaleString()}</span> records in this view

@@ -114,9 +114,26 @@ export function CRSRecipientProfile() {
   const [recordSortDirection, setRecordSortDirection] = useState<SortDirection>('desc');
   const [recordColumnFilters, setRecordColumnFilters] = useState<RecipientRecordColumnFilters>(EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS);
 
+  const profileRecipientGroups = useMemo(() => {
+    const economyRecipients = new Set<string>();
+    const regionalRecipients = new Set<string>();
+    filteredFacts.forEach((fact) => {
+      if (!fact.recipient) return;
+      if (fact.recipient_scope === 'regional' || fact.recipient.includes(', regional')) {
+        regionalRecipients.add(fact.recipient);
+      } else {
+        economyRecipients.add(fact.recipient);
+      }
+    });
+    return [
+      { title: 'ATO Economies', options: [...economyRecipients].sort((a, b) => a.localeCompare(b)) },
+      { title: 'Asia Regional Recipients', options: [...regionalRecipients].sort((a, b) => a.localeCompare(b)) },
+    ].filter((group) => group.options.length > 0);
+  }, [filteredFacts]);
+
   const profileRecipientOptions = useMemo(
-    () => [...new Set(filteredFacts.map((fact) => fact.recipient).filter(Boolean))].sort((a, b) => a.localeCompare(b)),
-    [filteredFacts],
+    () => profileRecipientGroups.flatMap((group) => group.options),
+    [profileRecipientGroups],
   );
 
   useEffect(() => {
@@ -167,6 +184,7 @@ export function CRSRecipientProfile() {
   const financingSeries = useMemo(() => aggregateFacts(recipientFacts, (fact) => fact.flow).slice(0, 8), [recipientFacts]);
   const lowCarbonScreener = LOW_CARBON_SCREENER_BY_ECONOMY[selectedRecipient];
   const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
+  const activeFinanceLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
 
   const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
     switch (key) {
@@ -265,10 +283,14 @@ export function CRSRecipientProfile() {
               onChange={(event) => setSelectedRecipient(event.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[15px] text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
             >
-              {profileRecipientOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
+              {profileRecipientGroups.map((group) => (
+                <optgroup key={group.title} label={group.title}>
+                  {group.options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>
@@ -282,9 +304,8 @@ export function CRSRecipientProfile() {
           recordCount={recipientFacts.length}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} />
           <KPICard label="Donors" value={crsFmt.num(donorCount)} />
           <KPICard label="Agencies" value={crsFmt.num(agencyCount)} />
           <KPICard label="Records" value={crsFmt.num(stats.count)} />
@@ -329,6 +350,7 @@ export function CRSRecipientProfile() {
           measure={measure}
           title="Funding Flows"
           subtitle="Donor to agency to recipient pathways for the selected recipient."
+          sankeyOptions={{ focusedDonorLimit: 10, focusedAgencyLimit: 10, groupOtherNodes: true }}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -469,7 +491,7 @@ export function CRSRecipientProfile() {
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-slate-50/40 text-[12px] text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
                   {RECIPIENT_RECORD_COLUMNS.map((column) => (
                     <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
                       <button
@@ -547,7 +569,7 @@ export function CRSRecipientProfile() {
             {activeRecord && (
               <div className="h-full flex flex-col">
                 <div className="bg-slate-900 p-10 text-white">
-                  <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-bold uppercase tracking-widest">
+                  <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-semibold">
                     Record detail
                   </span>
                   <h2 className="text-2xl text-white font-bold leading-tight mt-6 tracking-tight">{activeRecord.title}</h2>
@@ -559,32 +581,32 @@ export function CRSRecipientProfile() {
                   </div>
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Donor</p>
+                      <p className="text-[12px] font-medium text-slate-500">Donor</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.donor}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Agency</p>
+                      <p className="text-[12px] font-medium text-slate-500">Agency</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.agency}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Recipient</p>
+                      <p className="text-[12px] font-medium text-slate-500">Recipient</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.recipient}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Flow</p>
+                      <p className="text-[12px] font-medium text-slate-500">Flow</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.flow}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Mode</p>
+                      <p className="text-[12px] font-medium text-slate-500">Mode</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.mode}</p>
                     </div>
                     <div>
-                      <p className="text-[12px] uppercase tracking-wider text-slate-400">Year</p>
+                      <p className="text-[12px] font-medium text-slate-500">Year</p>
                       <p className="text-[15px] text-slate-900 mt-1">{activeRecord.year}</p>
                     </div>
                   </div>
                   <div>
-                    <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">CRS marker hints</p>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">CRS marker hints</p>
                     <div className="flex flex-wrap gap-2">
                       <ThemeFlag active={activeRecord.climate_mitigation} label="Mitigation" />
                       <ThemeFlag active={activeRecord.climate_adaptation} label="Adaptation" />
@@ -595,7 +617,7 @@ export function CRSRecipientProfile() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[12px] uppercase tracking-wider text-slate-400 mb-3">Description</p>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">Description</p>
                     <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 text-[15px] leading-relaxed text-slate-700 whitespace-pre-wrap">
                       {activeRecord.description || activeRecord.short_description || 'Detailed descriptive metadata not available for this record.'}
                     </div>

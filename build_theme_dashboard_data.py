@@ -258,6 +258,7 @@ def main():
     mode_breakdown = {}
     sample_records = {}
     subtype_rows = []
+    all_records = {}
     emobility_sankey = {"nodes": [], "links": []}
     year_map = defaultdict(lambda: defaultdict(lambda: {"commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0}))
 
@@ -314,6 +315,24 @@ def main():
             subtype_rows = ranking_rows(subtype_counter, top=len(EMOBILITY_SUBTYPES))
             emobility_sankey = build_emobility_sankey(theme_rows)
 
+        all_records[theme_id] = [
+            {
+                "rowNumber": row["rowNumber"],
+                "year": row["year"],
+                "donor": row["donor"],
+                "recipient": row["recipient"],
+                "mode": row["mode"],
+                "flow": row["flow"],
+                "commitment_defl": round(row["commitment_defl"], 4),
+                "disbursement_defl": round(row["disbursement_defl"], 4),
+                "title": row["title"],
+                "description": row["description"][:360],
+                "tags": row["tags"][:5],
+                "needsReview": row["needsReview"],
+            }
+            for row in theme_rows
+        ]
+
         sample_records[theme_id] = [
             {
                 "rowNumber": row["rowNumber"],
@@ -321,6 +340,7 @@ def main():
                 "donor": row["donor"],
                 "recipient": row["recipient"],
                 "mode": row["mode"],
+                "flow": row["flow"],
                 "commitment_defl": round(row["commitment_defl"], 4),
                 "disbursement_defl": round(row["disbursement_defl"], 4),
                 "title": row["title"],
@@ -348,6 +368,7 @@ def main():
         "modeBreakdown": mode_breakdown,
         "emobilitySubtypes": subtype_rows,
         "emobilitySankey": emobility_sankey,
+        "records": all_records,
         "sampleRecords": sample_records,
     }
 
@@ -356,9 +377,9 @@ def main():
         "// Do not edit manually.\n\n"
         "export type ThemeId = 'e_mobility' | 'road_safety';\n\n"
         "export type ThemeRankingRow = { label: string; commitment: number; disbursement: number; commitment_defl: number; disbursement_defl: number; count: number };\n\n"
-        "export type ThemeRecord = { rowNumber: string; year: number | null; donor: string; recipient: string; mode: string; commitment_defl: number; disbursement_defl: number; title: string; description: string; tags: string[]; needsReview: boolean };\n\n"
+        "export type ThemeRecord = { rowNumber: string; year: number | null; donor: string; recipient: string; mode: string; flow: string; commitment_defl: number; disbursement_defl: number; title: string; description: string; tags: string[]; needsReview: boolean };\n\n"
         "export type ThemeSankeyNode = { id: string; name: string; role: 'donor' | 'subtag' | 'recipient'; totalValue: number; color?: string };\n\n"
-        "export type ThemeSankeyLink = { source: number; target: number; sourceName: string; targetName: string; value: number; color?: string };\n\n"
+        "export type ThemeSankeyLink = { source: number; target: number; sourceName: string; targetName: string; value: number; flowType?: string; color?: string };\n\n"
         "export type ThemeSankeyData = { nodes: ThemeSankeyNode[]; links: ThemeSankeyLink[] };\n\n"
         f"export const THEME_SUMMARIES = {json.dumps(payload['summaries'], ensure_ascii=False, indent=2)} as const;\n\n"
         f"export const THEME_YEAR_SERIES = {json.dumps(payload['yearSeries'], ensure_ascii=False, indent=2)};\n\n"
@@ -367,6 +388,7 @@ def main():
         f"export const THEME_MODE_BREAKDOWN: Record<ThemeId, ThemeRankingRow[]> = {json.dumps(payload['modeBreakdown'], ensure_ascii=False, indent=2)};\n\n"
         f"export const EMOBILITY_SUBTYPES: ThemeRankingRow[] = {json.dumps(payload['emobilitySubtypes'], ensure_ascii=False, indent=2)};\n\n"
         f"export const EMOBILITY_TECHNOLOGY_ENABLER_SANKEY: ThemeSankeyData = {json.dumps(payload['emobilitySankey'], ensure_ascii=False, indent=2)};\n\n"
+        f"export const THEME_RECORDS: Record<ThemeId, ThemeRecord[]> = {json.dumps(payload['records'], ensure_ascii=False, indent=2)};\n\n"
         f"export const THEME_SAMPLE_RECORDS: Record<ThemeId, ThemeRecord[]> = {json.dumps(payload['sampleRecords'], ensure_ascii=False, indent=2)};\n",
         encoding="utf-8",
     )

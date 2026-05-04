@@ -25,7 +25,7 @@ export function YearRangeSelector({ label, min, max, yearMin, yearMax, onChange 
 
   return (
     <div className="px-2 pb-2">
-      <label className="block text-[14px] font-semibold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">
+      <label className="block text-[14px] font-semibold text-slate-500 mb-1.5 ml-1">
         {label}
       </label>
       <div className="flex items-center gap-2">

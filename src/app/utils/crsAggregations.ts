@@ -3,6 +3,16 @@ import { CRS_SECTOR6_OPTIONS, getSustainabilityTags } from './crsFiltering';
 
 export type CRSMeasure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
 
+export type FlowSankeyOptions = {
+  topDonors?: number;
+  topAgencies?: number;
+  topRecipients?: number;
+  focusedDonorLimit?: number;
+  focusedAgencyLimit?: number;
+  focusedRecipientLimit?: number;
+  groupOtherNodes?: boolean;
+};
+
 type AggregateRow = {
   label: string;
   commitment: number;
@@ -360,26 +370,43 @@ export function buildCountryMapPoints(facts: CRSFact[]) {
 export function buildFlowSankeyData(
   facts: CRSFact[],
   measure: CRSMeasure,
-  topDonors = 6,
-  topAgencies = 8,
-  topRecipients = 10,
+  options: FlowSankeyOptions = {},
 ) {
+  const {
+    topDonors = 6,
+    topAgencies = 8,
+    topRecipients = 10,
+    focusedDonorLimit = 7,
+    focusedAgencyLimit = 6,
+    focusedRecipientLimit = 7,
+    groupOtherNodes = false,
+  } = options;
   const MIN_VISIBLE_FLOW_VALUE = 0.05;
   const scopedFacts = facts.filter((fact) => fact.recipient_scope === 'economy' || fact.recipient_scope === 'regional');
   const uniqueDonors = new Set(scopedFacts.map((fact) => fact.donor));
   const uniqueRecipients = new Set(scopedFacts.map((fact) => fact.recipient));
   const isRecipientFocus = uniqueRecipients.size === 1;
   const isDonorFocus = uniqueDonors.size === 1;
-  const donorLimit = isRecipientFocus ? 7 : isDonorFocus ? 1 : Math.min(topDonors, 5);
-  const agencyLimit = isRecipientFocus ? 6 : isDonorFocus ? 5 : Math.min(topAgencies, 6);
-  const recipientLimit = isRecipientFocus ? 1 : isDonorFocus ? 7 : Math.min(topRecipients, 8);
-  const donorTotals = aggregateFacts(scopedFacts, (fact) => fact.donor).slice(0, donorLimit);
-  const recipientTotals = aggregateFacts(scopedFacts, (fact) => fact.recipient).slice(0, recipientLimit);
+  const donorLimit = isRecipientFocus ? focusedDonorLimit : isDonorFocus ? 1 : topDonors;
+  const agencyLimit = isRecipientFocus || isDonorFocus ? focusedAgencyLimit : topAgencies;
+  const recipientLimit = isRecipientFocus ? 1 : isDonorFocus ? focusedRecipientLimit : topRecipients;
+  const donorTotalsRaw = aggregateFacts(scopedFacts, (fact) => fact.donor);
+  const recipientTotalsRaw = aggregateFacts(scopedFacts, (fact) => fact.recipient);
+  const donorTotals = donorTotalsRaw.slice(0, donorLimit);
+  const recipientTotals = recipientTotalsRaw.slice(0, recipientLimit);
 
   const donorSet = new Set(donorTotals.map((item) => item.label));
   const recipientSet = new Set(recipientTotals.map((item) => item.label));
-  const constrainedFacts = scopedFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
-  const tripletTotals = aggregateFacts(constrainedFacts, (fact) => `${fact.donor}|||${fact.agency}|||${fact.recipient}`);
+  const normalizeDonor = (donor: string) => donorSet.has(donor) ? donor : 'Other donors';
+  const normalizeRecipient = (recipient: string) => recipientSet.has(recipient) ? recipient : 'Other recipients';
+  const constrainedFacts = groupOtherNodes
+    ? scopedFacts
+    : scopedFacts.filter((fact) => donorSet.has(fact.donor) && recipientSet.has(fact.recipient));
+  const tripletTotals = aggregateFacts(constrainedFacts, (fact) => {
+    const donor = groupOtherNodes ? normalizeDonor(fact.donor) : fact.donor;
+    const recipient = groupOtherNodes ? normalizeRecipient(fact.recipient) : fact.recipient;
+    return `${donor}|||${fact.agency}|||${recipient}`;
+  });
   const selectedTriplets = new Set<string>();
   const addTriplets = (entries: typeof tripletTotals, limit: number) => {
     entries
@@ -389,7 +416,7 @@ export function buildFlowSankeyData(
       .forEach((item) => selectedTriplets.add(item.label));
   };
 
-  addTriplets(tripletTotals, isRecipientFocus ? 10 : isDonorFocus ? 10 : 12);
+  addTriplets(tripletTotals, groupOtherNodes ? tripletTotals.length : isRecipientFocus ? 10 : isDonorFocus ? 10 : 12);
 
   donorSet.forEach((donor) => {
     addTriplets(
@@ -405,26 +432,35 @@ export function buildFlowSankeyData(
     );
   });
 
-  const shortlistedFacts = constrainedFacts.filter((fact) => selectedTriplets.has(`${fact.donor}|||${fact.agency}|||${fact.recipient}`));
+  const shortlistedFacts = constrainedFacts.filter((fact) => {
+    const donor = groupOtherNodes ? normalizeDonor(fact.donor) : fact.donor;
+    const recipient = groupOtherNodes ? normalizeRecipient(fact.recipient) : fact.recipient;
+    return selectedTriplets.has(`${donor}|||${fact.agency}|||${recipient}`);
+  });
   const agencyTotals = aggregateFacts(shortlistedFacts, (fact) => fact.agency).slice(0, agencyLimit);
   const agencySet = new Set(agencyTotals.map((item) => item.label));
+  const normalizeAgency = (agency: string) => agencySet.has(agency) ? agency : 'Other agencies';
 
   const donorAgencyLinkMap = new Map<string, number>();
   const agencyRecipientLinkMap = new Map<string, number>();
 
   shortlistedFacts.forEach((fact) => {
-    const tripletKey = `${fact.donor}|||${fact.agency}|||${fact.recipient}`;
+    const donor = groupOtherNodes ? normalizeDonor(fact.donor) : fact.donor;
+    const agency = groupOtherNodes ? normalizeAgency(fact.agency) : fact.agency;
+    const recipient = groupOtherNodes ? normalizeRecipient(fact.recipient) : fact.recipient;
+    const tripletKey = `${donor}|||${fact.agency}|||${recipient}`;
     if (
-      !donorSet.has(fact.donor) ||
-      !agencySet.has(fact.agency) ||
-      !recipientSet.has(fact.recipient) ||
+      (!groupOtherNodes && !donorSet.has(fact.donor)) ||
+      (!groupOtherNodes && !agencySet.has(fact.agency)) ||
+      (!groupOtherNodes && !recipientSet.has(fact.recipient)) ||
       !selectedTriplets.has(tripletKey)
     ) {
       return;
     }
 
-    const donorAgencyKey = `${fact.donor}|||${fact.agency}`;
-    const agencyRecipientKey = `${fact.agency}|||${fact.recipient}`;
+    const donorAgencyKey = `${donor}|||${agency}`;
+    const flowType = fact.flow || 'Other Flow Types';
+    const agencyRecipientKey = `${agency}|||${recipient}|||${flowType}`;
     donorAgencyLinkMap.set(donorAgencyKey, (donorAgencyLinkMap.get(donorAgencyKey) ?? 0) + factValue(fact, measure));
     agencyRecipientLinkMap.set(agencyRecipientKey, (agencyRecipientLinkMap.get(agencyRecipientKey) ?? 0) + factValue(fact, measure));
   });
@@ -444,12 +480,13 @@ export function buildFlowSankeyData(
 
   const agencyRecipientLinks = [...agencyRecipientLinkMap.entries()]
     .map(([key, value]) => {
-      const [agency, recipient] = key.split('|||');
+      const [agency, recipient, flowType] = key.split('|||');
       return {
         sourceId: `agency::${agency}`,
         targetId: `recipient::${recipient}`,
         sourceName: agency,
         targetName: recipient,
+        flowType,
         value,
       };
     })
@@ -462,10 +499,34 @@ export function buildFlowSankeyData(
   ]);
   const activeRecipients = new Set(agencyRecipientLinks.map((link) => link.targetName));
 
+  const donorLabels = [
+    ...donorTotals.map((item) => item.label).filter((label) => activeDonors.has(label)),
+    ...(activeDonors.has('Other donors') ? ['Other donors'] : []),
+  ];
+  const agencyLabels = [
+    ...agencyTotals.map((item) => item.label).filter((label) => activeAgencies.has(label)),
+    ...(activeAgencies.has('Other agencies') ? ['Other agencies'] : []),
+  ];
+  const recipientLabels = [
+    ...recipientTotals.map((item) => item.label).filter((label) => activeRecipients.has(label)),
+    ...(activeRecipients.has('Other recipients') ? ['Other recipients'] : []),
+  ];
+
+  const nodeVisibleValue = (role: 'donor' | 'agency' | 'recipient', label: string) => {
+    const nodeId = `${role}::${label}`;
+    const outgoing = [...donorAgencyLinks, ...agencyRecipientLinks]
+      .filter((link) => link.sourceId === nodeId)
+      .reduce((sum, link) => sum + link.value, 0);
+    const incoming = [...donorAgencyLinks, ...agencyRecipientLinks]
+      .filter((link) => link.targetId === nodeId)
+      .reduce((sum, link) => sum + link.value, 0);
+    return Math.max(outgoing, incoming);
+  };
+
   const nodes = [
-    ...donorTotals.filter((item) => activeDonors.has(item.label)).map((item) => ({ id: `donor::${item.label}`, name: item.label, role: 'donor', globalValue: item[measure] })),
-    ...agencyTotals.filter((item) => activeAgencies.has(item.label)).map((item) => ({ id: `agency::${item.label}`, name: item.label, role: 'agency', globalValue: item[measure] })),
-    ...recipientTotals.filter((item) => activeRecipients.has(item.label)).map((item) => ({ id: `recipient::${item.label}`, name: item.label, role: 'recipient', globalValue: item[measure] })),
+    ...donorLabels.map((label) => ({ id: `donor::${label}`, name: label, role: 'donor', globalValue: nodeVisibleValue('donor', label) })),
+    ...agencyLabels.map((label) => ({ id: `agency::${label}`, name: label, role: 'agency', globalValue: nodeVisibleValue('agency', label) })),
+    ...recipientLabels.map((label) => ({ id: `recipient::${label}`, name: label, role: 'recipient', globalValue: nodeVisibleValue('recipient', label) })),
   ];
   const nodeIndex = new Map(nodes.map((node, index) => [node.id, index]));
 
@@ -478,6 +539,7 @@ export function buildFlowSankeyData(
       targetId: link.targetId,
       sourceName: link.sourceName,
       targetName: link.targetName,
+      flowType: 'flowType' in link ? link.flowType : undefined,
       value: link.value,
     }))
     .sort((a, b) => b.value - a.value);

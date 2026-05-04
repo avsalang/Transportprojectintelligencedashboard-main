@@ -26,7 +26,7 @@ export function TimeSlider({ label, min, max, yearMin, yearMax, onChange }: Time
   return (
     <div className="px-2 pb-2">
       <div className="flex items-center justify-between mb-3 ml-1">
-        <label className="text-[14px] font-semibold text-slate-400 uppercase tracking-widest">
+        <label className="text-[14px] font-semibold text-slate-500">
           {label}
         </label>
         <span className="text-[14px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full ring-1 ring-blue-500/10">

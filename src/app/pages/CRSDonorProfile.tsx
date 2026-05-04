@@ -26,6 +26,7 @@ const MODE_AREA_COLORS = {
 };
 
 const CURRENCY_AXIS_WIDTH = 76;
+const DEFAULT_DONOR = 'Asian Development Bank';
 
 export function CRSDonorProfile() {
   const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
@@ -39,7 +40,7 @@ export function CRSDonorProfile() {
   useEffect(() => {
     if (!donorOptions.length) return;
     if (!selectedDonor || !donorOptions.includes(selectedDonor)) {
-      setSelectedDonor(donorOptions[0]);
+      setSelectedDonor(donorOptions.includes(DEFAULT_DONOR) ? DEFAULT_DONOR : donorOptions[0]);
     }
   }, [donorOptions, selectedDonor]);
 
@@ -59,6 +60,7 @@ export function CRSDonorProfile() {
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(donorFacts), [donorFacts]);
   const financingSeries = useMemo(() => aggregateFacts(donorFacts, (fact) => fact.flow).slice(0, 8), [donorFacts]);
   const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
+  const activeFinanceLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
 
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
@@ -94,9 +96,8 @@ export function CRSDonorProfile() {
           recordCount={donorFacts.length}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} />
           <KPICard label="Recipients" value={crsFmt.num(donorRecipients)} />
           <KPICard label="Agencies" value={crsFmt.num(donorAgencies)} />
           <KPICard label="Records" value={crsFmt.num(stats.count)} />
@@ -141,6 +142,7 @@ export function CRSDonorProfile() {
           measure={measure}
           title="Funding Flows"
           subtitle="Donor to agency to recipient pathways for the selected donor."
+          sankeyOptions={{ focusedAgencyLimit: 10, focusedRecipientLimit: 10, groupOtherNodes: true }}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

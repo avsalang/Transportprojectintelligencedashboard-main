@@ -79,6 +79,8 @@ export function CRSOverview() {
   const lowCarbonRanking = useMemo(() => LOW_CARBON_SCREENER_RANKING, []);
   const lowCarbonRankingHeight = Math.max(620, lowCarbonRanking.length * 25 + 80);
   const measureLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
+  const activeFinanceLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
+  const activeFinanceSub = measure.includes('commitment') ? 'Total commitments in view' : 'Total disbursements in view';
 
   return (
     <div className="p-6 bg-slate-50/50 min-h-screen">
@@ -95,9 +97,8 @@ export function CRSOverview() {
           recordCount={filteredFacts.length}
         />
 
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-          <KPICard label="Commitments" value={crsFmt.usdM(stats.commitment_defl)} sub="Total commitments in view" />
-          <KPICard label="Disbursements" value={crsFmt.usdM(stats.disbursement_defl)} sub="Total disbursements in view" />
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} sub={activeFinanceSub} />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
           <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Funding sources in view" />
           <KPICard label="Records" value={crsFmt.num(stats.count)} sub="CRS transaction lines" />
@@ -177,6 +178,7 @@ export function CRSOverview() {
           measure={measure}
           title="Funding Flows"
           subtitle="Donor to agency to recipient pathways in the current filtered view."
+          sankeyOptions={{ topDonors: 10, topAgencies: 10, topRecipients: 10, groupOtherNodes: true }}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

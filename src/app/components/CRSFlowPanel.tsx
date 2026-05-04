@@ -1,12 +1,15 @@
 import { useMemo, useState } from 'react';
 import { ResponsiveContainer, Sankey } from 'recharts';
 import { crsFmt } from '../data/crsData';
-import { buildFlowSankeyData, type CRSMeasure } from '../utils/crsAggregations';
+import { buildFlowSankeyData, type CRSMeasure, type FlowSankeyOptions } from '../utils/crsAggregations';
+import { getFlowLegendItems, getFlowTypeColor, normalizeFlowType } from '../utils/flowTypeColors';
 import { wrapTickLabel } from './ChartTicks';
 
 const DONOR_COLORS = ['#0F766E', '#0EA5E9', '#2563EB', '#7C3AED', '#DB2777', '#EA580C', '#65A30D', '#0891B2'];
 const AGENCY_COLOR = '#60A5FA';
 const RECIPIENT_COLOR = '#10B981';
+const SANKEY_NODE_PADDING = 32;
+const SANKEY_LABEL_LINE_HEIGHT = 14;
 
 function getHoverCoordinate(entry: any, type: 'node' | 'link') {
   if (type === 'node') {
@@ -24,7 +27,9 @@ function buildHoverState(entry: any, type: 'node' | 'link', measure: CRSMeasure)
       y: coordinate.y,
       title: `${entry.sourceName} → ${entry.targetName}`,
       value: crsFmt.usdM(entry.value),
-      subtitle: measure.includes('commitment') ? 'Commitments' : 'Disbursements',
+      subtitle: entry.flowType
+        ? `${normalizeFlowType(entry.flowType)} · ${measure.includes('commitment') ? 'commitments' : 'disbursements'}`
+        : measure.includes('commitment') ? 'Commitments' : 'Disbursements',
     };
   }
 
@@ -60,7 +65,18 @@ function FlowNode(props: any) {
         strokeWidth={isActive ? 1.5 : 0}
         rx={3}
       />
-      <text x={labelX} y={y + height / 2} textAnchor={anchor} dominantBaseline="middle" fontSize={12} fill={isDimmed ? '#94A3B8' : '#334155'}>
+      <text
+        x={labelX}
+        y={y + height / 2}
+        textAnchor={anchor}
+        dominantBaseline="middle"
+        fontSize={12}
+        fill={isDimmed ? '#94A3B8' : '#334155'}
+        stroke="#FFFFFF"
+        strokeWidth={4}
+        strokeLinejoin="round"
+        paintOrder="stroke"
+      >
         {lines.map((line: string, lineIndex: number) => (
           <tspan
             key={`${payload?.name}-${lineIndex}`}
@@ -93,16 +109,28 @@ function FlowLink(props: any) {
   return <path {...rest} d={path} fill={payload?.color ?? '#8FB996'} fillOpacity={0.58} stroke="none" style={{ cursor: 'pointer' }} />;
 }
 
+function estimateSankeyColumnHeight(nodes: any[], role: 'donor' | 'agency' | 'recipient') {
+  const roleNodes = nodes.filter((node) => node.role === role);
+  if (!roleNodes.length) return 0;
+  const labelHeights = roleNodes.map((node) => {
+    const labelWidth = role === 'agency' ? 21 : 24;
+    return Math.max(38, wrapTickLabel(node.name ?? '', labelWidth).length * SANKEY_LABEL_LINE_HEIGHT + 12);
+  });
+  return labelHeights.reduce((sum, height) => sum + height, 0) + (roleNodes.length - 1) * SANKEY_NODE_PADDING + 60;
+}
+
 export function CRSFlowPanel({
   facts,
   measure,
   title = 'Funding Flows',
   subtitle = 'Donor to agency to recipient pathways in the current filtered view.',
+  sankeyOptions,
 }: {
   facts: any[];
   measure: CRSMeasure;
   title?: string;
   subtitle?: string;
+  sankeyOptions?: FlowSankeyOptions;
 }) {
   const [selectedDonor, setSelectedDonor] = useState<string | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<string | null>(null);
@@ -117,7 +145,7 @@ export function CRSFlowPanel({
   }, [facts, selectedAgency, selectedDonor, selectedRecipient]);
 
   const sankeyFacts = useMemo(() => flowFacts.filter((fact) => fact.recipient_scope === 'economy' || fact.recipient_scope === 'regional'), [flowFacts]);
-  const sankeyData = useMemo(() => buildFlowSankeyData(sankeyFacts, measure), [sankeyFacts, measure]);
+  const sankeyData = useMemo(() => buildFlowSankeyData(sankeyFacts, measure, sankeyOptions), [sankeyFacts, measure, sankeyOptions]);
 
   const coloredSankeyData = useMemo(() => {
     const visibleValueByNode = new Map<string, number>();
@@ -132,8 +160,8 @@ export function CRSFlowPanel({
     });
     const nodes = sankeyData.nodes.map((node, index) => ({
       ...node,
-      visibleValue: visibleValueByNode.get(node.id) ?? 0,
-      totalValue: totalValueByNode.get(node.id) ?? 0,
+      visibleValue: visibleValueByNode.get(node.id) ?? node.globalValue ?? 0,
+      totalValue: totalValueByNode.get(node.id) ?? node.globalValue ?? 0,
       color:
         node.role === 'donor'
           ? DONOR_COLORS[index % DONOR_COLORS.length]
@@ -141,12 +169,27 @@ export function CRSFlowPanel({
             ? AGENCY_COLOR
             : RECIPIENT_COLOR,
     }));
-    const links = sankeyData.links.map((link) => ({ ...link, color: nodes[link.source]?.color ?? DONOR_COLORS[0] }));
+    const links = sankeyData.links.map((link) => ({
+      ...link,
+      color: link.flowType ? getFlowTypeColor(link.flowType) : nodes[link.source]?.color ?? DONOR_COLORS[0],
+      flowType: link.flowType ? normalizeFlowType(link.flowType) : undefined,
+    }));
     return { ...sankeyData, nodes, links };
   }, [measure, sankeyData, sankeyFacts]);
 
+  const flowLegendItems = useMemo(
+    () => getFlowLegendItems(coloredSankeyData.links.map((link: any) => link.flowType)),
+    [coloredSankeyData.links],
+  );
+
   const activeSelectionLabel = selectedDonor ?? selectedAgency ?? selectedRecipient;
   const activeSelectionType = selectedDonor ? 'donor' : selectedAgency ? 'agency' : selectedRecipient ? 'recipient' : null;
+  const sankeyHeight = Math.max(
+    460,
+    estimateSankeyColumnHeight(coloredSankeyData.nodes, 'donor'),
+    estimateSankeyColumnHeight(coloredSankeyData.nodes, 'agency'),
+    estimateSankeyColumnHeight(coloredSankeyData.nodes, 'recipient'),
+  );
 
   const handleNodeSelect = (name?: string, type?: 'donor' | 'agency' | 'recipient') => {
     if (!name || !type) return;
@@ -178,8 +221,21 @@ export function CRSFlowPanel({
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-      <p className="text-slate-900 text-base font-semibold mb-1">{title}</p>
+      <p className="text-slate-900 text-lg font-semibold mb-1">{title}</p>
       <p className="text-slate-500 text-sm mb-4">{subtitle}</p>
+      {flowLegendItems.length ? (
+        <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-2">
+          <div className="mb-1 text-[10px] font-medium text-slate-400">Recipient-link colors: flow type</div>
+          <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1.5 text-[11px] leading-4 text-slate-500">
+            {flowLegendItems.map((item) => (
+              <span key={item.label} className="inline-flex items-center gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                {item.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
       {activeSelectionLabel ? (
         <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs text-emerald-700 border border-emerald-200">
           Showing only {activeSelectionType}: <span className="font-semibold">{activeSelectionLabel}</span>
@@ -187,11 +243,12 @@ export function CRSFlowPanel({
       ) : null}
       {sankeyData.links.length ? (
         <div className="relative">
-          <ResponsiveContainer width="100%" height={460}>
+          <ResponsiveContainer width="100%" height={sankeyHeight}>
             <Sankey
               data={coloredSankeyData}
-              nodePadding={26}
+              nodePadding={SANKEY_NODE_PADDING}
               nodeWidth={14}
+              sort={false}
               margin={{ top: 24, right: 320, left: 300, bottom: 24 }}
               node={nodeRenderer}
               link={<FlowLink />}
@@ -211,7 +268,7 @@ export function CRSFlowPanel({
           ) : null}
         </div>
       ) : (
-        <div className="h-[460px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-sm text-slate-500">
+        <div className="min-h-[460px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-sm text-slate-500">
           No funding flows are available for the current filters.
         </div>
       )}

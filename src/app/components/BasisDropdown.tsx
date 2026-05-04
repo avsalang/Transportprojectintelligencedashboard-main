@@ -36,7 +36,7 @@ export function BasisDropdown({ label = 'Basis', value, onChange, className = ''
   return (
     <div className={`relative ${className}`} ref={containerRef}>
       {label ? (
-        <label className="mb-1.5 ml-1 block text-[14px] font-semibold uppercase tracking-widest text-slate-400">
+        <label className="mb-1.5 ml-1 block text-[14px] font-semibold text-slate-500">
           {label}
         </label>
       ) : null}
