@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Area,
-  AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
   ResponsiveContainer,
@@ -69,7 +69,7 @@ export function CRSDonorProfile() {
           <div>
             <h1 className="text-2xl text-slate-900 tracking-tight">Donor Profile</h1>
             <p className="text-slate-500 mt-1">
-              Funding patterns, channels, and recipient concentration for a selected donor.
+              Finance patterns, channels, and recipient concentration for a selected donor.
             </p>
           </div>
           <div className="w-full xl:w-[420px]">
@@ -92,7 +92,7 @@ export function CRSDonorProfile() {
           filters={filters}
           setFilters={setFilters}
           resetFilters={resetFilters}
-          enabled={['year', 'recipient', 'agency', 'mode', 'sector', 'basis']}
+          enabled={['year', 'recipient', 'mode', 'sector', 'basis']}
           recordCount={donorFacts.length}
         />
 
@@ -100,29 +100,29 @@ export function CRSDonorProfile() {
           <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} />
           <KPICard label="Recipients" value={crsFmt.num(donorRecipients)} />
           <KPICard label="Agencies" value={crsFmt.num(donorAgencies)} />
-          <KPICard label="Records" value={crsFmt.num(stats.count)} />
+          <KPICard label="Project Records" value={crsFmt.num(stats.count)} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-slate-900 text-lg tracking-tight">Funding Over Time</h2>
+            <h2 className="text-slate-900 text-lg tracking-tight">Development Finance over Time</h2>
             <p className="text-slate-500 text-[14px] mt-1 mb-4">
-              Yearly {measureLabel} from the selected donor by transport mode.
+              Yearly {measureLabel} from the selected donor by transport mode, constant 2024 USD.
             </p>
             <div className="h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 8, bottom: 0 }}>
+                <BarChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 8, bottom: 0 }} barCategoryGap="8%">
                   <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" />
                   <XAxis dataKey="year" tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} />
                   <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
                   <Tooltip formatter={(value: number, name: string) => [crsFmt.usdM(value), name]} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Road" stackId="modes" stroke={MODE_AREA_COLORS.Road} fill={MODE_AREA_COLORS.Road} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Water" stackId="modes" stroke={MODE_AREA_COLORS.Water} fill={MODE_AREA_COLORS.Water} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Aviation" stackId="modes" stroke={MODE_AREA_COLORS.Aviation} fill={MODE_AREA_COLORS.Aviation} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Other" stackId="modes" stroke={MODE_AREA_COLORS.Other} fill={MODE_AREA_COLORS.Other} fillOpacity={0.72} strokeWidth={1.5} />
-                </AreaChart>
+                  <Bar dataKey="Rail" stackId="modes" fill={MODE_AREA_COLORS.Rail} maxBarSize={28} />
+                  <Bar dataKey="Road" stackId="modes" fill={MODE_AREA_COLORS.Road} maxBarSize={28} />
+                  <Bar dataKey="Water" stackId="modes" fill={MODE_AREA_COLORS.Water} maxBarSize={28} />
+                  <Bar dataKey="Aviation" stackId="modes" fill={MODE_AREA_COLORS.Aviation} maxBarSize={28} />
+                  <Bar dataKey="Other" stackId="modes" fill={MODE_AREA_COLORS.Other} maxBarSize={28} />
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -140,7 +140,7 @@ export function CRSDonorProfile() {
         <CRSFlowPanel
           facts={donorFacts}
           measure={measure}
-          title="Funding Flows"
+          title="Finance Flows"
           subtitle="Donor to agency to recipient pathways for the selected donor."
           sankeyOptions={{ focusedAgencyLimit: 10, focusedRecipientLimit: 10, groupOtherNodes: true }}
         />
@@ -156,7 +156,7 @@ export function CRSDonorProfile() {
           />
           <CRSRankingCard
             title="Transport Modes"
-            subtitle="Transport modes in the selected donor portfolio."
+            subtitle="Transport modes in the selected donor's selection."
             data={modeSeries}
             measure={measure}
             color="#8B5CF6"
@@ -169,9 +169,10 @@ export function CRSDonorProfile() {
             measure={measure}
             color="#F59E0B"
             maxChars={24}
+            footnote="Pre-defined tags based on the OECD CRS database."
           />
           <CRSRankingCard
-            title="Finance Flow Type"
+            title="Finance Flow Types"
             subtitle="Finance flow type by which development finance is provided."
             data={financingSeries}
             measure={measure}

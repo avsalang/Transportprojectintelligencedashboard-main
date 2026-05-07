@@ -3,7 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { CRSFilterProvider } from '../context/CRSFilterContext';
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Overview', exact: true },
+  { to: '/', label: 'Regional Overview', exact: true },
   { to: '/donor-profile', label: 'Donor Profile', exact: false },
   { to: '/recipient-profile', label: 'Recipient Profile', exact: false },
   { to: '/un-decade', label: 'UN Decade', exact: false },
@@ -109,6 +109,9 @@ export function CRSLayout() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-lg font-semibold tracking-tight text-slate-900 xl:text-xl">Asia and the Pacific Transport Development Finance Explorer</p>
+                  <p className="mt-0.5 text-[13px] italic text-slate-500">
+                    Tracking finance for low-carbon, resilient, safe, and inclusive transport
+                  </p>
                 </div>
               </div>
               <div className="hidden min-h-10 min-w-[120px] lg:block" aria-label="Title bar action area" />

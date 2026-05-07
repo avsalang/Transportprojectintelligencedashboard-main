@@ -58,7 +58,7 @@ export function CRSSankey({ data }: SankeyProps) {
             </div>
             <div className="space-y-2">
                <div className="flex justify-between items-center bg-slate-50 p-2 rounded-lg">
-                  <span className="text-[10px] text-slate-400">Global portfolio</span>
+                  <span className="text-[10px] text-slate-400">Global selection</span>
                   <span className="text-blue-600">{crsFmt.usdM(node.globalValue || 0)}</span>
                </div>
                <div className="flex justify-between items-center px-2">

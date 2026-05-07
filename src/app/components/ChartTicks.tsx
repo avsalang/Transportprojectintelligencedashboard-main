@@ -15,17 +15,23 @@ export function wrapTickLabel(value: string, maxChars = 16) {
   let current = '';
 
   words.forEach((word) => {
-    const next = current ? `${current} ${word}` : word;
-    if (next.length <= maxChars || !current) {
-      current = next;
-    } else {
-      lines.push(current);
-      current = word;
-    }
+    const pieces = word.length > maxChars
+      ? word.match(new RegExp(`.{1,${Math.max(1, maxChars)}}`, 'g')) ?? [word]
+      : [word];
+
+    pieces.forEach((piece) => {
+      const next = current ? `${current} ${piece}` : piece;
+      if (next.length <= maxChars || !current) {
+        current = next;
+      } else {
+        lines.push(current);
+        current = piece;
+      }
+    });
   });
 
   if (current) lines.push(current);
-  return lines.slice(0, 4);
+  return lines.slice(0, 5);
 }
 
 export function truncateTickLabel(value: string, maxChars = 22) {

@@ -121,7 +121,7 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
 
         {enabledSet.has('sector') ? (
           <CheckboxDropdown
-            label="CRS Tag"
+            label="Sustainability-related Tags"
             options={sectorOptions}
             selected={filters.sectors}
             onChange={(value) => setFilters((prev) => ({ ...prev, sectors: value }))}
@@ -140,6 +140,9 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
           />
         ) : null}
       </div>
+      <p className="mt-3 text-[12px] text-slate-500">
+        Amounts are shown in constant 2024 USD where applicable.
+      </p>
     </div>
   );
 }

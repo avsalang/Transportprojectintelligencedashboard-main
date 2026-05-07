@@ -1,7 +1,5 @@
 import { useMemo, useState } from 'react';
 import {
-  Area,
-  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
@@ -13,7 +11,7 @@ import {
   YAxis,
 } from 'recharts';
 import { KPICard } from '../components/KPICard';
-import { wrapTickLabel } from '../components/ChartTicks';
+import { wrapTickLabel, WrappedCategoryTick } from '../components/ChartTicks';
 import { YearRangeSelector } from '../components/YearRangeSelector';
 import { getFlowLegendItems, getFlowTypeColor, normalizeFlowType } from '../utils/flowTypeColors';
 import {
@@ -42,8 +40,8 @@ type ThemeSummary = (typeof THEME_SUMMARIES)[number];
 
 function usdM(value: number): string {
   if (!Number.isFinite(value)) return '-';
-  if (value >= 1000) return `$${(value / 1000).toFixed(1)}B`;
-  return `$${value.toFixed(1)}M`;
+  if (value >= 1000) return `$${(value / 1000).toFixed(0)}B`;
+  return `$${value.toFixed(0)}M`;
 }
 
 function num(value: number): string {
@@ -259,7 +257,20 @@ function SankeyNode(props: any) {
 }
 
 function SankeyLink(props: any) {
-  const { sourceX, targetX, sourceY, targetY, sourceControlX, targetControlX, linkWidth, payload, ...rest } = props;
+  const {
+    sourceX,
+    targetX,
+    sourceY,
+    targetY,
+    sourceControlX,
+    targetControlX,
+    linkWidth,
+    payload,
+    className,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+  } = props;
   const width = Math.max(linkWidth ?? 0, 1);
   const y0Top = sourceY - width / 2;
   const y0Bottom = sourceY + width / 2;
@@ -273,7 +284,18 @@ function SankeyLink(props: any) {
     'Z',
   ].join(' ');
 
-  return <path {...rest} d={path} fill={payload?.color ?? '#7DD3FC'} fillOpacity={0.42} stroke="none" />;
+  return (
+    <path
+      className={className}
+      d={path}
+      fill={payload?.color ?? '#7DD3FC'}
+      fillOpacity={0.42}
+      stroke="none"
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    />
+  );
 }
 
 function estimateThemeSankeyHeight(nodes: ThemeSankeyData['nodes']) {
@@ -380,14 +402,14 @@ function RankingChart({
   color: string;
   axisWidth?: number;
 }) {
-  const chartHeight = Math.max(330, data.length * 34 + 58);
+  const chartHeight = Math.max(330, data.length * 38 + 58);
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <p className="mb-1 text-base font-semibold text-slate-900">{title}</p>
       <p className="mb-4 text-sm text-slate-500">{subtitle}</p>
       <ResponsiveContainer width="100%" height={chartHeight}>
-        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 12, left: 12, bottom: 0 }} barCategoryGap={10}>
+        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 12, left: 12, bottom: 0 }} barCategoryGap={4}>
           <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
           <XAxis
             type="number"
@@ -400,7 +422,7 @@ function RankingChart({
             type="category"
             dataKey="label"
             width={axisWidth}
-            tick={{ fontSize: 12, fill: '#334155' }}
+            tick={<WrappedCategoryTick maxChars={22} fontSize={12} fill="#334155" lineHeight={13} />}
             tickLine={false}
             axisLine={false}
             interval={0}
@@ -454,18 +476,18 @@ function ThemeSection({ theme }: { theme: ThemeSummary }) {
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <KPICard label="Records" value={num(summary.recordCount)} />
+        <KPICard label="Project Records" value={num(summary.recordCount)} />
         <KPICard label="Commitments" value={usdM(summary.commitment_defl)} />
         <KPICard label="Disbursements" value={usdM(summary.disbursement_defl)} />
         <KPICard label="Recipients" value={num(summary.recipientCount)} sub="Recipient economies" />
-        <KPICard label="Donors" value={num(summary.donorCount)} sub="Funding sources" />
+        <KPICard label="Donors" value={num(summary.donorCount)} sub="Finance sources" />
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-        <p className="mb-1 text-base font-semibold text-slate-900">Funding Over Time</p>
-        <p className="mb-4 text-sm text-slate-500">Deflated commitments by year.</p>
+        <p className="mb-1 text-base font-semibold text-slate-900">Development Finance over Time</p>
+        <p className="mb-4 text-sm text-slate-500">Commitments by year, constant 2024 USD.</p>
         <ResponsiveContainer width="100%" height={320}>
-          <AreaChart data={series} margin={{ top: 10, right: 24, left: 8, bottom: 10 }}>
+          <BarChart data={series} margin={{ top: 10, right: 24, left: 8, bottom: 10 }} barCategoryGap="10%">
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
             <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#64748B' }} tickLine={false} axisLine={false} />
             <YAxis
@@ -478,29 +500,27 @@ function ThemeSection({ theme }: { theme: ThemeSummary }) {
             />
             <Tooltip content={<TooltipBox />} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
-            <Area
-              type="monotone"
+            <Bar
               dataKey="commitments"
               name={`${theme.shortLabel} commitments`}
-              stroke={theme.color}
               fill={theme.color}
-              fillOpacity={0.26}
-              strokeWidth={2}
+              fillOpacity={0.84}
+              maxBarSize={28}
             />
-          </AreaChart>
+          </BarChart>
         </ResponsiveContainer>
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RankingChart
           title="Top Recipients"
-          subtitle={`Largest ${theme.shortLabel.toLowerCase()} recipients by deflated commitments.`}
+          subtitle={`Largest ${theme.shortLabel.toLowerCase()} recipients by constant 2024 USD commitments.`}
           data={topRecipients}
           color={theme.color}
         />
         <RankingChart
           title="Top Donors"
-          subtitle={`Largest ${theme.shortLabel.toLowerCase()} funding sources by deflated commitments.`}
+          subtitle={`Largest ${theme.shortLabel.toLowerCase()} finance sources by constant 2024 USD commitments.`}
           data={topDonors}
           color={theme.color}
         />
@@ -509,7 +529,7 @@ function ThemeSection({ theme }: { theme: ThemeSummary }) {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RankingChart
           title="Transport Mode Mix"
-          subtitle="Theme funding grouped by CRS transport mode."
+          subtitle="Theme finance grouped by CRS transport mode."
           data={modeBreakdown}
           color={theme.color}
           axisWidth={210}

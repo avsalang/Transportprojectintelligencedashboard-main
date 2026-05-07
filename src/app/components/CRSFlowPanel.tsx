@@ -92,7 +92,20 @@ function FlowNode(props: any) {
 }
 
 function FlowLink(props: any) {
-  const { sourceX, targetX, sourceY, targetY, sourceControlX, targetControlX, linkWidth, payload, ...rest } = props;
+  const {
+    sourceX,
+    targetX,
+    sourceY,
+    targetY,
+    sourceControlX,
+    targetControlX,
+    linkWidth,
+    payload,
+    className,
+    onClick,
+    onMouseEnter,
+    onMouseLeave,
+  } = props;
   const width = Math.max(linkWidth ?? 0, 1);
   const y0Top = sourceY - width / 2;
   const y0Bottom = sourceY + width / 2;
@@ -106,7 +119,19 @@ function FlowLink(props: any) {
     'Z',
   ].join(' ');
 
-  return <path {...rest} d={path} fill={payload?.color ?? '#8FB996'} fillOpacity={0.58} stroke="none" style={{ cursor: 'pointer' }} />;
+  return (
+    <path
+      className={className}
+      d={path}
+      fill={payload?.color ?? '#8FB996'}
+      fillOpacity={0.58}
+      stroke="none"
+      style={{ cursor: 'pointer' }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    />
+  );
 }
 
 function estimateSankeyColumnHeight(nodes: any[], role: 'donor' | 'agency' | 'recipient') {
@@ -122,7 +147,7 @@ function estimateSankeyColumnHeight(nodes: any[], role: 'donor' | 'agency' | 're
 export function CRSFlowPanel({
   facts,
   measure,
-  title = 'Funding Flows',
+  title = 'Finance Flows',
   subtitle = 'Donor to agency to recipient pathways in the current filtered view.',
   sankeyOptions,
 }: {
@@ -269,7 +294,7 @@ export function CRSFlowPanel({
         </div>
       ) : (
         <div className="min-h-[460px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-sm text-slate-500">
-          No funding flows are available for the current filters.
+          No finance flows are available for the current filters.
         </div>
       )}
     </div>

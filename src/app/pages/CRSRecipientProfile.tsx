@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  Area,
-  AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   Legend,
   PolarAngleAxis,
@@ -61,6 +61,13 @@ const EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS: RecipientRecordColumnFilters = {
   mode: '',
   amount: '',
 };
+
+const RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'agency', 'mode'] as const;
+type RecipientRecordDropdownFilterKey = typeof RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS[number];
+
+function isRecipientRecordDropdownFilter(key: RecipientRecordSortKey): key is RecipientRecordDropdownFilterKey {
+  return (RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS as readonly RecipientRecordSortKey[]).includes(key);
+}
 
 function ThemeFlag({ active, label }: { active: number; label: string }) {
   return (
@@ -209,14 +216,30 @@ export function CRSRecipientProfile() {
     return recordColumnText(record, key).toLowerCase();
   };
 
+  const profileRecords = useMemo(
+    () => records.filter((record) => matchesCRSFilters(record, filters, ATO_ECONOMIES) && record.recipient === selectedRecipient),
+    [filters, records, selectedRecipient],
+  );
+
+  const recordFilterOptions = useMemo<Record<RecipientRecordDropdownFilterKey, string[]>>(() => {
+    const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const years = [...new Set(profileRecords.map((record) => String(record.year ?? '')).filter(Boolean))]
+      .sort((a, b) => Number(b) - Number(a));
+
+    return {
+      year: years,
+      donor: unique(profileRecords.map((record) => record.donor)),
+      agency: unique(profileRecords.map((record) => record.agency)),
+      mode: unique(profileRecords.map((record) => record.mode)),
+    };
+  }, [profileRecords]);
+
   const filteredRecords = useMemo(() => {
     const query = recordSearch.trim().toLowerCase();
     const activeColumnFilters = Object.entries(recordColumnFilters)
       .map(([key, value]) => [key as RecipientRecordSortKey, value.trim().toLowerCase()] as const)
       .filter(([, value]) => value.length > 0);
-    const result = records.filter((record) => {
-      if (!matchesCRSFilters(record, filters, ATO_ECONOMIES)) return false;
-      if (record.recipient !== selectedRecipient) return false;
+    const result = profileRecords.filter((record) => {
       const matchesSearch = !query || (
         (record.title || '').toLowerCase().includes(query) ||
         (record.description || record.short_description || '').toLowerCase().includes(query) ||
@@ -239,7 +262,7 @@ export function CRSRecipientProfile() {
       }
       return String(aValue).localeCompare(String(bValue)) * direction;
     });
-  }, [filters, measure, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey, records, selectedRecipient]);
+  }, [measure, profileRecords, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey]);
 
   useEffect(() => {
     setPage(1);
@@ -273,7 +296,7 @@ export function CRSRecipientProfile() {
           <div>
             <h1 className="text-2xl text-slate-900 tracking-tight">Recipient Profile</h1>
             <p className="text-slate-500 mt-1">
-              Funding pathways, donor concentration, and source records for a selected recipient.
+              Finance pathways, donor concentration, and source records for a selected recipient.
             </p>
           </div>
           <div className="w-full xl:w-[420px]">
@@ -308,36 +331,36 @@ export function CRSRecipientProfile() {
           <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} />
           <KPICard label="Donors" value={crsFmt.num(donorCount)} />
           <KPICard label="Agencies" value={crsFmt.num(agencyCount)} />
-          <KPICard label="Records" value={crsFmt.num(stats.count)} />
+          <KPICard label="Project Records" value={crsFmt.num(stats.count)} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-            <h2 className="text-slate-900 text-lg tracking-tight">Funding Over Time</h2>
+            <h2 className="text-slate-900 text-lg tracking-tight">Development Finance over Time</h2>
             <p className="text-slate-500 text-[14px] mt-1 mb-4">
-              Yearly {measureLabel} received by the selected recipient by transport mode.
+              Yearly {measureLabel} received by the selected recipient by transport mode, constant 2024 USD.
             </p>
             <div className="h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 8, bottom: 0 }}>
+                <BarChart data={yearlyModeStack} margin={{ top: 8, right: 10, left: 8, bottom: 0 }} barCategoryGap="8%">
                   <CartesianGrid stroke="#E2E8F0" strokeDasharray="3 3" />
                   <XAxis dataKey="year" tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} />
                   <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tick={{ fill: '#64748B', fontSize: 11 }} tickLine={false} axisLine={false} tickFormatter={(value) => crsFmt.usdM(value)} />
                   <Tooltip formatter={(value: number, name: string) => [crsFmt.usdM(value), name]} />
                   <Legend wrapperStyle={{ fontSize: 12 }} />
-                  <Area type="monotone" dataKey="Rail" stackId="modes" stroke={MODE_AREA_COLORS.Rail} fill={MODE_AREA_COLORS.Rail} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Road" stackId="modes" stroke={MODE_AREA_COLORS.Road} fill={MODE_AREA_COLORS.Road} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Water" stackId="modes" stroke={MODE_AREA_COLORS.Water} fill={MODE_AREA_COLORS.Water} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Aviation" stackId="modes" stroke={MODE_AREA_COLORS.Aviation} fill={MODE_AREA_COLORS.Aviation} fillOpacity={0.72} strokeWidth={1.5} />
-                  <Area type="monotone" dataKey="Other" stackId="modes" stroke={MODE_AREA_COLORS.Other} fill={MODE_AREA_COLORS.Other} fillOpacity={0.72} strokeWidth={1.5} />
-                </AreaChart>
+                  <Bar dataKey="Rail" stackId="modes" fill={MODE_AREA_COLORS.Rail} maxBarSize={28} />
+                  <Bar dataKey="Road" stackId="modes" fill={MODE_AREA_COLORS.Road} maxBarSize={28} />
+                  <Bar dataKey="Water" stackId="modes" fill={MODE_AREA_COLORS.Water} maxBarSize={28} />
+                  <Bar dataKey="Aviation" stackId="modes" fill={MODE_AREA_COLORS.Aviation} maxBarSize={28} />
+                  <Bar dataKey="Other" stackId="modes" fill={MODE_AREA_COLORS.Other} maxBarSize={28} />
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           <CRSRankingCard
             title="Top Donors"
-            subtitle="Largest donors in the selected recipient portfolio."
+            subtitle="Largest donors in the selected recipient's selection."
             data={donorSeries}
             measure={measure}
             color="#0F766E"
@@ -348,7 +371,7 @@ export function CRSRecipientProfile() {
         <CRSFlowPanel
           facts={recipientFacts}
           measure={measure}
-          title="Funding Flows"
+          title="Finance Flows"
           subtitle="Donor to agency to recipient pathways for the selected recipient."
           sankeyOptions={{ focusedDonorLimit: 10, focusedAgencyLimit: 10, groupOtherNodes: true }}
         />
@@ -364,7 +387,7 @@ export function CRSRecipientProfile() {
           />
           <CRSRankingCard
             title="Transport Modes"
-            subtitle="Transport modes in the selected recipient portfolio."
+            subtitle="Transport modes in the selected recipient's selection."
             data={modeSeries}
             measure={measure}
             color="#8B5CF6"
@@ -377,9 +400,10 @@ export function CRSRecipientProfile() {
             measure={measure}
             color="#F59E0B"
             maxChars={24}
+            footnote="Pre-defined tags based on the OECD CRS database."
           />
           <CRSRankingCard
-            title="Finance Flow Type"
+            title="Finance Flow Types"
             subtitle="Finance flow type by which development finance is provided."
             data={financingSeries}
             measure={measure}
@@ -426,7 +450,7 @@ export function CRSRecipientProfile() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h2 className="text-slate-900 text-lg tracking-tight">Records</h2>
+              <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
               <p className="text-slate-500 text-[14px] mt-1">
                 Source transactions behind the selected recipient profile.
               </p>
@@ -437,7 +461,7 @@ export function CRSRecipientProfile() {
                 <input
                   value={recordSearch}
                   onChange={(event) => setRecordSearch(event.target.value)}
-                  placeholder="Search records"
+                  placeholder="Search project records"
                   className="bg-transparent border-none focus:ring-0 text-[14px] w-48 placeholder:text-slate-400"
                 />
               </div>
@@ -510,19 +534,41 @@ export function CRSRecipientProfile() {
                 <tr className="border-b border-slate-200 bg-slate-50/40">
                   {RECIPIENT_RECORD_COLUMNS.map((column) => (
                     <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
-                      <input
-                        value={recordColumnFilters[column.key]}
-                        onChange={(event) =>
-                          setRecordColumnFilters((current) => ({
-                            ...current,
-                            [column.key]: event.target.value,
-                          }))
-                        }
-                        placeholder={`Filter ${column.label.toLowerCase()}`}
-                        className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
-                          column.align === 'right' ? 'text-right' : 'text-left'
-                        }`}
-                      />
+                      {column.key === 'amount' ? (
+                        <div className="h-8" aria-hidden="true" />
+                      ) : isRecipientRecordDropdownFilter(column.key) ? (
+                        <select
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+                          <option value="">All {column.label}</option>
+                          {recordFilterOptions[column.key].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          placeholder={`Filter ${column.label.toLowerCase()}`}
+                          className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                            column.align === 'right' ? 'text-right' : 'text-left'
+                          }`}
+                        />
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -531,7 +577,7 @@ export function CRSRecipientProfile() {
                 {pagedRecords.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-20 text-center text-slate-400">
-                      No records match the current profile and search.
+                      No project records match the current profile and search.
                     </td>
                   </tr>
                 ) : (

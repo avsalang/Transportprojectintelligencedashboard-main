@@ -10,8 +10,6 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  Area,
-  AreaChart,
 } from 'recharts';
 import { Check, ChevronDown, ChevronUp, Circle, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
@@ -75,7 +73,7 @@ function DonorPortfolioDividers({ yAxisMap, offset, data }: any) {
   );
 }
 
-type RecordSortKey = 'year' | 'record' | 'donor' | 'recipient' | 'mode' | 'themes' | 'amount';
+type RecordSortKey = 'year' | 'record' | 'donor' | 'agency' | 'recipient' | 'mode' | 'themes' | 'amount';
 type SortDirection = 'asc' | 'desc';
 type RecordColumnFilters = Record<RecordSortKey, string>;
 
@@ -83,6 +81,7 @@ const RECORD_COLUMNS: Array<{ key: RecordSortKey; label: string; align?: 'right'
   { key: 'year', label: 'Year' },
   { key: 'record', label: 'Record' },
   { key: 'donor', label: 'Donor' },
+  { key: 'agency', label: 'Agency' },
   { key: 'recipient', label: 'Recipient' },
   { key: 'mode', label: 'Mode' },
   { key: 'themes', label: 'UN Decade Themes' },
@@ -93,11 +92,19 @@ const EMPTY_RECORD_COLUMN_FILTERS: RecordColumnFilters = {
   year: '',
   record: '',
   donor: '',
+  agency: '',
   recipient: '',
   mode: '',
   themes: '',
   amount: '',
 };
+
+const RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'agency', 'mode'] as const;
+type RecordDropdownFilterKey = typeof RECORD_DROPDOWN_FILTER_KEYS[number];
+
+function isRecordDropdownFilter(key: RecordSortKey): key is RecordDropdownFilterKey {
+  return (RECORD_DROPDOWN_FILTER_KEYS as readonly RecordSortKey[]).includes(key);
+}
 
 function themeColor(label: string) {
   const theme = CRS_DECADE_THEMES.find((item) => item.label === label);
@@ -206,6 +213,8 @@ export function CRSDecade() {
         return [record.title, record.purpose, record.short_description, record.long_description].filter(Boolean).join(' ');
       case 'donor':
         return record.donor;
+      case 'agency':
+        return record.agency;
       case 'recipient':
         return record.recipient;
       case 'mode':
@@ -221,6 +230,18 @@ export function CRSDecade() {
     if (key === 'amount') return record[measure] ?? 0;
     return recordColumnText(record, key).toLowerCase();
   };
+  const recordFilterOptions = useMemo<Record<RecordDropdownFilterKey, string[]>>(() => {
+    const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const years = [...new Set(filteredRecords.map((record) => String(record.year ?? '')).filter(Boolean))]
+      .sort((a, b) => Number(b) - Number(a));
+
+    return {
+      year: years,
+      donor: unique(filteredRecords.map((record) => record.donor)),
+      agency: unique(filteredRecords.map((record) => record.agency)),
+      mode: unique(filteredRecords.map((record) => record.mode)),
+    };
+  }, [filteredRecords]);
   const fullListRecords = useMemo(() => {
     const query = recordSearch.trim().toLowerCase();
     const activeColumnFilters = Object.entries(recordColumnFilters)
@@ -347,11 +368,11 @@ export function CRSDecade() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <KPICard label="Screened Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />
-          <KPICard label="Aligned Records" value={crsFmt.num(stats.taggedCount)} sub={`${taggedShare.toFixed(1)}% with at least one theme`} />
-          <KPICard label="Aligned Value" value={crsFmt.usdM(stats.taggedMeasure)} sub={`Tagged ${activeMeasureLabel}`} />
+          <KPICard label="Screened Project Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />
+          <KPICard label="Aligned Project Records" value={crsFmt.num(stats.taggedCount)} sub={`${taggedShare.toFixed(1)}% with at least one theme`} />
+          <KPICard label="Aligned Value" value={crsFmt.usdM(stats.taggedMeasure)} sub={`Tagged ${activeMeasureLabel}, constant 2024 USD`} />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
-          <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Funding sources in view" />
+          <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Finance sources in view" />
           <KPICard label="Focus Areas" value={crsFmt.num(CRS_DECADE_THEMES.length)} sub="UN Decade themes" />
         </div>
 
@@ -364,7 +385,7 @@ export function CRSDecade() {
               </p>
             </div>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={themeSeries} layout="vertical" margin={{ top: 0, right: 20, left: 42, bottom: 0 }} barCategoryGap={12}>
+              <BarChart data={themeSeries} layout="vertical" margin={{ top: 0, right: 20, left: 42, bottom: 0 }} barCategoryGap={6}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
                 <XAxis type="number" tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
                 <YAxis type="category" dataKey="label" width={190} tick={{ fontSize: 11, fill: '#334155' }} axisLine={false} tickLine={false} />
@@ -405,7 +426,7 @@ export function CRSDecade() {
           <div className="mb-5">
             <h2 className="text-slate-900 text-base font-semibold">Annual Focus Area Trends</h2>
             <p className="text-slate-500 text-[13px] mt-1">
-              Each panel shows annual tagged {activeMeasureLabel} for one UN Decade focus area.
+              Each panel shows annual tagged {activeMeasureLabel} for one UN Decade focus area, constant 2024 USD.
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
@@ -416,20 +437,18 @@ export function CRSDecade() {
                   <h3 className="text-[13px] font-semibold text-slate-800">{theme.label}</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={190}>
-                  <AreaChart data={trend} margin={{ top: 6, right: 8, left: 8, bottom: 0 }}>
+                  <BarChart data={trend} margin={{ top: 6, right: 8, left: 8, bottom: 0 }} barCategoryGap="10%">
                     <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
                     <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
                     <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 10, fill: '#64748B' }} axisLine={false} tickLine={false} />
                     <Tooltip content={<SingleValueTooltip measureLabel={activeMeasureTitle} />} />
-                    <Area
-                      type="monotone"
+                    <Bar
                       dataKey={theme.label}
-                      stroke={THEME_COLORS[theme.id]}
                       fill={THEME_COLORS[theme.id]}
-                      fillOpacity={0.18}
-                      strokeWidth={2}
+                      fillOpacity={0.82}
+                      maxBarSize={22}
                     />
-                  </AreaChart>
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             ))}
@@ -444,7 +463,7 @@ export function CRSDecade() {
             </p>
           </div>
           <ResponsiveContainer width="100%" height={390}>
-            <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 8, bottom: 0 }}>
+            <BarChart data={modeThemeMatrix} margin={{ top: 10, right: 18, left: 8, bottom: 0 }} barCategoryGap="12%" barGap={3}>
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
               <XAxis dataKey="mode" tick={{ fontSize: 12, fill: '#334155' }} axisLine={false} tickLine={false} />
               <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
@@ -459,9 +478,9 @@ export function CRSDecade() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
           <div className="mb-5">
-            <h2 className="text-slate-900 text-base font-semibold">Focus Area Portfolio of Top Donors</h2>
+            <h2 className="text-slate-900 text-base font-semibold">Focus Area Selection of Top Donors</h2>
             <p className="text-slate-500 text-[13px] mt-1">
-              Clustered bars compare the UN Decade focus areas represented in each top donor portfolio.
+              Clustered bars compare the UN Decade focus areas represented in each top donor selection.
             </p>
           </div>
           <ResponsiveContainer width="100%" height={760}>
@@ -469,7 +488,7 @@ export function CRSDecade() {
               data={donorThemePortfolio}
               layout="vertical"
               margin={{ top: 0, right: 18, left: 72, bottom: 0 }}
-              barCategoryGap={24}
+              barCategoryGap={16}
               barGap={3}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -488,7 +507,7 @@ export function CRSDecade() {
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h2 className="text-slate-900 text-lg tracking-tight">Records</h2>
+              <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
               <p className="text-slate-500 text-[14px] mt-1">
                 CRS transaction lines in the current filtered view. Select a row to view UN Decade tagging details.
               </p>
@@ -499,7 +518,7 @@ export function CRSDecade() {
                 <input
                   value={recordSearch}
                   onChange={(event) => setRecordSearch(event.target.value)}
-                  placeholder="Search records"
+                  placeholder="Search project records"
                   className="bg-transparent border-none focus:ring-0 text-[14px] w-48 placeholder:text-slate-400"
                 />
               </div>
@@ -528,7 +547,7 @@ export function CRSDecade() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1120px] border-collapse">
+            <table className="w-full min-w-[1280px] border-collapse">
               <thead>
                 <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
                   {RECORD_COLUMNS.map((column) => (
@@ -549,19 +568,41 @@ export function CRSDecade() {
                 <tr className="border-b border-slate-200 bg-slate-50/40">
                   {RECORD_COLUMNS.map((column) => (
                     <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
-                      <input
-                        value={recordColumnFilters[column.key]}
-                        onChange={(event) =>
-                          setRecordColumnFilters((current) => ({
-                            ...current,
-                            [column.key]: event.target.value,
-                          }))
-                        }
-                        placeholder={`Filter ${column.label.toLowerCase()}`}
-                        className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
-                          column.align === 'right' ? 'text-right' : 'text-left'
-                        }`}
-                      />
+                      {column.key === 'amount' ? (
+                        <div className="h-8" aria-hidden="true" />
+                      ) : isRecordDropdownFilter(column.key) ? (
+                        <select
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+                          <option value="">All {column.label}</option>
+                          {recordFilterOptions[column.key].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          placeholder={`Filter ${column.label.toLowerCase()}`}
+                          className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                            column.align === 'right' ? 'text-right' : 'text-left'
+                          }`}
+                        />
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -569,8 +610,8 @@ export function CRSDecade() {
               <tbody className="divide-y divide-slate-100">
                 {pagedRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-20 text-center text-slate-400">
-                      No records match the current filters and search.
+                    <td colSpan={8} className="px-6 py-20 text-center text-slate-400">
+                      No project records match the current filters and search.
                     </td>
                   </tr>
                 ) : (
@@ -588,6 +629,7 @@ export function CRSDecade() {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-[14px] text-slate-600">{record.donor}</td>
+                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.agency}</td>
                       <td className="px-6 py-4 text-[14px] text-slate-600">{record.recipient}</td>
                       <td className="px-6 py-4 text-[14px] text-slate-600">{record.mode}</td>
                       <td className="px-6 py-4">
@@ -605,7 +647,7 @@ export function CRSDecade() {
           <div className="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <p className="text-[13px] text-slate-500">
               Showing {fullListRecords.length ? (page - 1) * rowsPerPage + 1 : 0}-
-              {Math.min(page * rowsPerPage, fullListRecords.length)} of {fullListRecords.length.toLocaleString()} records
+              {Math.min(page * rowsPerPage, fullListRecords.length)} of {fullListRecords.length.toLocaleString()} project records
             </p>
             <div className="flex items-center gap-2 text-[13px] text-slate-500">
               <button

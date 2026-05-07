@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import maplibregl, { GeoJSONSource, LngLatBounds } from 'maplibre-gl';
-import { ATO_STYLE_URL, atoMapFallbackStyle } from '../map/atoMapStyle';
+import { atoMapFallbackStyle } from '../map/atoMapStyle';
 
 type MapViewMode = 'points' | 'heatmap';
 type Measure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
@@ -27,6 +27,10 @@ function pointValue(point: CRSCountryPoint, measure: Measure) {
   return point[measure] ?? 0;
 }
 
+function normalizeAsiaPacificLng(lng: number) {
+  return lng < -25 ? lng + 360 : lng;
+}
+
 function buildFeatureCollection(points: CRSCountryPoint[], measure: Measure) {
   const values = points.map((point) => pointValue(point, measure));
   const maxValue = Math.max(...values, 1);
@@ -36,7 +40,7 @@ function buildFeatureCollection(points: CRSCountryPoint[], measure: Measure) {
       type: 'Feature' as const,
       geometry: {
         type: 'Point' as const,
-        coordinates: [point.lng, point.lat],
+        coordinates: [normalizeAsiaPacificLng(point.lng), point.lat],
       },
       properties: {
         recipient: point.recipient,
@@ -95,9 +99,9 @@ export function StyledCRSCountryMap({
 
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: ATO_STYLE_URL,
-      center: [95, 18],
-      zoom: 2,
+      style: JSON.parse(JSON.stringify(atoMapFallbackStyle)),
+      center: [115, 13],
+      zoom: 2.15,
       attributionControl: true,
     });
 
@@ -187,7 +191,7 @@ export function StyledCRSCountryMap({
       const props = feature.properties as any;
       popupRef.current
         .setLngLat((feature.geometry as any).coordinates.slice())
-        .setHTML(`<div style="font-size:12px;line-height:1.4"><div style="font-weight:600;margin-bottom:2px">${props.recipient}</div><div>${props.region}</div><div>${measure.includes('commitment') ? 'Commitment' : 'Disbursement'}: $${Number(props.value).toFixed(1)}M</div></div>`)
+        .setHTML(`<div style="font-size:12px;line-height:1.4"><div style="font-weight:600;margin-bottom:2px">${props.recipient}</div><div>${props.region}</div><div>${measure.includes('commitment') ? 'Commitment' : 'Disbursement'}: $${Number(props.value).toFixed(0)}M, constant 2024 USD</div></div>`)
         .addTo(map);
     });
 
