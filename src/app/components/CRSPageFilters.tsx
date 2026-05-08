@@ -12,10 +12,9 @@ type CRSPageFiltersProps = {
   setFilters: (updater: (prev: CRSFilters) => CRSFilters) => void;
   resetFilters: () => void;
   enabled: FilterKey[];
-  recordCount?: number;
 };
 
-export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, recordCount }: CRSPageFiltersProps) {
+export function CRSPageFilters({ filters, setFilters, resetFilters, enabled }: CRSPageFiltersProps) {
   const { donorOptions, agencyOptions, recipientOptions, modeOptions, flowOptions, sectorOptions } = useCRSFilters();
   const enabledSet = new Set(enabled);
   const activeCount =
@@ -44,11 +43,6 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
       <div className="mb-4 flex items-center justify-between gap-4">
         <div>
           <p className="text-[13px] font-semibold text-slate-500">Filters</p>
-          {typeof recordCount === 'number' ? (
-            <p className="mt-0.5 text-[14px] text-slate-500">
-              Analyzing <span className="font-medium text-slate-900">{recordCount.toLocaleString()}</span> records in this view
-            </p>
-          ) : null}
         </div>
         {activeCount > 0 ? (
           <button

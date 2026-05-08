@@ -1,5 +1,6 @@
 import csv
 import json
+import re
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -9,6 +10,20 @@ WORKSPACE = ROOT.parent
 EMOBILITY_CSV = WORKSPACE / "emobility_review_batches_completed" / "crs_emobility_tagged_records_final.csv"
 ROAD_SAFETY_CSV = WORKSPACE / "crs_road_safety_hits_v2.csv"
 OUT_TS = ROOT / "src" / "app" / "data" / "themeData.ts"
+ATO_ECONOMIES_TS = ROOT / "src" / "app" / "data" / "atoEconomies.ts"
+
+RECIPIENT_ALIAS_MAP = {
+    "China": "People's Republic of China",
+    "China (People's Republic of)": "People's Republic of China",
+    "Korea": "Republic of Korea",
+    "Lao PDR": "Lao People's Democratic Republic",
+    "Laos": "Lao People's Democratic Republic",
+    "Turkey": "Türkiye",
+    "Turkiye": "Türkiye",
+    "Vietnam": "Viet Nam",
+}
+
+ATO_REGIONAL_TERMS = ("asia", "pacific", "oceania")
 
 THEMES = {
     "e_mobility": {
@@ -48,6 +63,33 @@ EMOBILITY_SUBTYPES = [
 def clean(value):
     text = str(value or "").strip()
     return text
+
+
+def load_ato_economies():
+    text = ATO_ECONOMIES_TS.read_text(encoding="utf-8")
+    return set(re.findall(r'"([^"]+)"', text))
+
+
+def normalize_recipient(value):
+    recipient = clean(value)
+    return RECIPIENT_ALIAS_MAP.get(recipient, recipient)
+
+
+def is_ato_scoped_recipient(recipient, scope, region_detail="", region=""):
+    recipient = normalize_recipient(recipient)
+    scope = clean(scope).lower()
+    if scope == "economy" or not scope:
+        if recipient in ATO_ECONOMIES:
+            return True
+
+    regional_text = " ".join(
+        [recipient, clean(region_detail), clean(region)]
+    ).lower()
+    is_regional = scope == "regional" or ", regional" in recipient.lower()
+    return is_regional and any(term in regional_text for term in ATO_REGIONAL_TERMS)
+
+
+ATO_ECONOMIES = load_ato_economies()
 
 
 def parse_float(value):
@@ -185,6 +227,14 @@ def load_theme_rows():
 
     with EMOBILITY_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
+            recipient = normalize_recipient(row.get("recipient"))
+            if not is_ato_scoped_recipient(
+                recipient,
+                row.get("recipient_scope"),
+                row.get("recipient_region_detail"),
+                row.get("region"),
+            ):
+                continue
             datasets.append(
                 {
                     "themeId": "e_mobility",
@@ -192,7 +242,7 @@ def load_theme_rows():
                     "year": parse_int(row.get("year")),
                     "donor": clean(row.get("donor")),
                     "agency": clean(row.get("agency")),
-                    "recipient": clean(row.get("recipient")),
+                    "recipient": recipient,
                     "region": clean(row.get("region")),
                     "mode": clean(row.get("mode")) or "Other",
                     "modeDetail": clean(row.get("mode_detail")),
@@ -211,6 +261,16 @@ def load_theme_rows():
 
     with ROAD_SAFETY_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
         for idx, row in enumerate(csv.DictReader(handle), start=1):
+            recipient = normalize_recipient(
+                clean(row.get("recipient_standardized")) or clean(row.get("recipient_name"))
+            )
+            if not is_ato_scoped_recipient(
+                recipient,
+                row.get("recipient_scope"),
+                row.get("recipient_region_detail"),
+                clean(row.get("region_standardized")) or clean(row.get("region_name")),
+            ):
+                continue
             datasets.append(
                 {
                     "themeId": "road_safety",
@@ -218,7 +278,7 @@ def load_theme_rows():
                     "year": parse_int(row.get("year")),
                     "donor": clean(row.get("donor_name_standardized")) or clean(row.get("donor_name")),
                     "agency": clean(row.get("agency_name_standardized")) or clean(row.get("agency_name")),
-                    "recipient": clean(row.get("recipient_standardized")) or clean(row.get("recipient_name")),
+                    "recipient": recipient,
                     "region": clean(row.get("region_standardized")) or clean(row.get("region_name")),
                     "mode": clean(row.get("mode_ato_umbrella")) or "Other",
                     "modeDetail": clean(row.get("mode_ato_detail")) or clean(row.get("purpose_name")),

@@ -177,7 +177,6 @@ export function CRSDonorProfile() {
           setFilters={setFilters}
           resetFilters={resetFilters}
           enabled={['year', 'recipient', 'mode', 'sector', 'basis']}
-          recordCount={donorFacts.length}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">

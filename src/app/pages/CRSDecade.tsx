@@ -395,7 +395,6 @@ export function CRSDecade() {
           setFilters={setFilters}
           resetFilters={resetFilters}
           enabled={['year', 'donor', 'recipient', 'mode', 'sector', 'basis']}
-          recordCount={filteredRecords.length}
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">

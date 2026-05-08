@@ -106,7 +106,6 @@ export function CRSOverview() {
           setFilters={setFilters}
           resetFilters={resetFilters}
           enabled={['year', 'mode', 'sector', 'basis']}
-          recordCount={filteredFacts.length}
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
