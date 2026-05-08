@@ -61,16 +61,18 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
         ) : null}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6 2xl:grid-cols-9">
         {enabledSet.has('year') ? (
-          <YearRangeSelector
-            label="Year"
-            min={1973}
-            max={2024}
-            yearMin={filters.yearMin}
-            yearMax={filters.yearMax}
-            onChange={(min, max) => setFilters((prev) => ({ ...prev, yearMin: min, yearMax: max }))}
-          />
+          <div className="xl:col-span-2">
+            <YearRangeSelector
+              label="Year"
+              min={1973}
+              max={2024}
+              yearMin={filters.yearMin}
+              yearMax={filters.yearMax}
+              onChange={(min, max) => setFilters((prev) => ({ ...prev, yearMin: min, yearMax: max }))}
+            />
+          </div>
         ) : null}
 
         {enabledSet.has('donor') ? (
@@ -120,24 +122,28 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled, rec
         ) : null}
 
         {enabledSet.has('sector') ? (
-          <CheckboxDropdown
-            label="Sustainability-related Tags"
-            options={sectorOptions}
-            selected={filters.sectors}
-            onChange={(value) => setFilters((prev) => ({ ...prev, sectors: value }))}
-          />
+          <div className="xl:col-span-2">
+            <CheckboxDropdown
+              label="Sustainability-related Tags"
+              options={sectorOptions}
+              selected={filters.sectors}
+              onChange={(value) => setFilters((prev) => ({ ...prev, sectors: value }))}
+            />
+          </div>
         ) : null}
 
         {enabledSet.has('basis') ? (
-          <BasisDropdown
-            value={filters.measure}
-            onChange={(measure) =>
-              setFilters((prev) => ({
-                ...prev,
-                measure,
-              }))
-            }
-          />
+          <div className="xl:col-span-2">
+            <BasisDropdown
+              value={filters.measure}
+              onChange={(measure) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  measure,
+                }))
+              }
+            />
+          </div>
         ) : null}
       </div>
       <p className="mt-3 text-[12px] text-slate-500">

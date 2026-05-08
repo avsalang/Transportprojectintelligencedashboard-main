@@ -14,6 +14,7 @@ import {
 import { Check, ChevronDown, ChevronUp, Circle, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSPageFilters } from '../components/CRSPageFilters';
+import { CRSPageIntro } from '../components/CRSPageIntro';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { CRSDecadeRecord, CRSDecadeRecordIndex, CRSDecadeThemeId, CRS_DECADE_THEMES } from '../data/crsDecadeData';
@@ -24,7 +25,6 @@ import {
   buildModeThemeMatrix,
   buildThemeTrend,
   buildTopThemeByRecipient,
-  getDecadeThemeIds,
   matchesDecadeFilters,
   summarizeDecadeRecords,
 } from '../utils/crsDecadeAggregations';
@@ -197,12 +197,23 @@ export function CRSDecade() {
     [filters, records, selectedThemes],
   );
 
+  const visibleThemes = useMemo(
+    () => selectedThemes.length
+      ? CRS_DECADE_THEMES.filter((theme) => selectedThemes.includes(theme.id))
+      : CRS_DECADE_THEMES,
+    [selectedThemes],
+  );
+  const focusAreaLabel = selectedThemes.length === 1
+    ? visibleThemes[0]?.label ?? 'selected focus area'
+    : selectedThemes.length > 1
+      ? 'selected focus areas'
+      : 'all focus areas';
   const stats = useMemo(() => summarizeDecadeRecords(filteredRecords, measure), [filteredRecords, measure]);
-  const themeSeries = useMemo(() => aggregateByTheme(filteredRecords), [filteredRecords]);
-  const trend = useMemo(() => buildThemeTrend(filteredRecords, measure), [filteredRecords, measure]);
-  const modeThemeMatrix = useMemo(() => buildModeThemeMatrix(filteredRecords, measure), [filteredRecords, measure]);
-  const donorThemePortfolio = useMemo(() => buildDonorThemePortfolio(filteredRecords, measure, 10), [filteredRecords, measure]);
-  const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 5), [filteredRecords, measure]);
+  const themeSeries = useMemo(() => aggregateByTheme(filteredRecords, selectedThemes), [filteredRecords, selectedThemes]);
+  const trend = useMemo(() => buildThemeTrend(filteredRecords, measure, selectedThemes), [filteredRecords, measure, selectedThemes]);
+  const modeThemeMatrix = useMemo(() => buildModeThemeMatrix(filteredRecords, measure, selectedThemes), [filteredRecords, measure, selectedThemes]);
+  const donorThemePortfolio = useMemo(() => buildDonorThemePortfolio(filteredRecords, measure, 10, selectedThemes), [filteredRecords, measure, selectedThemes]);
+  const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 5, selectedThemes), [filteredRecords, measure, selectedThemes]);
   const recordThemeLabels = (record: CRSDecadeRecord) =>
     CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
   const recordColumnText = (record: CRSDecadeRecord, key: RecordSortKey) => {
@@ -333,17 +344,37 @@ export function CRSDecade() {
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
       <div className="max-w-[1440px] mx-auto space-y-6">
-        <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-5">
-          <div>
-            <p className="text-[13px] font-medium text-blue-600 mb-1">Prototype screening view</p>
-            <h1 className="text-2xl text-slate-900 tracking-tight">UN Decade of Sustainable Transport</h1>
-          </div>
+        <CRSPageIntro
+          eyebrow="Analytical screening view"
+          title="UN Decade of Sustainable Transport"
+          note="Please note that the tagging information presented here is not officially reported under the OECD CRS. It is based on a separate analytical exercise using available database information such as project titles and project descriptions."
+        >
+          <p>
+            This page provides a view of how transport-related development financing aligns with the focus areas of the UN Decade of Sustainable Transport. It allows users to explore projects through key sustainable transport themes, including access, safety, climate action, resilience, inclusion, and system efficiency.
+          </p>
+        </CRSPageIntro>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p className="mb-3 text-[13px] font-semibold text-slate-600">Focus Areas</p>
           <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedThemes([])}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-[12px] font-medium transition-all ${
+                selectedThemes.length === 0
+                  ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm'
+                  : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-800'
+              }`}
+            >
+              {selectedThemes.length === 0 ? <Check size={14} /> : <Circle size={10} />}
+              All focus areas
+            </button>
             {CRS_DECADE_THEMES.map((theme) => {
               const active = selectedThemes.includes(theme.id);
               return (
                 <button
                   key={theme.id}
+                  type="button"
                   onClick={() => toggleTheme(theme.id)}
                   className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-[12px] font-medium transition-all ${
                     active
@@ -369,11 +400,19 @@ export function CRSDecade() {
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           <KPICard label="Screened Project Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />
-          <KPICard label="Aligned Project Records" value={crsFmt.num(stats.taggedCount)} sub={`${taggedShare.toFixed(1)}% with at least one theme`} />
-          <KPICard label="Aligned Value" value={crsFmt.usdM(stats.taggedMeasure)} sub={`Tagged ${activeMeasureLabel}, constant 2024 USD`} />
+          <KPICard
+            label="Projects"
+            value={crsFmt.num(stats.taggedCount)}
+            sub={
+              selectedThemes.length
+                ? `Related to selected focus ${selectedThemes.length === 1 ? 'area' : 'areas'}`
+                : `${taggedShare.toFixed(1)}% with at least one focus area`
+            }
+          />
+          <KPICard label="Value" value={crsFmt.usdM(stats.taggedMeasure)} sub={`Tagged ${activeMeasureLabel}, constant 2024 USD`} />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
           <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Finance sources in view" />
-          <KPICard label="Focus Areas" value={crsFmt.num(CRS_DECADE_THEMES.length)} sub="UN Decade themes" />
+          <KPICard label="Focus Areas" value={crsFmt.num(visibleThemes.length)} sub={selectedThemes.length ? 'Selected UN Decade themes' : 'UN Decade themes'} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1fr_0.95fr] gap-6 xl:items-start">
@@ -381,7 +420,7 @@ export function CRSDecade() {
             <div className="mb-5">
               <h2 className="text-slate-900 text-base font-semibold">Theme Overview</h2>
               <p className="text-slate-500 text-[13px] mt-1">
-                Total {activeMeasureLabel} tagged to each UN Decade focus area.
+                Total {activeMeasureLabel} tagged to {focusAreaLabel}, constant 2024 USD.
               </p>
             </div>
             <ResponsiveContainer width="100%" height={300}>
@@ -402,7 +441,7 @@ export function CRSDecade() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100">
               <h2 className="text-slate-900 text-base font-semibold">Top Recipients</h2>
-              <p className="text-slate-500 text-[13px] mt-1">Largest recipients and their dominant Decade focus area.</p>
+              <p className="text-slate-500 text-[13px] mt-1">Largest recipients for {focusAreaLabel}.</p>
             </div>
             <div className="divide-y divide-slate-100">
               {topRecipients.map((row, index) => (
@@ -426,11 +465,11 @@ export function CRSDecade() {
           <div className="mb-5">
             <h2 className="text-slate-900 text-base font-semibold">Annual Focus Area Trends</h2>
             <p className="text-slate-500 text-[13px] mt-1">
-              Each panel shows annual tagged {activeMeasureLabel} for one UN Decade focus area, constant 2024 USD.
+              Each panel shows annual tagged {activeMeasureLabel} for {focusAreaLabel}, constant 2024 USD.
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-5">
-            {CRS_DECADE_THEMES.map((theme) => (
+            {visibleThemes.map((theme) => (
               <div key={theme.id} className="rounded-xl border border-slate-100 bg-slate-50/40 p-4">
                 <div className="mb-3 flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: THEME_COLORS[theme.id] }} />
@@ -469,7 +508,7 @@ export function CRSDecade() {
               <YAxis width={CURRENCY_AXIS_WIDTH} tickMargin={8} tickFormatter={(value) => crsFmt.usdM(value)} tick={{ fontSize: 11, fill: '#64748B' }} axisLine={false} tickLine={false} />
               <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
-              {CRS_DECADE_THEMES.map((theme) => (
+              {visibleThemes.map((theme) => (
                 <Bar key={theme.id} dataKey={theme.label} fill={THEME_COLORS[theme.id]} radius={[4, 4, 0, 0]} />
               ))}
             </BarChart>
@@ -478,9 +517,9 @@ export function CRSDecade() {
 
         <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
           <div className="mb-5">
-            <h2 className="text-slate-900 text-base font-semibold">Focus Area Selection of Top Donors</h2>
+            <h2 className="text-slate-900 text-base font-semibold">Focus Area by Donor</h2>
             <p className="text-slate-500 text-[13px] mt-1">
-              Clustered bars compare the UN Decade focus areas represented in each top donor selection.
+              Clustered bars compare tagged {activeMeasureLabel} for {focusAreaLabel} across top donors.
             </p>
           </div>
           <ResponsiveContainer width="100%" height={760}>
@@ -497,7 +536,7 @@ export function CRSDecade() {
               <Tooltip content={<StackedTooltip measureLabel={activeMeasureTitle} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Customized component={(props: any) => <DonorPortfolioDividers {...props} data={donorThemePortfolio} />} />
-              {CRS_DECADE_THEMES.map((theme) => (
+              {visibleThemes.map((theme) => (
                 <Bar key={theme.id} dataKey={theme.label} fill={THEME_COLORS[theme.id]} radius={[0, 4, 4, 0]} barSize={8} />
               ))}
             </BarChart>
@@ -509,7 +548,7 @@ export function CRSDecade() {
             <div>
               <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
               <p className="text-slate-500 text-[14px] mt-1">
-                CRS transaction lines in the current filtered view. Select a row to view UN Decade tagging details.
+                Select a project record to view details.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -547,11 +586,21 @@ export function CRSDecade() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[1280px] border-collapse">
+            <table className="w-full min-w-[1160px] table-fixed border-collapse">
+              <colgroup>
+                <col className="w-[7%]" />
+                <col className="w-[18%]" />
+                <col className="w-[13%]" />
+                <col className="w-[15%]" />
+                <col className="w-[11%]" />
+                <col className="w-[8%]" />
+                <col className="w-[19%]" />
+                <col className="w-[9%]" />
+              </colgroup>
               <thead>
                 <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
                   {RECORD_COLUMNS.map((column) => (
-                    <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
+                    <th key={column.key} className={`px-4 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
                       <button
                         type="button"
                         onClick={() => handleRecordSort(column.key)}
@@ -567,7 +616,7 @@ export function CRSDecade() {
                 </tr>
                 <tr className="border-b border-slate-200 bg-slate-50/40">
                   {RECORD_COLUMNS.map((column) => (
-                    <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
+                    <th key={`${column.key}-filter`} className="px-4 pb-3 text-left">
                       {column.key === 'amount' ? (
                         <div className="h-8" aria-hidden="true" />
                       ) : isRecordDropdownFilter(column.key) ? (
@@ -581,7 +630,7 @@ export function CRSDecade() {
                           }
                           className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
-                          <option value="">All {column.label}</option>
+                          <option value="">All</option>
                           {recordFilterOptions[column.key].map((option) => (
                             <option key={option} value={option}>
                               {option}
@@ -597,7 +646,7 @@ export function CRSDecade() {
                               [column.key]: event.target.value,
                             }))
                           }
-                          placeholder={`Filter ${column.label.toLowerCase()}`}
+                          placeholder="Filter"
                           className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
                             column.align === 'right' ? 'text-right' : 'text-left'
                           }`}
@@ -610,7 +659,7 @@ export function CRSDecade() {
               <tbody className="divide-y divide-slate-100">
                 {pagedRecords.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-20 text-center text-slate-400">
+                    <td colSpan={8} className="px-4 py-20 text-center text-slate-400">
                       No project records match the current filters and search.
                     </td>
                   </tr>
@@ -621,23 +670,23 @@ export function CRSDecade() {
                       onClick={() => setActiveRecord(record)}
                       className="hover:bg-slate-50 cursor-pointer transition-colors"
                     >
-                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.year}</td>
-                      <td className="px-6 py-4">
-                        <div className="max-w-[440px]">
+                      <td className="px-4 py-4 text-[14px] text-slate-600">{record.year}</td>
+                      <td className="px-4 py-4">
+                        <div className="min-w-0">
                           <p className="text-[14px] font-medium text-slate-900 line-clamp-1">{record.title}</p>
                           <p className="text-[13px] text-slate-500 line-clamp-2 mt-1">{record.purpose || 'No purpose description available.'}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.donor}</td>
-                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.agency}</td>
-                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.recipient}</td>
-                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.mode}</td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-wrap gap-1.5 max-w-[320px]">
+                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.donor}</td>
+                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.agency}</td>
+                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.recipient}</td>
+                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.mode}</td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-wrap gap-1.5">
                           {themeChips(record, true)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-right text-[14px] font-medium text-slate-900">{crsFmt.usdM(record[measure])}</td>
+                      <td className="whitespace-nowrap px-4 py-4 text-right text-[14px] font-medium text-slate-900">{crsFmt.usdM(record[measure])}</td>
                     </tr>
                   ))
                 )}
@@ -708,7 +757,7 @@ export function CRSDecade() {
                 </div>
 
                 <div>
-                  <p className="text-[12px] font-medium text-slate-500 mb-3">CRS marker hints</p>
+                  <p className="text-[12px] font-medium text-slate-500 mb-3">Sustainability-related Tags</p>
                   <div className="flex flex-wrap gap-2">
                     {[
                       ['Mitigation', activeRecord.climate_mitigation],

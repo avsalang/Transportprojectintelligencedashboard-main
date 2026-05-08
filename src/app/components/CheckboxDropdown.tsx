@@ -52,7 +52,7 @@ export function CheckboxDropdown({ label, options, selected, onChange, optionGro
 
   return (
     <div className="relative" ref={containerRef}>
-      <label className="block text-[14px] font-semibold text-slate-500 mb-1.5 ml-1">
+      <label className="mb-1.5 ml-1 block whitespace-nowrap text-[14px] font-semibold text-slate-500">
         {label}
       </label>
       <button

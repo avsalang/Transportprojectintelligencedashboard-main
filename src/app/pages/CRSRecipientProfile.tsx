@@ -19,9 +19,10 @@ import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { CRSPageFilters } from '../components/CRSPageFilters';
+import { CRSPageIntro } from '../components/CRSPageIntro';
 import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
-import { CRSDecadeRecord, CRSDecadeRecordIndex } from '../data/crsDecadeData';
+import { CRSDecadeRecord, CRSDecadeRecordIndex, CRS_DECADE_THEMES } from '../data/crsDecadeData';
 import { LOW_CARBON_SCREENER_BY_ECONOMY } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
@@ -37,6 +38,8 @@ const MODE_AREA_COLORS = {
 };
 
 const CURRENCY_AXIS_WIDTH = 76;
+const RECIPIENT_LOW_CARBON_TEXT =
+  'The scores below provide a country-specific view of low-carbon transport opportunities based on three dimensions: needs, financeability, and readiness. Together, these scores offer additional insight into the extent to which low-carbon transport support may be needed, financeable, and ready for implementation in the selected economy. The assessment is based on available information across 50 indicators and is intended to support interpretation, comparison, and further discussion rather than serve as a definitive ranking.';
 
 type CRSRecord = CRSDecadeRecord;
 
@@ -74,6 +77,14 @@ function ThemeFlag({ active, label }: { active: number; label: string }) {
     <div className={`px-2 py-1 rounded-lg text-[11px] border ${active > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
       {label}
     </div>
+  );
+}
+
+function ATOThemeChip({ label }: { label: string }) {
+  return (
+    <span className="rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-700 ring-1 ring-blue-100">
+      {label}
+    </span>
   );
 }
 
@@ -192,6 +203,8 @@ export function CRSRecipientProfile() {
   const lowCarbonScreener = LOW_CARBON_SCREENER_BY_ECONOMY[selectedRecipient];
   const measureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
   const activeFinanceLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
+  const recordThemeLabels = (record: CRSRecord) =>
+    CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
 
   const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
     switch (key) {
@@ -292,32 +305,33 @@ export function CRSRecipientProfile() {
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
       <div className="max-w-[1440px] mx-auto space-y-6">
-        <div className="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl text-slate-900 tracking-tight">Recipient Profile</h1>
-            <p className="text-slate-500 mt-1">
-              Finance pathways, donor concentration, and source records for a selected recipient.
-            </p>
-          </div>
-          <div className="w-full xl:w-[420px]">
-            <label className="block text-[14px] text-slate-400 ml-1 mb-2">Recipient</label>
-            <select
-              value={selectedRecipient}
-              onChange={(event) => setSelectedRecipient(event.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[15px] text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            >
-              {profileRecipientGroups.map((group) => (
-                <optgroup key={group.title} label={group.title}>
-                  {group.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </div>
-        </div>
+        <CRSPageIntro
+          title="Recipient Profile"
+          aside={(
+            <div className="w-full">
+              <label className="block text-[14px] text-slate-400 ml-1 mb-2">Recipient</label>
+              <select
+                value={selectedRecipient}
+                onChange={(event) => setSelectedRecipient(event.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[15px] text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              >
+                {profileRecipientGroups.map((group) => (
+                  <optgroup key={group.title} label={group.title}>
+                    {group.options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
+          )}
+        >
+          <p>
+            The Recipient Profile page provides a country-focused view of transport-related development financing. It allows users to examine how much support each recipient economy receives, which development partners are involved, which transport subsectors are being financed, and how support has changed over time. The page helps identify major financing sources, priority areas, and financing patterns for each economy, supporting a clearer understanding of how transport finance is distributed and where future support may be needed.
+          </p>
+        </CRSPageIntro>
 
         <CRSPageFilters
           filters={filters}
@@ -415,7 +429,8 @@ export function CRSRecipientProfile() {
         {lowCarbonScreener ? (
           <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
             <div className="mb-4 border-b border-sky-100 pb-4">
-              <p className="text-base font-semibold text-slate-900">Low Carbon Transport Screener</p>
+              <p className="text-base font-semibold text-slate-900">Low-Carbon Transport Needs, Opportunity and Readiness Assessment</p>
+              <p className="mt-2 w-full text-sm leading-6 text-slate-600 sm:text-justify">{RECIPIENT_LOW_CARBON_TEXT}</p>
             </div>
             <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.75fr_1.25fr]">
               <div className="rounded-xl border border-slate-200 bg-white p-5">
@@ -452,7 +467,7 @@ export function CRSRecipientProfile() {
             <div>
               <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
               <p className="text-slate-500 text-[14px] mt-1">
-                Source transactions behind the selected recipient profile.
+                Select a project record to view details.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -547,7 +562,7 @@ export function CRSRecipientProfile() {
                           }
                           className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                         >
-                          <option value="">All {column.label}</option>
+                          <option value="">All</option>
                           {recordFilterOptions[column.key].map((option) => (
                             <option key={option} value={option}>
                               {option}
@@ -563,7 +578,7 @@ export function CRSRecipientProfile() {
                               [column.key]: event.target.value,
                             }))
                           }
-                          placeholder={`Filter ${column.label.toLowerCase()}`}
+                          placeholder="Filter"
                           className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
                             column.align === 'right' ? 'text-right' : 'text-left'
                           }`}
@@ -652,7 +667,15 @@ export function CRSRecipientProfile() {
                     </div>
                   </div>
                   <div>
-                    <p className="text-[12px] font-medium text-slate-500 mb-3">CRS marker hints</p>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">ATO thematic tags</p>
+                    <div className="flex flex-wrap gap-2">
+                      {recordThemeLabels(activeRecord).length
+                        ? recordThemeLabels(activeRecord).map((label) => <ATOThemeChip key={label} label={label} />)
+                        : <span className="text-[13px] text-slate-400">No thematic tag assigned</span>}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">Sustainability-related Tags</p>
                     <div className="flex flex-wrap gap-2">
                       <ThemeFlag active={activeRecord.climate_mitigation} label="Mitigation" />
                       <ThemeFlag active={activeRecord.climate_adaptation} label="Adaptation" />

@@ -13,6 +13,7 @@ import {
 import { KPICard } from '../components/KPICard';
 import { wrapTickLabel, WrappedCategoryTick } from '../components/ChartTicks';
 import { YearRangeSelector } from '../components/YearRangeSelector';
+import { CRSPageIntro } from '../components/CRSPageIntro';
 import { getFlowLegendItems, getFlowTypeColor, normalizeFlowType } from '../utils/flowTypeColors';
 import {
   THEME_RECORDS,
@@ -35,6 +36,8 @@ const DONOR_COLORS = ['#0F766E', '#0EA5E9', '#2563EB', '#7C3AED', '#DB2777', '#E
 const SUBTAG_COLOR = '#38BDF8';
 const RECIPIENT_COLOR = '#10B981';
 const THEME_SANKEY_NODE_PADDING = 32;
+const GLOBAL_THEME_YEAR_MIN = Math.min(...THEME_SUMMARIES.map((theme) => theme.yearMin ?? 1973));
+const GLOBAL_THEME_YEAR_MAX = Math.max(...THEME_SUMMARIES.map((theme) => theme.yearMax ?? 2024));
 
 type ThemeSummary = (typeof THEME_SUMMARIES)[number];
 
@@ -206,7 +209,7 @@ function buildSankeyHoverState(entry: any, type: 'node' | 'link') {
       y: coordinate.y,
       title: `${entry.sourceName} -> ${entry.targetName}`,
       value: usdM(entry.value),
-      subtitle: entry.flowType ? `${normalizeFlowType(entry.flowType)} · allocated deflated commitments` : 'Allocated deflated commitments',
+      subtitle: entry.flowType ? `${normalizeFlowType(entry.flowType)} · allocated commitments, constant 2024 USD` : 'Allocated commitments, constant 2024 USD',
     };
   }
 
@@ -339,7 +342,7 @@ function TechnologyEnablerSankey({ data }: { data: ThemeSankeyData }) {
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <p className="mb-1 text-lg font-semibold text-slate-900">Technology / Enabler Flow</p>
       <p className="mb-4 text-sm text-slate-500">
-        Donor to e-mobility subtag to recipient. Multi-tag records are allocated evenly across their assigned subtags.
+        Donor to e-mobility subtag to recipient. If a project has multiple e-mobility subtags, its commitment value is allocated evenly across those subtags to avoid double counting.
       </p>
       {flowLegendItems.length ? (
         <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-2">
@@ -435,10 +438,8 @@ function RankingChart({
   );
 }
 
-function ThemeSection({ theme }: { theme: ThemeSummary }) {
+function ThemeSection({ theme, yearMin, yearMax }: { theme: ThemeSummary; yearMin: number; yearMax: number }) {
   const themeId = theme.id as ThemeId;
-  const [yearMin, setYearMin] = useState(theme.yearMin ?? 1973);
-  const [yearMax, setYearMax] = useState(theme.yearMax ?? 2024);
   const themeRecords = useMemo(
     () => THEME_RECORDS[themeId].filter((record) => record.year != null && record.year >= yearMin && record.year <= yearMax),
     [themeId, yearMax, yearMin],
@@ -460,23 +461,10 @@ function ThemeSection({ theme }: { theme: ThemeSummary }) {
           </div>
           <p className="mt-2 max-w-[900px] text-sm leading-6 text-slate-500">{theme.description}</p>
         </div>
-        <div className="w-full rounded-lg bg-white p-3 shadow-sm ring-1 ring-slate-200 lg:w-[330px]">
-          <YearRangeSelector
-            label="Year"
-            min={theme.yearMin ?? 1973}
-            max={theme.yearMax ?? 2024}
-            yearMin={yearMin}
-            yearMax={yearMax}
-            onChange={(min, max) => {
-              setYearMin(min);
-              setYearMax(max);
-            }}
-          />
-        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <KPICard label="Project Records" value={num(summary.recordCount)} />
+        <KPICard label="Projects" value={num(summary.recordCount)} />
         <KPICard label="Commitments" value={usdM(summary.commitment_defl)} />
         <KPICard label="Disbursements" value={usdM(summary.disbursement_defl)} />
         <KPICard label="Recipients" value={num(summary.recipientCount)} sub="Recipient economies" />
@@ -542,18 +530,41 @@ function ThemeSection({ theme }: { theme: ThemeSummary }) {
 }
 
 export function ThemeExplorer() {
+  const [yearMin, setYearMin] = useState(GLOBAL_THEME_YEAR_MIN);
+  const [yearMax, setYearMax] = useState(GLOBAL_THEME_YEAR_MAX);
+
   return (
     <div className="min-h-screen bg-slate-50/50 p-6">
-      <div className="mx-auto max-w-[1440px] space-y-12">
-        <div>
-          <h1 className="text-2xl text-slate-900">Themes</h1>
-          <p className="mt-1 max-w-[920px] text-sm text-slate-500">Thematic views built from tagged CRS transport records.</p>
+      <div className="mx-auto max-w-[1440px] space-y-8">
+        <CRSPageIntro
+          title="Themes"
+          note="The thematic tags are based on an analytical exercise that interprets project titles and descriptions in the OECD CRS data. These tags are not officially reported classifications in the OECD CRS and should therefore be treated as indicative rather than definitive."
+        >
+          <p>
+            The Themes page allows users to view information on bespoke transport themes. It shows how transport-related development finance is distributed across these themes or topics, and how support has changed over time.
+          </p>
+        </CRSPageIntro>
+
+        <div className="sticky top-24 z-20 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
+          <div className="max-w-[640px]">
+            <YearRangeSelector
+              label="Year"
+              min={GLOBAL_THEME_YEAR_MIN}
+              max={GLOBAL_THEME_YEAR_MAX}
+              yearMin={yearMin}
+              yearMax={yearMax}
+              onChange={(min, max) => {
+                setYearMin(min);
+                setYearMax(max);
+              }}
+            />
+          </div>
         </div>
 
         {THEME_SUMMARIES.map((theme, index) => (
           <div key={theme.id} className="space-y-12">
             {index > 0 && <div className="h-px bg-slate-300" />}
-            <ThemeSection theme={theme} />
+            <ThemeSection theme={theme} yearMin={yearMin} yearMax={yearMax} />
           </div>
         ))}
       </div>

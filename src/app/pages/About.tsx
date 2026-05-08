@@ -28,7 +28,7 @@ function Section({ title, children }: { title: string; children: string[] }) {
   return (
     <section className="space-y-4">
       <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-      <div className="space-y-4 text-[15px] leading-7 text-slate-600">
+      <div className="space-y-4 text-[15px] leading-7 text-slate-600 sm:text-justify">
         {children.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
@@ -58,7 +58,7 @@ export function About() {
 
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-slate-900">Sources</h2>
-              <div className="space-y-4 text-[15px] leading-7 text-slate-600">
+              <div className="space-y-4 text-[15px] leading-7 text-slate-600 sm:text-justify">
                 <p>
                   OECD. 2026. "OECD Data Explorer - CRS: Creditor Reporting System (Flows)." April 8.{' '}
                   <a

@@ -16,6 +16,7 @@ import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { WrappedCategoryTick } from '../components/ChartTicks';
+import { CRSPageIntro } from '../components/CRSPageIntro';
 import { crsFmt } from '../data/crsData';
 import { LOW_CARBON_SCREENER_RANKING } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
@@ -30,6 +31,8 @@ const MODE_AREA_COLORS = {
 };
 
 const CURRENCY_AXIS_WIDTH = 76;
+const LOW_CARBON_ASSESSMENT_TEXT =
+  'The scores below provide a comparative view of low-carbon transport opportunities across economies based on three dimensions: needs, financeability, and readiness. Taken together, the final scores aim to provide additional insight into where low-carbon transport support may be most needed, most financeable, and most ready for implementation. This exercise was conducted based on available information across 50 indicators.';
 
 function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitments' }: any) {
   if (!active || !payload?.length) return null;
@@ -86,9 +89,17 @@ export function CRSOverview() {
   return (
     <div className="p-6 bg-slate-50/50 min-h-screen">
       <div className="max-w-[1440px] mx-auto space-y-6">
-        <div>
-          <h1 className="text-2xl text-slate-900 tracking-tight">Regional Overview</h1>
-        </div>
+        <CRSPageIntro
+          title="Regional Overview"
+          note="The section on financing is based on data from the OECD (2026)."
+        >
+          <p>
+            This regional overview page provides a high-level snapshot of transport development finance in Asia and the Pacific. It summarizes the current selection through key indicators such as commitments, disbursements, financial instruments, recipient economies, providers, and transport subsectors.
+          </p>
+          <p>
+            Users can explore how finance is distributed across economies, modes, and development priorities, including low-carbon, resilient, safe, and inclusive transport. The page also highlights the largest recipients and providers in the current filtered selection, allowing users to see which economies and institutions account for the largest shares of reported transport development finance. Use the filters to refine the selection and explore the information most relevant to you.
+          </p>
+        </CRSPageIntro>
 
         <CRSPageFilters
           filters={filters}
@@ -109,7 +120,7 @@ export function CRSOverview() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-5 py-4 border-b border-slate-100">
               <p className="text-slate-900 text-sm font-semibold">Recipient Map</p>
-              <p className="text-slate-400 text-xs mt-1">Map of ATO economy recipients in the current filtered view.</p>
+              <p className="text-slate-400 text-xs mt-1">Map of ATO economy recipients in the current filtered view. Circles show amounts in constant 2024 USD.</p>
             </div>
             <StyledCRSCountryMap points={countryPoints} measure={measure} viewMode="points" height={500} />
           </div>
@@ -117,7 +128,7 @@ export function CRSOverview() {
           <div className="space-y-6">
             <CRSRankingCard
               title="Top Recipients"
-              subtitle="Largest recipients in the current filtered selection."
+              subtitle="Top recipient economies based on the current filters."
               data={topRecipients}
               measure={measure}
               color="#059669"
@@ -217,7 +228,8 @@ export function CRSOverview() {
 
         <section className="rounded-xl border border-sky-200 bg-sky-50/40 p-5 shadow-sm">
           <div className="mb-4 border-b border-sky-100 pb-4">
-            <p className="text-slate-900 text-base font-semibold">Low Carbon Transport Screener</p>
+            <p className="text-slate-900 text-base font-semibold">Low-Carbon Transport Needs, Opportunity and Readiness Assessment</p>
+            <p className="mt-2 w-full text-sm leading-6 text-slate-600 sm:text-justify">{LOW_CARBON_ASSESSMENT_TEXT}</p>
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <p className="mb-1 text-sm font-semibold text-slate-900">Economy Ranking</p>

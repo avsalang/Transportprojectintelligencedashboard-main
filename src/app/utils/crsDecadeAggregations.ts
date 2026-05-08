@@ -18,6 +18,12 @@ export function getDecadeThemeIds(record: CRSDecadeRecord): CRSDecadeThemeId[] {
     .map((theme) => theme.id);
 }
 
+function visibleDecadeThemes(themeIds?: CRSDecadeThemeId[]) {
+  if (!themeIds?.length) return CRS_DECADE_THEMES;
+  const allowed = new Set(themeIds);
+  return CRS_DECADE_THEMES.filter((theme) => allowed.has(theme.id));
+}
+
 export function matchesDecadeFilters(
   record: CRSDecadeRecord,
   filters: CRSFilters,
@@ -108,16 +114,17 @@ export function aggregateDecade(
   return [...grouped.values()].sort((a, b) => b.commitment - a.commitment);
 }
 
-export function aggregateByTheme(records: CRSDecadeRecord[]): DecadeAggregateRow[] {
+export function aggregateByTheme(records: CRSDecadeRecord[], themeIds?: CRSDecadeThemeId[]): DecadeAggregateRow[] {
+  const themes = visibleDecadeThemes(themeIds);
   const grouped = new Map<string, DecadeAggregateRow>(
-    CRS_DECADE_THEMES.map((theme) => [
+    themes.map((theme) => [
       theme.label,
       { label: theme.label, commitment: 0, disbursement: 0, commitment_defl: 0, disbursement_defl: 0, count: 0 },
     ]),
   );
 
   records.forEach((record) => {
-    CRS_DECADE_THEMES.forEach((theme) => {
+    themes.forEach((theme) => {
       if (!record[theme.id]) return;
       const entry = grouped.get(theme.label)!;
       entry.commitment += record.commitment;
@@ -131,18 +138,19 @@ export function aggregateByTheme(records: CRSDecadeRecord[]): DecadeAggregateRow
   return [...grouped.values()].sort((a, b) => b.commitment - a.commitment);
 }
 
-export function buildThemeTrend(records: CRSDecadeRecord[], measure: CRSDecadeMeasure) {
+export function buildThemeTrend(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, themeIds?: CRSDecadeThemeId[]) {
+  const themes = visibleDecadeThemes(themeIds);
   const grouped = new Map<number, Record<string, number | string>>();
   records.forEach((record) => {
     if (!record.year) return;
     if (!grouped.has(record.year)) {
       grouped.set(record.year, {
         year: String(record.year),
-        ...Object.fromEntries(CRS_DECADE_THEMES.map((theme) => [theme.label, 0])),
+        ...Object.fromEntries(themes.map((theme) => [theme.label, 0])),
       });
     }
     const row = grouped.get(record.year)!;
-    CRS_DECADE_THEMES.forEach((theme) => {
+    themes.forEach((theme) => {
       if (record[theme.id]) {
         row[theme.label] = Number(row[theme.label] ?? 0) + (record[measure] ?? 0);
       }
@@ -151,15 +159,16 @@ export function buildThemeTrend(records: CRSDecadeRecord[], measure: CRSDecadeMe
   return [...grouped.values()].sort((a, b) => Number(a.year) - Number(b.year));
 }
 
-export function buildModeThemeMatrix(records: CRSDecadeRecord[], measure: CRSDecadeMeasure) {
+export function buildModeThemeMatrix(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, themeIds?: CRSDecadeThemeId[]) {
+  const themes = visibleDecadeThemes(themeIds);
   const modes = ['Road', 'Rail', 'Water', 'Aviation', 'Other'];
   const grouped = new Map<string, Record<string, number | string>>(
-    modes.map((mode) => [mode, { mode, ...Object.fromEntries(CRS_DECADE_THEMES.map((theme) => [theme.label, 0])) }]),
+    modes.map((mode) => [mode, { mode, ...Object.fromEntries(themes.map((theme) => [theme.label, 0])) }]),
   );
   records.forEach((record) => {
     const mode = modes.includes(record.mode) ? record.mode : 'Other';
     const row = grouped.get(mode)!;
-    CRS_DECADE_THEMES.forEach((theme) => {
+    themes.forEach((theme) => {
       if (record[theme.id]) {
         row[theme.label] = Number(row[theme.label] ?? 0) + (record[measure] ?? 0);
       }
@@ -168,11 +177,11 @@ export function buildModeThemeMatrix(records: CRSDecadeRecord[], measure: CRSDec
   return [...grouped.values()];
 }
 
-export function buildTopThemeByRecipient(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, limit = 12) {
+export function buildTopThemeByRecipient(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, limit = 12, themeIds?: CRSDecadeThemeId[]) {
   const recipients = aggregateDecade(records, (record) => record.recipient).slice(0, limit);
   return recipients.map((recipient) => {
     const recipientRecords = records.filter((record) => record.recipient === recipient.label);
-    const topTheme = aggregateByTheme(recipientRecords)[0];
+    const topTheme = aggregateByTheme(recipientRecords, themeIds)[0];
     return {
       ...recipient,
       topTheme: topTheme?.count ? topTheme.label : 'No theme assigned',
@@ -184,7 +193,8 @@ export function buildTopThemeByRecipient(records: CRSDecadeRecord[], measure: CR
   });
 }
 
-export function buildDonorThemePortfolio(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, limit = 10) {
+export function buildDonorThemePortfolio(records: CRSDecadeRecord[], measure: CRSDecadeMeasure, limit = 10, themeIds?: CRSDecadeThemeId[]) {
+  const themes = visibleDecadeThemes(themeIds);
   const donors = aggregateDecade(records, (record) => record.donor).slice(0, limit);
   const donorSet = new Set(donors.map((donor) => donor.label));
   const rows = new Map(
@@ -194,7 +204,7 @@ export function buildDonorThemePortfolio(records: CRSDecadeRecord[], measure: CR
         donor: donor.label,
         total: donor[measure] ?? 0,
         dominantTheme: 'No theme assigned',
-        ...Object.fromEntries(CRS_DECADE_THEMES.map((theme) => [theme.label, 0])),
+        ...Object.fromEntries(themes.map((theme) => [theme.label, 0])),
       },
     ]),
   );
@@ -203,7 +213,7 @@ export function buildDonorThemePortfolio(records: CRSDecadeRecord[], measure: CR
     if (!donorSet.has(record.donor)) return;
     const row = rows.get(record.donor);
     if (!row) return;
-    CRS_DECADE_THEMES.forEach((theme) => {
+    themes.forEach((theme) => {
       if (record[theme.id]) {
         row[theme.label] = Number(row[theme.label] ?? 0) + (record[measure] ?? 0);
       }
@@ -211,7 +221,7 @@ export function buildDonorThemePortfolio(records: CRSDecadeRecord[], measure: CR
   });
 
   return [...rows.values()].map((row) => {
-    const topTheme = CRS_DECADE_THEMES
+    const topTheme = themes
       .map((theme) => ({ label: theme.label, value: Number(row[theme.label] ?? 0) }))
       .sort((a, b) => b.value - a.value)[0];
     return {
