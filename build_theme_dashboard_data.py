@@ -23,6 +23,12 @@ RECIPIENT_ALIAS_MAP = {
     "Vietnam": "Viet Nam",
 }
 
+DONOR_ALIAS_MAP = {
+    "Korea": "Republic of Korea",
+    "Slovak Republic": "Slovakia",
+    "Chinese Taipei": "Taipei,China",
+}
+
 ATO_REGIONAL_TERMS = ("asia", "pacific", "oceania")
 
 THEMES = {
@@ -73,6 +79,11 @@ def load_ato_economies():
 def normalize_recipient(value):
     recipient = clean(value)
     return RECIPIENT_ALIAS_MAP.get(recipient, recipient)
+
+
+def normalize_donor(value):
+    donor = clean(value)
+    return DONOR_ALIAS_MAP.get(donor, donor)
 
 
 def is_ato_scoped_recipient(recipient, scope, region_detail="", region=""):
@@ -240,7 +251,7 @@ def load_theme_rows():
                     "themeId": "e_mobility",
                     "rowNumber": clean(row.get("row_number")),
                     "year": parse_int(row.get("year")),
-                    "donor": clean(row.get("donor")),
+                    "donor": normalize_donor(row.get("donor")),
                     "agency": clean(row.get("agency")),
                     "recipient": recipient,
                     "region": clean(row.get("region")),
@@ -276,7 +287,7 @@ def load_theme_rows():
                     "themeId": "road_safety",
                     "rowNumber": clean(row.get("row_number")) or f"road-{idx}",
                     "year": parse_int(row.get("year")),
-                    "donor": clean(row.get("donor_name_standardized")) or clean(row.get("donor_name")),
+                    "donor": normalize_donor(clean(row.get("donor_name_standardized")) or clean(row.get("donor_name"))),
                     "agency": clean(row.get("agency_name_standardized")) or clean(row.get("agency_name")),
                     "recipient": recipient,
                     "region": clean(row.get("region_standardized")) or clean(row.get("region_name")),
