@@ -6,20 +6,19 @@ import openpyxl
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parent
-SOURCE = WORKSPACE / "Screener-Low-Carbon-AS-Copy.xlsx"
+SOURCE_CANDIDATES = [
+    WORKSPACE / "scratch" / "screener_low_carbon_transport.xlsx",
+    WORKSPACE / "Screener- Final - Low Carbon Transport_with highlights.xlsx",
+    WORKSPACE / "Screener-Low-Carbon-AS-Copy.xlsx",
+]
 OUT_TS = ROOT / "src" / "app" / "data" / "lowCarbonScreenerData.ts"
 
-DIMENSION_SHORT_LABELS = {
-    "Infrastructure": "Infrastructure",
-    "Transport Activity": "Activity",
-    "Fuel Transition": "Fuel Transition",
-    "Transport Carbon Emissions": "Emissions",
-    "Low Carbon Transport Policies": "Policies",
-    "Co-Benefits": "Co-Benefits",
-    "Economic and Financial": "Economic",
-    "Institutional": "Institutional",
-    "International Support": "Support",
-}
+AXIS_COLUMNS = [
+    ("Need", "Need Axis", 16),
+    ("Readiness", "Readiness Axis", 17),
+    ("Financeability", "Financeability Axis", 18),
+]
+STRONG_AXIS_THRESHOLD = 0.70
 
 ECONOMY_ALIASES = {
     "Turkey": "Türkiye",
@@ -41,64 +40,81 @@ def num(value):
         return 0.0
 
 
-def get_dimension_weights(wb):
-    ws = wb["Weight"]
-    weights = {}
-    for row in range(1, ws.max_row + 1):
-        dimension = clean(ws.cell(row, 14).value)
-        value = ws.cell(row, 15).value
-        if dimension and isinstance(value, (int, float)):
-            weights[dimension] = float(value)
-    return weights
+def find_source():
+    for source in SOURCE_CANDIDATES:
+        if source.exists():
+            return source
+    raise FileNotFoundError(
+        "Missing source workbook. Checked: "
+        + ", ".join(str(source) for source in SOURCE_CANDIDATES)
+    )
+
+
+def classify_profile(dimensions):
+    strong_axes = [item["dimension"] for item in dimensions if item["score"] >= STRONG_AXIS_THRESHOLD]
+    if len(strong_axes) >= 3:
+        return {
+            "profileLabel": "Strong pull across all three axes",
+            "profileColor": "#E64B2A",
+            "profileTone": "red",
+            "strongAxes": strong_axes,
+        }
+    if len(strong_axes) == 2:
+        return {
+            "profileLabel": "Stronger pull across two axes",
+            "profileColor": "#F5C400",
+            "profileTone": "yellow",
+            "strongAxes": strong_axes,
+        }
+    if len(strong_axes) == 1:
+        return {
+            "profileLabel": f"Focused pull on {strong_axes[0].lower()}",
+            "profileColor": "#9EBB1B",
+            "profileTone": "green",
+            "strongAxes": strong_axes,
+        }
+    return {
+        "profileLabel": "Overall low to moderate focus",
+        "profileColor": "#4E9BC3",
+        "profileTone": "blue",
+        "strongAxes": strong_axes,
+    }
 
 
 def main():
-    if not SOURCE.exists():
-        raise FileNotFoundError(f"Missing source workbook: {SOURCE}")
-
-    wb = openpyxl.load_workbook(SOURCE, read_only=False, data_only=True)
+    source = find_source()
+    wb = openpyxl.load_workbook(source, read_only=True, data_only=True)
     scoring = wb["Scoring"]
-    weights = get_dimension_weights(wb)
-
-    dimension_by_col = {}
-    current_dimension = ""
-    for col in range(3, scoring.max_column + 1):
-        dimension = clean(scoring.cell(2, col).value)
-        if dimension:
-            current_dimension = dimension
-        if current_dimension:
-            dimension_by_col[col] = current_dimension
 
     economies = []
-    for row in range(5, scoring.max_row + 1):
-        economy = clean(scoring.cell(row, 2).value)
-        if not economy:
+    for row in range(51, scoring.max_row + 1):
+        economy = clean(scoring.cell(row, 5).value)
+        axis_values = [num(scoring.cell(row, col).value) for _, _, col in AXIS_COLUMNS]
+        if not economy or not any(value > 0 for value in axis_values):
             continue
         economy = ECONOMY_ALIASES.get(economy, economy)
-        score = round(num(scoring.cell(row, 1).value), 4)
-        dimension_scores = {dimension: 0.0 for dimension in weights}
-        for col, dimension in dimension_by_col.items():
-            if dimension in dimension_scores:
-                dimension_scores[dimension] += num(scoring.cell(row, col).value)
 
         dimensions = []
-        for dimension, max_score in weights.items():
-            value = round(dimension_scores.get(dimension, 0.0), 4)
+        for dimension, short_label, col in AXIS_COLUMNS:
+            value = round(num(scoring.cell(row, col).value), 4)
             dimensions.append(
                 {
                     "dimension": dimension,
-                    "shortLabel": DIMENSION_SHORT_LABELS.get(dimension, dimension),
+                    "shortLabel": short_label,
                     "score": value,
-                    "maxScore": round(max_score, 4),
-                    "normalized": round((value / max_score) * 100, 2) if max_score else 0,
+                    "maxScore": 1,
+                    "normalized": round(value * 100, 2),
                 }
             )
 
+        average_score = round(sum(item["score"] for item in dimensions) / len(dimensions), 4)
+        profile = classify_profile(dimensions)
         economies.append(
             {
                 "economy": economy,
-                "score": score,
+                "score": average_score,
                 "dimensions": dimensions,
+                **profile,
             }
         )
 
@@ -110,22 +126,23 @@ def main():
     dimension_meta = [
         {
             "dimension": dimension,
-            "shortLabel": DIMENSION_SHORT_LABELS.get(dimension, dimension),
-            "maxScore": round(max_score, 4),
+            "shortLabel": short_label,
+            "maxScore": 1,
         }
-        for dimension, max_score in weights.items()
+        for dimension, short_label, _ in AXIS_COLUMNS
     ]
 
     OUT_TS.write_text(
         "// Auto-generated by build_low_carbon_screener_data.py\n"
         "// Do not edit manually.\n\n"
         "export type LowCarbonScreenerDimension = { dimension: string; shortLabel: string; score: number; maxScore: number; normalized: number };\n\n"
-        "export type LowCarbonScreenerEconomy = { economy: string; score: number; rank: number; dimensions: LowCarbonScreenerDimension[] };\n\n"
+        "export type LowCarbonScreenerEconomy = { economy: string; score: number; rank: number; dimensions: LowCarbonScreenerDimension[]; profileLabel: string; profileColor: string; profileTone: string; strongAxes: string[] };\n\n"
         f"export const LOW_CARBON_SCREENER_DIMENSIONS = {json.dumps(dimension_meta, ensure_ascii=False, indent=2)} as const;\n\n"
         f"export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = {json.dumps(economies, ensure_ascii=False, indent=2)};\n\n"
         f"export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEconomy> = {json.dumps(by_economy, ensure_ascii=False, indent=2)};\n",
         encoding="utf-8",
     )
+    print(f"Read {source}")
     print(f"Wrote {OUT_TS}")
 
 

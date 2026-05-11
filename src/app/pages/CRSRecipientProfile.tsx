@@ -39,7 +39,41 @@ const MODE_AREA_COLORS = {
 
 const CURRENCY_AXIS_WIDTH = 76;
 const RECIPIENT_LOW_CARBON_TEXT =
-  'The scores below provide a country-specific view of low-carbon transport opportunities based on three dimensions: needs, financeability, and readiness. Together, these scores offer additional insight into the extent to which low-carbon transport support may be needed, financeable, and ready for implementation in the selected economy. The assessment is based on available information across 50 indicators and is intended to support interpretation, comparison, and further discussion rather than serve as a definitive ranking.';
+  'The scores below provide a country-specific view of low-carbon transport needs, readiness, and financeability. They are intended to support interpretation, comparison, and further discussion rather than serve as a definitive ranking.';
+
+const LOW_CARBON_AXIS_EXPLANATIONS = [
+  {
+    label: 'Need axis',
+    text: 'Higher values indicate greater urgency for transport decarbonisation intervention, including infrastructure gaps, emissions growth pressures, fossil fuel dependence, and wider development needs.',
+  },
+  {
+    label: 'Readiness axis',
+    text: 'Higher values indicate stronger policy frameworks, institutional capacity, and transition preparedness to convert ambition into action.',
+  },
+  {
+    label: 'Financeability axis',
+    text: 'Higher values indicate more favourable conditions for mobilising, structuring, and absorbing international climate finance.',
+  },
+];
+
+const LOW_CARBON_PROFILE_LEGEND = [
+  {
+    color: '#E64B2A',
+    text: 'Red indicates a strong pull across all three axes.',
+  },
+  {
+    color: '#F5C400',
+    text: 'Yellow marks economies where two pillars show stronger pull.',
+  },
+  {
+    color: '#9EBB1B',
+    text: 'Green marks economies where opportunity is concentrated primarily along one axis.',
+  },
+  {
+    color: '#4E9BC3',
+    text: 'Blue represents an overall low to moderate focus.',
+  },
+];
 
 type CRSRecord = CRSDecadeRecord;
 
@@ -95,9 +129,8 @@ function ScreenerRadarTooltip({ active, payload, label }: any) {
     <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg">
       <p className="font-semibold text-slate-900">{label}</p>
       <p className="mt-1 text-slate-600">
-        Score: <span className="font-medium text-slate-900">{row.score.toFixed(1)}</span> / {row.maxScore.toFixed(1)}
+        Score: <span className="font-medium text-slate-900">{row.score.toFixed(2)}</span> / {row.maxScore.toFixed(2)}
       </p>
-      <p className="mt-0.5 text-slate-500">{row.normalized.toFixed(1)}% of dimension maximum</p>
     </div>
   );
 }
@@ -431,31 +464,69 @@ export function CRSRecipientProfile() {
               <p className="text-base font-semibold text-slate-900">Low-Carbon Transport Needs, Opportunity and Readiness Assessment</p>
               <p className="mt-2 w-full text-sm leading-6 text-slate-600 sm:text-justify">{RECIPIENT_LOW_CARBON_TEXT}</p>
             </div>
-            <div className="grid grid-cols-1 gap-6 xl:grid-cols-[0.75fr_1.25fr]">
-              <div className="rounded-xl border border-slate-200 bg-white p-5">
-                <p className="text-sm font-semibold text-slate-900">Screener Score</p>
-                <p className="mt-3 text-4xl font-semibold tabular-nums text-slate-900">{lowCarbonScreener.score.toFixed(1)}</p>
-                <p className="mt-1 text-sm text-slate-500">Rank {lowCarbonScreener.rank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</p>
+            <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Need, Readiness, and Financeability Axes</p>
+                  <p className="mt-1 text-xs text-slate-400">Radar values are normalised from 0.00 to 1.00.</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                    <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: lowCarbonScreener.profileColor }} />
+                    <span className="text-sm font-medium text-slate-800">{lowCarbonScreener.profileLabel}</span>
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    <span className="font-semibold tabular-nums text-slate-900">{lowCarbonScreener.score.toFixed(2)}</span>
+                    <span className="ml-1">average; rank {lowCarbonScreener.rank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</span>
+                  </div>
+                </div>
               </div>
-              <div className="rounded-xl border border-slate-200 bg-white p-5">
-                <p className="mb-1 text-sm font-semibold text-slate-900">Score Breakdown by Dimension</p>
-                <p className="mb-4 text-xs text-slate-400">Radar shows each dimension as percent of its maximum score.</p>
+              <div className="mt-4">
                 <ResponsiveContainer width="100%" height={360}>
-                  <RadarChart data={lowCarbonScreener.dimensions} outerRadius={125}>
+                  <RadarChart data={lowCarbonScreener.dimensions} outerRadius={118}>
                     <PolarGrid stroke="#E2E8F0" />
                     <PolarAngleAxis dataKey="shortLabel" tick={<OutwardPolarAngleTick />} />
-                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94A3B8', fontSize: 10 }} tickCount={5} />
+                    <PolarRadiusAxis
+                      angle={90}
+                      domain={[0, 1]}
+                      tick={{ fill: '#94A3B8', fontSize: 10 }}
+                      tickCount={6}
+                      tickFormatter={(value: number) => value.toFixed(2)}
+                    />
                     <Tooltip content={<ScreenerRadarTooltip />} />
                     <Radar
                       name="Screener"
-                      dataKey="normalized"
-                      stroke="#0EA5E9"
-                      fill="#0EA5E9"
-                      fillOpacity={0.28}
+                      dataKey="score"
+                      stroke={lowCarbonScreener.profileColor}
+                      fill={lowCarbonScreener.profileColor}
+                      fillOpacity={0.3}
                       strokeWidth={2}
                     />
                   </RadarChart>
                 </ResponsiveContainer>
+              </div>
+            </div>
+            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+              <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                {LOW_CARBON_AXIS_EXPLANATIONS.map((item) => (
+                  <div key={item.label}>
+                    <p className="text-sm font-semibold text-slate-900">{item.label}</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-5 border-t border-slate-100 pt-4">
+                <p className="text-sm leading-6 text-slate-600">
+                  Countries with broad and balanced profiles across all three pillars may represent strong opportunities for integrated D2D engagement and are marked in the profile color legend below. Countries with uneven profiles can be equally important because they help identify where targeted interventions such as policy reform, capacity building, or financial structuring may deliver the greatest marginal impact.
+                </p>
+                <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                  {LOW_CARBON_PROFILE_LEGEND.map((item) => (
+                    <div key={item.color} className="flex items-start gap-2 text-xs leading-5 text-slate-600">
+                      <span className="mt-1 h-3 w-8 shrink-0 rounded-sm" style={{ backgroundColor: item.color }} />
+                      <span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </section>
