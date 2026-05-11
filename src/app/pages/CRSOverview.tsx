@@ -18,7 +18,7 @@ import { CRSPageFilters } from '../components/CRSPageFilters';
 import { WrappedCategoryTick } from '../components/ChartTicks';
 import { CRSPageIntro } from '../components/CRSPageIntro';
 import { crsFmt } from '../data/crsData';
-import { LOW_CARBON_SCREENER_RANKING } from '../data/lowCarbonScreenerData';
+import { LOW_CARBON_OLD_SCREENER_DIMENSIONS, LOW_CARBON_OLD_SCREENER_RANKING } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
 
@@ -32,7 +32,19 @@ const MODE_AREA_COLORS = {
 
 const CURRENCY_AXIS_WIDTH = 76;
 const LOW_CARBON_ASSESSMENT_TEXT =
-  'The scores below provide a comparative view of low-carbon transport opportunities across economies based on three dimensions: needs, financeability, and readiness. Taken together, the final scores aim to provide additional insight into where low-carbon transport support may be most needed, most financeable, and most ready for implementation. This exercise was conducted based on available information across 50 indicators.';
+  'The scores below provide a comparative view of low-carbon transport needs, opportunity, and readiness across economies using the original screener dimensions. The stacked bars show how each detailed dimension contributes to the overall 100-point score.';
+
+const LOW_CARBON_DIMENSION_COLORS: Record<string, string> = {
+  Infrastructure: '#5B8DEF',
+  'Transport Activity': '#67A9CF',
+  'Fuel Transition': '#7FCDBB',
+  'Transport Carbon Emissions': '#F6A57A',
+  'Low Carbon Transport Policies': '#B8A1E3',
+  'Co-Benefits': '#D98CB3',
+  'Economic and Financial': '#E6C16A',
+  Institutional: '#95A3B8',
+  'International Support': '#5FA08D',
+};
 
 function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitments' }: any) {
   if (!active || !payload?.length) return null;
@@ -55,13 +67,22 @@ function StackedModeTooltip({ active, payload, label, measureLabel = 'Commitment
   );
 }
 
-function ScreenerScoreTooltip({ active, payload, label }: any) {
+function ScreenerStackTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
-  const score = Number(payload[0].value);
+  const rows = payload.filter((item: any) => Number(item.value) > 0);
+  const total = rows.reduce((sum: number, item: any) => sum + Number(item.value || 0), 0);
   return (
     <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-lg">
       <p className="text-[13px] font-semibold text-slate-900">{label}</p>
-      <p className="mt-1 text-[12px] text-slate-600">Screener score: <span className="font-medium text-slate-900">{score.toFixed(1)}</span></p>
+      <p className="mt-1 text-[12px] text-slate-600">Overall score: <span className="font-medium text-slate-900">{total.toFixed(1)}</span></p>
+      <div className="mt-2 space-y-1.5">
+        {rows.map((item: any) => (
+          <div key={item.dataKey} className="flex items-center justify-between gap-5 text-[12px]">
+            <span style={{ color: item.color }}>{item.dataKey}</span>
+            <span className="font-medium text-slate-700">{Number(item.value).toFixed(1)}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -78,7 +99,13 @@ export function CRSOverview() {
   const sectorSeries = useMemo(() => aggregateSustainabilityTags(filteredFacts), [filteredFacts]);
   const donorModeStack = useMemo(() => buildModeStackByDonor(filteredFacts, 8), [filteredFacts]);
   const financingSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.flow).slice(0, 10), [filteredFacts]);
-  const lowCarbonRanking = useMemo(() => LOW_CARBON_SCREENER_RANKING, []);
+  const lowCarbonRanking = useMemo(
+    () => LOW_CARBON_OLD_SCREENER_RANKING.map((row) => ({
+      ...row,
+      ...Object.fromEntries(row.oldDimensions.map((dimension) => [dimension.dimension, dimension.score])),
+    })),
+    [],
+  );
   const lowCarbonRankingHeight = Math.max(620, lowCarbonRanking.length * 25 + 80);
   const measureLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
   const activeFinanceLabel = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
@@ -232,7 +259,7 @@ export function CRSOverview() {
           </div>
           <div className="rounded-xl border border-slate-200 bg-white p-5">
             <p className="mb-1 text-sm font-semibold text-slate-900">Economy Ranking</p>
-            <p className="mb-4 text-xs text-slate-400">All economies sorted highest to lowest.</p>
+            <p className="mb-4 text-xs text-slate-400">Original screener score by detailed dimension, sorted highest to lowest.</p>
             <ResponsiveContainer width="100%" height={lowCarbonRankingHeight}>
               <BarChart data={lowCarbonRanking} layout="vertical" margin={{ top: 0, right: 54, left: 16, bottom: 8 }} barCategoryGap={8}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
@@ -253,15 +280,27 @@ export function CRSOverview() {
                   axisLine={false}
                   interval={0}
                 />
-                <Tooltip content={<ScreenerScoreTooltip />} />
-                <Bar dataKey="score" fill="#0EA5E9" fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={12}>
-                  <LabelList
-                    dataKey="score"
-                    position="right"
-                    formatter={(value: number) => value.toFixed(1)}
-                    style={{ fill: '#475569', fontSize: 11, fontWeight: 600 }}
-                  />
-                </Bar>
+                <Tooltip content={<ScreenerStackTooltip />} />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                {LOW_CARBON_OLD_SCREENER_DIMENSIONS.map((dimension, index) => (
+                  <Bar
+                    key={dimension.dimension}
+                    dataKey={dimension.dimension}
+                    stackId="score"
+                    fill={LOW_CARBON_DIMENSION_COLORS[dimension.dimension] ?? '#0EA5E9'}
+                    maxBarSize={12}
+                    radius={index === LOW_CARBON_OLD_SCREENER_DIMENSIONS.length - 1 ? [0, 3, 3, 0] : [0, 0, 0, 0]}
+                  >
+                    {index === LOW_CARBON_OLD_SCREENER_DIMENSIONS.length - 1 ? (
+                      <LabelList
+                        dataKey="oldScore"
+                        position="right"
+                        formatter={(value: number) => value.toFixed(1)}
+                        style={{ fill: '#475569', fontSize: 11, fontWeight: 600 }}
+                      />
+                    ) : null}
+                  </Bar>
+                ))}
               </BarChart>
             </ResponsiveContainer>
           </div>

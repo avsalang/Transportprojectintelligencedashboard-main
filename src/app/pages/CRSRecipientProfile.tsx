@@ -135,11 +135,27 @@ function ScreenerRadarTooltip({ active, payload, label }: any) {
   );
 }
 
+function OldScreenerRadarTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  const row = payload[0].payload;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-lg">
+      <p className="font-semibold text-slate-900">{label}</p>
+      <p className="mt-1 text-slate-600">
+        Score: <span className="font-medium text-slate-900">{row.score.toFixed(1)}</span> / {row.maxScore.toFixed(1)}
+      </p>
+      <p className="mt-1 text-slate-600">
+        Normalised: <span className="font-medium text-slate-900">{row.normalized.toFixed(0)}</span> / 100
+      </p>
+    </div>
+  );
+}
+
 function OutwardPolarAngleTick({ x = 0, y = 0, cx = 0, cy = 0, payload }: any) {
   const dx = x - cx;
   const dy = y - cy;
   const length = Math.sqrt(dx * dx + dy * dy) || 1;
-  const offset = 20;
+  const offset = 28;
   const labelX = x + (dx / length) * offset;
   const labelY = y + (dy / length) * offset;
   const anchor = labelX > cx + 8 ? 'start' : labelX < cx - 8 ? 'end' : 'middle';
@@ -464,46 +480,84 @@ export function CRSRecipientProfile() {
               <p className="text-base font-semibold text-slate-900">Low-Carbon Transport Needs, Opportunity and Readiness Assessment</p>
               <p className="mt-2 w-full text-sm leading-6 text-slate-600 sm:text-justify">{RECIPIENT_LOW_CARBON_TEXT}</p>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-5">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">Need, Readiness, and Financeability Axes</p>
-                  <p className="mt-1 text-xs text-slate-400">Radar values are normalised from 0.00 to 1.00.</p>
+            <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+              <div className="rounded-xl border border-slate-200 bg-white p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Need, Readiness, and Financeability Axes</p>
+                    <p className="mt-1 text-xs text-slate-400">Radar values are normalised from 0.00 to 1.00.</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                      <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: lowCarbonScreener.profileColor }} />
+                      <span className="text-sm font-medium text-slate-800">{lowCarbonScreener.profileLabel}</span>
+                    </div>
+                    <div className="whitespace-nowrap text-sm text-slate-500">
+                      <span className="font-semibold tabular-nums text-slate-900">{lowCarbonScreener.newScore.toFixed(2)}</span>
+                      <span className="ml-1">average; rank {lowCarbonScreener.newRank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-                    <span className="h-3 w-3 rounded-sm" style={{ backgroundColor: lowCarbonScreener.profileColor }} />
-                    <span className="text-sm font-medium text-slate-800">{lowCarbonScreener.profileLabel}</span>
-                  </div>
-                  <div className="text-sm text-slate-500">
-                    <span className="font-semibold tabular-nums text-slate-900">{lowCarbonScreener.score.toFixed(2)}</span>
-                    <span className="ml-1">average; rank {lowCarbonScreener.rank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</span>
-                  </div>
+                <div className="mt-4">
+                  <ResponsiveContainer width="100%" height={360}>
+                    <RadarChart data={lowCarbonScreener.newDimensions} outerRadius={112}>
+                      <PolarGrid stroke="#E2E8F0" />
+                      <PolarAngleAxis dataKey="shortLabel" tick={<OutwardPolarAngleTick />} />
+                      <PolarRadiusAxis
+                        angle={90}
+                        domain={[0, 1]}
+                        tick={{ fill: '#94A3B8', fontSize: 10 }}
+                        tickCount={6}
+                        tickFormatter={(value: number) => value.toFixed(2)}
+                      />
+                      <Tooltip content={<ScreenerRadarTooltip />} />
+                      <Radar
+                        name="Screener"
+                        dataKey="score"
+                        stroke={lowCarbonScreener.profileColor}
+                        fill={lowCarbonScreener.profileColor}
+                        fillOpacity={0.3}
+                        strokeWidth={2}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-              <div className="mt-4">
-                <ResponsiveContainer width="100%" height={360}>
-                  <RadarChart data={lowCarbonScreener.dimensions} outerRadius={118}>
-                    <PolarGrid stroke="#E2E8F0" />
-                    <PolarAngleAxis dataKey="shortLabel" tick={<OutwardPolarAngleTick />} />
-                    <PolarRadiusAxis
-                      angle={90}
-                      domain={[0, 1]}
-                      tick={{ fill: '#94A3B8', fontSize: 10 }}
-                      tickCount={6}
-                      tickFormatter={(value: number) => value.toFixed(2)}
-                    />
-                    <Tooltip content={<ScreenerRadarTooltip />} />
-                    <Radar
-                      name="Screener"
-                      dataKey="score"
-                      stroke={lowCarbonScreener.profileColor}
-                      fill={lowCarbonScreener.profileColor}
-                      fillOpacity={0.3}
-                      strokeWidth={2}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
+              <div className="rounded-xl border border-slate-200 bg-white p-5">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Detailed 9-Dimension Profile</p>
+                    <p className="mt-1 text-xs text-slate-400">More detailed spider chart; values normalised from 0 to 100.</p>
+                  </div>
+                  <div className="whitespace-nowrap text-sm text-slate-500">
+                    <span className="font-semibold tabular-nums text-slate-900">{lowCarbonScreener.oldScore.toFixed(1)}</span>
+                    <span className="ml-1">score; rank {lowCarbonScreener.oldRank} of {Object.keys(LOW_CARBON_SCREENER_BY_ECONOMY).length}</span>
+                  </div>
+                </div>
+                <div className="mt-5">
+                  <ResponsiveContainer width="100%" height={360}>
+                    <RadarChart data={lowCarbonScreener.oldDimensions} outerRadius={96}>
+                      <PolarGrid stroke="#E2E8F0" />
+                      <PolarAngleAxis dataKey="shortLabel" tick={<OutwardPolarAngleTick />} />
+                      <PolarRadiusAxis
+                        angle={78}
+                        domain={[0, 100]}
+                        tick={{ fill: '#94A3B8', fontSize: 10 }}
+                        tickCount={6}
+                        tickFormatter={(value: number) => value.toFixed(0)}
+                      />
+                      <Tooltip content={<OldScreenerRadarTooltip />} />
+                      <Radar
+                        name="Detailed Screener"
+                        dataKey="normalized"
+                        stroke="#2563EB"
+                        fill="#2563EB"
+                        fillOpacity={0.22}
+                        strokeWidth={2}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
             <div className="mt-6 rounded-xl border border-slate-200 bg-white p-5">

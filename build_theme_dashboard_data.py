@@ -7,8 +7,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 WORKSPACE = ROOT.parent
-EMOBILITY_CSV = WORKSPACE / "emobility_review_batches_completed" / "crs_emobility_tagged_records_final.csv"
-ROAD_SAFETY_CSV = WORKSPACE / "crs_road_safety_hits_v2.csv"
+AI_THEME_TAGS_CSV = WORKSPACE / "theme_tagging_new_semantic_rpt10_strict" / "ai_tagging_results_crs_rows_positive_long.csv"
+THEME_DEFINITIONS_JSON = WORKSPACE / "theme_tagging_new_semantic_rpt10_strict" / "theme_definitions_new.json"
+CRS_RECORDS_INDEX = ROOT / "public" / "data" / "crs-decade-records" / "index.json"
 OUT_TS = ROOT / "src" / "app" / "data" / "themeData.ts"
 ATO_ECONOMIES_TS = ROOT / "src" / "app" / "data" / "atoEconomies.ts"
 
@@ -35,35 +36,22 @@ THEMES = {
     "e_mobility": {
         "label": "E-Mobility",
         "shortLabel": "E-Mobility",
-        "description": "Electric mobility, transport electrification, charging, grid integration, and enabling systems across all transport modes.",
-        "color": "#0EA5E9",
+        "description": "Projects explicitly supporting electric mobility, electric vehicles, charging or battery infrastructure, grid integration, electric freight and logistics, EV finance, pilots, skills, data, or inclusion.",
+        "color": "#0891B2",
     },
-    "road_safety": {
-        "label": "Road Safety",
-        "shortLabel": "Road Safety",
-        "description": "Projects and transactions related to road safety, safety management, safer infrastructure, and transport safety interventions.",
-        "color": "#F97316",
+    "active_transport": {
+        "label": "Active Transport",
+        "shortLabel": "Active Transport",
+        "description": "Projects supporting walking, cycling, non-motorized transport, pedestrian infrastructure, cycling facilities, safe active mobility, complete streets, and first/last-mile active access.",
+        "color": "#65A30D",
+    },
+    "urban_transport": {
+        "label": "Urban Transport",
+        "shortLabel": "Urban Transport",
+        "description": "Projects focused on mobility within cities, towns, metropolitan areas, or other urban settlements, including public transport, urban roads and streets, traffic management, terminals, multimodal integration, TOD, shared mobility, and urban logistics.",
+        "color": "#4F46E5",
     },
 }
-
-EMOBILITY_SUBTYPES = [
-    ("electric_vehicle", "Electric Vehicle"),
-    ("public_transport_electrification", "Public Transport Electrification"),
-    ("charging_infrastructure", "Charging Infrastructure"),
-    ("power_grid_and_energy_integration", "Power Grid & Energy Integration"),
-    ("battery_systems_and_supply_chain", "Battery Systems & Supply Chain"),
-    ("recycling_circularity", "Recycling & Circularity"),
-    ("policy_regulation_and_standards", "Policy, Regulation & Standards"),
-    ("financing_and_business_models", "Financing & Business Models"),
-    ("operations_maintenance_and_skills", "Operations, Maintenance & Skills"),
-    ("urban_mobility_and_last_mile_electrification", "Urban Mobility & Last-Mile Electrification"),
-    ("freight_and_logistics_electrification", "Freight & Logistics Electrification"),
-    ("environmental_and_climate_impacts", "Environmental & Climate Impacts"),
-    ("equity_access_and_inclusion", "Equity, Access & Inclusion"),
-    ("data_digital_systems_and_innovation", "Data, Digital Systems & Innovation"),
-    ("safety_and_risk_management", "Safety & Risk Management"),
-    ("institutional_coordination_and_market_development", "Institutional Coordination & Market Development"),
-]
 
 
 def clean(value):
@@ -119,6 +107,25 @@ def parse_int(value):
 
 def truthy(value):
     return clean(value).upper() in {"TRUE", "1", "YES"}
+
+
+def load_subtheme_labels():
+    data = json.loads(THEME_DEFINITIONS_JSON.read_text(encoding="utf-8"))
+    labels = {}
+    for theme in data.get("themes", []):
+        for subtheme in theme.get("subthemes", []):
+            labels[subtheme["id"]] = subtheme["label"]
+    return labels
+
+
+def load_crs_record_lookup():
+    index = json.loads(CRS_RECORDS_INDEX.read_text(encoding="utf-8"))
+    lookup = {}
+    for chunk in index["chunks"]:
+        chunk_path = ROOT / "public" / chunk["file"]
+        for record in json.loads(chunk_path.read_text(encoding="utf-8")):
+            lookup[str(record.get("row_number"))] = record
+    return lookup
 
 
 def ranking_rows(counter, top=10):
@@ -234,77 +241,69 @@ def build_emobility_sankey(theme_rows, top_donor_count=8, top_recipient_count=10
 
 
 def load_theme_rows():
-    datasets = []
+    crs_records = load_crs_record_lookup()
+    subtheme_labels = load_subtheme_labels()
+    grouped = {}
 
-    with EMOBILITY_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
+    with AI_THEME_TAGS_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
         for row in csv.DictReader(handle):
-            recipient = normalize_recipient(row.get("recipient"))
-            if not is_ato_scoped_recipient(
-                recipient,
-                row.get("recipient_scope"),
-                row.get("recipient_region_detail"),
-                row.get("region"),
-            ):
+            row_number = clean(row.get("row_number"))
+            theme_id = clean(row.get("theme_id"))
+            if theme_id not in THEMES or not row_number:
                 continue
-            datasets.append(
-                {
-                    "themeId": "e_mobility",
-                    "rowNumber": clean(row.get("row_number")),
-                    "year": parse_int(row.get("year")),
-                    "donor": normalize_donor(row.get("donor")),
-                    "agency": clean(row.get("agency")),
-                    "recipient": recipient,
-                    "region": clean(row.get("region")),
-                    "mode": clean(row.get("mode")) or "Other",
-                    "modeDetail": clean(row.get("mode_detail")),
-                    "flow": clean(row.get("flow")),
-                    "commitment": parse_float(row.get("commitment")),
-                    "disbursement": parse_float(row.get("disbursement")),
-                    "commitment_defl": parse_float(row.get("commitment_defl")),
-                    "disbursement_defl": parse_float(row.get("disbursement_defl")),
-                    "title": clean(row.get("title")),
-                    "description": clean(row.get("long_description")) or clean(row.get("short_description")) or clean(row.get("purpose")),
-                    "tags": [label for key, label in EMOBILITY_SUBTYPES if truthy(row.get(key))],
-                    "confidence": clean(row.get("confidence")),
-                    "needsReview": truthy(row.get("needs_review")),
-                }
-            )
 
-    with ROAD_SAFETY_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
-        for idx, row in enumerate(csv.DictReader(handle), start=1):
-            recipient = normalize_recipient(
-                clean(row.get("recipient_standardized")) or clean(row.get("recipient_name"))
-            )
+            crs = crs_records.get(row_number)
+            if not crs:
+                continue
+
+            recipient = normalize_recipient(crs.get("recipient"))
             if not is_ato_scoped_recipient(
                 recipient,
-                row.get("recipient_scope"),
-                row.get("recipient_region_detail"),
-                clean(row.get("region_standardized")) or clean(row.get("region_name")),
+                crs.get("recipient_scope"),
+                crs.get("recipient_region_detail"),
+                crs.get("region"),
             ):
                 continue
-            datasets.append(
-                {
-                    "themeId": "road_safety",
-                    "rowNumber": clean(row.get("row_number")) or f"road-{idx}",
-                    "year": parse_int(row.get("year")),
-                    "donor": normalize_donor(clean(row.get("donor_name_standardized")) or clean(row.get("donor_name"))),
-                    "agency": clean(row.get("agency_name_standardized")) or clean(row.get("agency_name")),
+
+            key = (row_number, theme_id)
+            entry = grouped.get(key)
+            if entry is None:
+                entry = {
+                    "themeId": theme_id,
+                    "rowNumber": row_number,
+                    "year": parse_int(crs.get("year")),
+                    "donor": normalize_donor(crs.get("donor")),
+                    "agency": clean(crs.get("agency")),
                     "recipient": recipient,
-                    "region": clean(row.get("region_standardized")) or clean(row.get("region_name")),
-                    "mode": clean(row.get("mode_ato_umbrella")) or "Other",
-                    "modeDetail": clean(row.get("mode_ato_detail")) or clean(row.get("purpose_name")),
-                    "flow": clean(row.get("flow_name")),
-                    "commitment": parse_float(row.get("usd_commitment")),
-                    "disbursement": parse_float(row.get("usd_disbursement")),
-                    "commitment_defl": parse_float(row.get("usd_commitment_defl")),
-                    "disbursement_defl": parse_float(row.get("usd_disbursement_defl")),
-                    "title": clean(row.get("project_title")) or clean(row.get("short_description")),
-                    "description": clean(row.get("long_description")) or clean(row.get("short_description")) or clean(row.get("purpose_name")),
+                    "region": clean(crs.get("region")),
+                    "mode": clean(crs.get("mode")) or "Other",
+                    "modeDetail": clean(crs.get("mode_detail")),
+                    "flow": clean(crs.get("flow")),
+                    "commitment": parse_float(crs.get("commitment")),
+                    "disbursement": parse_float(crs.get("disbursement")),
+                    "commitment_defl": parse_float(crs.get("commitment_defl")),
+                    "disbursement_defl": parse_float(crs.get("disbursement_defl")),
+                    "title": clean(crs.get("title")),
+                    "description": clean(crs.get("long_description")) or clean(crs.get("short_description")) or clean(crs.get("purpose")),
                     "tags": [],
-                    "confidence": "",
+                    "tagIds": set(),
                     "needsReview": False,
                 }
-            )
+                grouped[key] = entry
+
+            subtheme_id = clean(row.get("subtheme_id"))
+            tag_label = subtheme_labels.get(subtheme_id)
+            if not tag_label:
+                tag_label = f"{THEMES[theme_id]['shortLabel']} tag"
+            if tag_label not in entry["tagIds"]:
+                entry["tagIds"].add(tag_label)
+                entry["tags"].append(tag_label)
+            entry["needsReview"] = entry["needsReview"] or truthy(row.get("needs_human_review"))
+
+    datasets = []
+    for entry in grouped.values():
+        entry.pop("tagIds", None)
+        datasets.append(entry)
 
     return datasets
 
@@ -333,7 +332,10 @@ def main():
     emobility_sankey = {"nodes": [], "links": []}
     year_map = defaultdict(lambda: defaultdict(lambda: {"commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0}))
 
-    for theme_id, theme_rows in by_theme.items():
+    for theme_id in THEMES:
+        theme_rows = by_theme.get(theme_id, [])
+        if not theme_rows:
+            continue
         years = [row["year"] for row in theme_rows if row["year"]]
         donors = {row["donor"] for row in theme_rows if row["donor"]}
         recipients = {row["recipient"] for row in theme_rows if row["recipient"]}
@@ -383,7 +385,7 @@ def main():
         top_recipients[theme_id] = ranking_rows(recipient_counter)
         mode_breakdown[theme_id] = ranking_rows(mode_counter, top=8)
         if theme_id == "e_mobility":
-            subtype_rows = ranking_rows(subtype_counter, top=len(EMOBILITY_SUBTYPES))
+            subtype_rows = ranking_rows(subtype_counter, top=max(len(subtype_counter), 1))
             emobility_sankey = build_emobility_sankey(theme_rows)
 
         all_records[theme_id] = [
@@ -443,10 +445,12 @@ def main():
         "sampleRecords": sample_records,
     }
 
+    theme_type = " | ".join(json.dumps(theme_id) for theme_id in THEMES)
+
     OUT_TS.write_text(
         "// Auto-generated by build_theme_dashboard_data.py\n"
         "// Do not edit manually.\n\n"
-        "export type ThemeId = 'e_mobility' | 'road_safety';\n\n"
+        f"export type ThemeId = {theme_type};\n\n"
         "export type ThemeRankingRow = { label: string; commitment: number; disbursement: number; commitment_defl: number; disbursement_defl: number; count: number };\n\n"
         "export type ThemeRecord = { rowNumber: string; year: number | null; donor: string; recipient: string; mode: string; flow: string; commitment_defl: number; disbursement_defl: number; title: string; description: string; tags: string[]; needsReview: boolean };\n\n"
         "export type ThemeSankeyNode = { id: string; name: string; role: 'donor' | 'subtag' | 'recipient'; totalValue: number; color?: string };\n\n"

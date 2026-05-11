@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Bar,
   BarChart,
@@ -40,6 +40,56 @@ const GLOBAL_THEME_YEAR_MIN = Math.min(...THEME_SUMMARIES.map((theme) => theme.y
 const GLOBAL_THEME_YEAR_MAX = Math.max(...THEME_SUMMARIES.map((theme) => theme.yearMax ?? 2024));
 
 type ThemeSummary = (typeof THEME_SUMMARIES)[number];
+type ThemeFilters = { yearMin: number; yearMax: number; donor: string; recipient: string; subtag: string };
+type ThemeFilterState = Record<ThemeId, ThemeFilters>;
+type FilterOption = { value: string; label: string; commitment_defl: number; count: number };
+
+const THEME_IDS = THEME_SUMMARIES.map((theme) => theme.id as ThemeId);
+
+function themeSectionId(themeId: ThemeId) {
+  return `theme-section-${themeId}`;
+}
+
+function createInitialFilters(): ThemeFilterState {
+  return THEME_SUMMARIES.reduce((filters, theme) => {
+    const themeId = theme.id as ThemeId;
+    filters[themeId] = {
+      yearMin: theme.yearMin ?? GLOBAL_THEME_YEAR_MIN,
+      yearMax: theme.yearMax ?? GLOBAL_THEME_YEAR_MAX,
+      donor: '',
+      recipient: '',
+      subtag: '',
+    };
+    return filters;
+  }, {} as ThemeFilterState);
+}
+
+function buildFilterOptions(records: ThemeRecord[], valuesForRecord: (record: ThemeRecord) => string[]): FilterOption[] {
+  const buckets = new Map<string, Omit<FilterOption, 'value' | 'label'>>();
+  records.forEach((record) => {
+    const values = valuesForRecord(record).filter(Boolean);
+    values.forEach((value) => {
+      const bucket = buckets.get(value) ?? { commitment_defl: 0, count: 0 };
+      bucket.commitment_defl += record.commitment_defl;
+      bucket.count += 1;
+      buckets.set(value, bucket);
+    });
+  });
+
+  return [...buckets.entries()]
+    .map(([value, bucket]) => ({ value, label: value, ...bucket }))
+    .sort((a, b) => b.commitment_defl - a.commitment_defl || a.label.localeCompare(b.label));
+}
+
+function filterThemeRecords(records: ThemeRecord[], filters: ThemeFilters) {
+  return records.filter((record) => {
+    if (record.year == null || record.year < filters.yearMin || record.year > filters.yearMax) return false;
+    if (filters.donor && record.donor !== filters.donor) return false;
+    if (filters.recipient && record.recipient !== filters.recipient) return false;
+    if (filters.subtag && !record.tags.includes(filters.subtag)) return false;
+    return true;
+  });
+}
 
 function usdM(value: number): string {
   if (!Number.isFinite(value)) return '-';
@@ -220,7 +270,7 @@ function buildSankeyHoverState(entry: any, type: 'node' | 'link') {
     y: coordinate.y,
     title: node.name,
     value: usdM(node.totalValue),
-    subtitle: node.role === 'subtag' ? 'Technology / enabler total' : `${node.role} total`,
+    subtitle: node.role === 'subtag' ? 'Subtheme total' : `${node.role} total`,
   };
 }
 
@@ -313,7 +363,7 @@ function estimateThemeSankeyHeight(nodes: ThemeSankeyData['nodes']) {
   return Math.max(700, columnHeight('donor'), columnHeight('subtag'), columnHeight('recipient'));
 }
 
-function TechnologyEnablerSankey({ data }: { data: ThemeSankeyData }) {
+function TechnologyEnablerSankey({ data, theme }: { data: ThemeSankeyData; theme: ThemeSummary }) {
   const [hoveredItem, setHoveredItem] = useState<{ x: number; y: number; title: string; value: string; subtitle: string } | null>(null);
   const nodes = data.nodes.map((node, index) => ({
     ...node,
@@ -340,9 +390,9 @@ function TechnologyEnablerSankey({ data }: { data: ThemeSankeyData }) {
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <p className="mb-1 text-lg font-semibold text-slate-900">Technology / Enabler Flow</p>
+      <p className="mb-1 text-lg font-semibold text-slate-900">Subtheme Flow</p>
       <p className="mb-4 text-sm text-slate-500">
-        Donor to e-mobility subtag to recipient. If a project has multiple e-mobility subtags, its commitment value is allocated evenly across those subtags to avoid double counting.
+        Donor to {theme.shortLabel.toLowerCase()} subtheme to recipient. If a project has multiple subthemes under this theme, its commitment value is allocated evenly across those subthemes to avoid double counting.
       </p>
       {flowLegendItems.length ? (
         <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-2">
@@ -411,48 +461,86 @@ function RankingChart({
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <p className="mb-1 text-base font-semibold text-slate-900">{title}</p>
       <p className="mb-4 text-sm text-slate-500">{subtitle}</p>
-      <ResponsiveContainer width="100%" height={chartHeight}>
-        <BarChart data={data} layout="vertical" margin={{ top: 0, right: 12, left: 12, bottom: 0 }} barCategoryGap={4}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
-          <XAxis
-            type="number"
-            tick={{ fontSize: 12, fill: '#64748B' }}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value: number) => usdM(value)}
-          />
-          <YAxis
-            type="category"
-            dataKey="label"
-            width={axisWidth}
-            tick={<WrappedCategoryTick maxChars={22} fontSize={12} fill="#334155" lineHeight={13} />}
-            tickLine={false}
-            axisLine={false}
-            interval={0}
-          />
-          <Tooltip content={<TooltipBox />} />
-          <Bar dataKey="commitment_defl" fill={color} fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={15} />
-        </BarChart>
-      </ResponsiveContainer>
+      {data.length ? (
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          <BarChart data={data} layout="vertical" margin={{ top: 0, right: 12, left: 12, bottom: 0 }} barCategoryGap={4}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" horizontal={false} />
+            <XAxis
+              type="number"
+              tick={{ fontSize: 12, fill: '#64748B' }}
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value: number) => usdM(value)}
+            />
+            <YAxis
+              type="category"
+              dataKey="label"
+              width={axisWidth}
+              tick={<WrappedCategoryTick maxChars={22} fontSize={12} fill="#334155" lineHeight={13} />}
+              tickLine={false}
+              axisLine={false}
+              interval={0}
+            />
+            <Tooltip content={<TooltipBox />} />
+            <Bar dataKey="commitment_defl" fill={color} fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={15} />
+          </BarChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="flex h-[330px] items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 text-sm text-slate-500">
+          No records match the current filters.
+        </div>
+      )}
     </div>
   );
 }
 
-function ThemeSection({ theme, yearMin, yearMax }: { theme: ThemeSummary; yearMin: number; yearMax: number }) {
+function FilterSelect({
+  label,
+  value,
+  options,
+  allLabel,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: FilterOption[];
+  allLabel: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 ml-1 block text-[13px] font-semibold text-slate-500">{label}</span>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[14px] font-medium text-slate-700 shadow-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+      >
+        <option value="">{allLabel}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function ThemeSection({ theme, filters }: { theme: ThemeSummary; filters: ThemeFilters }) {
   const themeId = theme.id as ThemeId;
   const themeRecords = useMemo(
-    () => THEME_RECORDS[themeId].filter((record) => record.year != null && record.year >= yearMin && record.year <= yearMax),
-    [themeId, yearMax, yearMin],
+    () => filterThemeRecords(THEME_RECORDS[themeId], filters),
+    [filters, themeId],
   );
   const summary = useMemo(() => summarizeThemeRows(themeRecords), [themeRecords]);
-  const series = useMemo(() => yearSeriesFor(themeRecords, yearMin, yearMax), [themeRecords, yearMax, yearMin]);
+  const series = useMemo(() => yearSeriesFor(themeRecords, filters.yearMin, filters.yearMax), [filters.yearMax, filters.yearMin, themeRecords]);
   const topRecipients = useMemo(() => rankingRows(themeRecords, 'recipient'), [themeRecords]);
   const topDonors = useMemo(() => rankingRows(themeRecords, 'donor'), [themeRecords]);
   const modeBreakdown = useMemo(() => rankingRows(themeRecords, 'mode', 8), [themeRecords]);
   const sankeyData = useMemo(() => buildTechnologyEnablerSankey(themeRecords), [themeRecords]);
 
   return (
-    <section className="space-y-6">
+    <section id={themeSectionId(themeId)} className="scroll-mt-48 space-y-6">
       <div className="flex flex-col gap-4 border-b border-slate-200 pb-5 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <div className="flex items-center gap-3">
@@ -524,14 +612,67 @@ function ThemeSection({ theme, yearMin, yearMax }: { theme: ThemeSummary; yearMi
         />
       </div>
 
-      {themeId === 'e_mobility' && <TechnologyEnablerSankey data={sankeyData} />}
+      {sankeyData.links.length > 0 && <TechnologyEnablerSankey data={sankeyData} theme={theme} />}
     </section>
   );
 }
 
 export function ThemeExplorer() {
-  const [yearMin, setYearMin] = useState(GLOBAL_THEME_YEAR_MIN);
-  const [yearMax, setYearMax] = useState(GLOBAL_THEME_YEAR_MAX);
+  const [filtersByTheme, setFiltersByTheme] = useState<ThemeFilterState>(() => createInitialFilters());
+  const [activeThemeId, setActiveThemeId] = useState<ThemeId>(THEME_IDS[0]);
+  const activeTheme = THEME_SUMMARIES.find((theme) => theme.id === activeThemeId) ?? THEME_SUMMARIES[0];
+  const activeFilters = filtersByTheme[activeThemeId];
+  const activeThemeRecords = THEME_RECORDS[activeThemeId];
+  const filterOptions = useMemo(
+    () => ({
+      donors: buildFilterOptions(activeThemeRecords, (record) => [record.donor]),
+      recipients: buildFilterOptions(activeThemeRecords, (record) => [record.recipient]),
+      subtags: buildFilterOptions(activeThemeRecords, (record) => record.tags),
+    }),
+    [activeThemeRecords],
+  );
+
+  useEffect(() => {
+    const sections = THEME_IDS.map((themeId) => document.getElementById(themeSectionId(themeId))).filter(Boolean);
+    if (!sections.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const activeEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        const themeId = activeEntry?.target.id.replace('theme-section-', '') as ThemeId | undefined;
+        if (themeId && THEME_IDS.includes(themeId)) setActiveThemeId(themeId);
+      },
+      { rootMargin: '-180px 0px -55% 0px', threshold: [0.08, 0.2, 0.4, 0.6] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  const updateActiveFilters = (updates: Partial<ThemeFilters>) => {
+    setFiltersByTheme((current) => ({
+      ...current,
+      [activeThemeId]: {
+        ...current[activeThemeId],
+        ...updates,
+      },
+    }));
+  };
+
+  const resetActiveFilters = () => {
+    const fresh = createInitialFilters()[activeThemeId];
+    setFiltersByTheme((current) => ({
+      ...current,
+      [activeThemeId]: fresh,
+    }));
+  };
+
+  const scrollToTheme = (themeId: ThemeId) => {
+    setActiveThemeId(themeId);
+    document.getElementById(themeSectionId(themeId))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-6">
@@ -546,25 +687,77 @@ export function ThemeExplorer() {
         </CRSPageIntro>
 
         <div className="sticky top-24 z-20 rounded-xl border border-slate-200 bg-white/95 p-4 shadow-sm backdrop-blur">
-          <div className="max-w-[640px]">
+          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-slate-900">Filters for {activeTheme.label}</p>
+              <p className="mt-0.5 text-xs text-slate-500">Selections are saved separately for each theme as you scroll.</p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {THEME_SUMMARIES.map((theme) => {
+                const themeId = theme.id as ThemeId;
+                const isActive = themeId === activeThemeId;
+                return (
+                  <button
+                    key={theme.id}
+                    type="button"
+                    onClick={() => scrollToTheme(themeId)}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition ${
+                      isActive ? 'border-slate-900 bg-slate-900 text-white shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    {theme.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[minmax(320px,0.9fr)_repeat(3,minmax(0,1fr))_auto] lg:items-end">
             <YearRangeSelector
               label="Year"
-              min={GLOBAL_THEME_YEAR_MIN}
-              max={GLOBAL_THEME_YEAR_MAX}
-              yearMin={yearMin}
-              yearMax={yearMax}
+              min={activeTheme.yearMin ?? GLOBAL_THEME_YEAR_MIN}
+              max={activeTheme.yearMax ?? GLOBAL_THEME_YEAR_MAX}
+              yearMin={activeFilters.yearMin}
+              yearMax={activeFilters.yearMax}
               onChange={(min, max) => {
-                setYearMin(min);
-                setYearMax(max);
+                updateActiveFilters({ yearMin: min, yearMax: max });
               }}
             />
+            <FilterSelect
+              label="Recipient"
+              value={activeFilters.recipient}
+              options={filterOptions.recipients}
+              allLabel="All recipients"
+              onChange={(recipient) => updateActiveFilters({ recipient })}
+            />
+            <FilterSelect
+              label="Donor"
+              value={activeFilters.donor}
+              options={filterOptions.donors}
+              allLabel="All donors"
+              onChange={(donor) => updateActiveFilters({ donor })}
+            />
+            <FilterSelect
+              label="Subtag"
+              value={activeFilters.subtag}
+              options={filterOptions.subtags}
+              allLabel="All subtags"
+              onChange={(subtag) => updateActiveFilters({ subtag })}
+            />
+            <button
+              type="button"
+              onClick={resetActiveFilters}
+              className="h-[38px] rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-slate-300 hover:text-slate-900"
+            >
+              Reset
+            </button>
           </div>
         </div>
 
         {THEME_SUMMARIES.map((theme, index) => (
           <div key={theme.id} className="space-y-12">
             {index > 0 && <div className="h-px bg-slate-300" />}
-            <ThemeSection theme={theme} yearMin={yearMin} yearMax={yearMax} />
+            <ThemeSection theme={theme} filters={filtersByTheme[theme.id as ThemeId]} />
           </div>
         ))}
       </div>

@@ -3,7 +3,55 @@
 
 export type LowCarbonScreenerDimension = { dimension: string; shortLabel: string; score: number; maxScore: number; normalized: number };
 
-export type LowCarbonScreenerEconomy = { economy: string; score: number; rank: number; dimensions: LowCarbonScreenerDimension[]; profileLabel: string; profileColor: string; profileTone: string; strongAxes: string[] };
+export type LowCarbonScreenerEconomy = { economy: string; score: number; oldScore: number; newScore: number; rank: number; oldRank: number; newRank: number; oldDimensions: LowCarbonScreenerDimension[]; dimensions: LowCarbonScreenerDimension[]; newDimensions: LowCarbonScreenerDimension[]; profileLabel: string; profileColor: string; profileTone: string; strongAxes: string[] };
+
+export const LOW_CARBON_OLD_SCREENER_DIMENSIONS = [
+  {
+    "dimension": "Infrastructure",
+    "shortLabel": "Infrastructure",
+    "maxScore": 3.0
+  },
+  {
+    "dimension": "Transport Activity",
+    "shortLabel": "Transport Activity",
+    "maxScore": 4.0
+  },
+  {
+    "dimension": "Fuel Transition",
+    "shortLabel": "Fuel Transition",
+    "maxScore": 5.0
+  },
+  {
+    "dimension": "Transport Carbon Emissions",
+    "shortLabel": "Transport Carbon Emissions",
+    "maxScore": 15.0
+  },
+  {
+    "dimension": "Low Carbon Transport Policies",
+    "shortLabel": "Low Carbon Transport Policies",
+    "maxScore": 30.0
+  },
+  {
+    "dimension": "Co-Benefits",
+    "shortLabel": "Co-Benefits",
+    "maxScore": 15.0
+  },
+  {
+    "dimension": "Economic and Financial",
+    "shortLabel": "Economic and Financial",
+    "maxScore": 15.0
+  },
+  {
+    "dimension": "Institutional",
+    "shortLabel": "Institutional",
+    "maxScore": 6.0
+  },
+  {
+    "dimension": "International Support",
+    "shortLabel": "International Support",
+    "maxScore": 7.0
+  }
+] as const;
 
 export const LOW_CARBON_SCREENER_DIMENSIONS = [
   {
@@ -26,8 +74,98 @@ export const LOW_CARBON_SCREENER_DIMENSIONS = [
 export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
   {
     "economy": "Niue",
-    "score": 0.8335,
+    "score": 86.6,
+    "oldScore": 86.6,
+    "newScore": 0.8335,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.9,
+        "maxScore": 15.0,
+        "normalized": 79.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -57,12 +195,231 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Need",
       "Readiness"
     ],
-    "rank": 1
+    "rank": 1,
+    "oldRank": 1,
+    "newRank": 1
+  },
+  {
+    "economy": "Nauru",
+    "score": 83.9,
+    "oldScore": 83.9,
+    "newScore": 0.8079,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.0,
+        "maxScore": 5.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 2,
+    "oldRank": 2,
+    "newRank": 4
   },
   {
     "economy": "Papua New Guinea",
-    "score": 0.8137,
+    "score": 83.2,
+    "oldScore": 83.2,
+    "newScore": 0.8137,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.5,
+        "maxScore": 30.0,
+        "normalized": 98.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.4,
+        "maxScore": 15.0,
+        "normalized": 49.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -93,12 +450,358 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 2
+    "rank": 3,
+    "oldRank": 3,
+    "newRank": 2
+  },
+  {
+    "economy": "Cook Islands",
+    "score": 82.2,
+    "oldScore": 82.2,
+    "newScore": 0.7875,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 4,
+    "oldRank": 4,
+    "newRank": 8
+  },
+  {
+    "economy": "Palau",
+    "score": 81.6,
+    "oldScore": 81.6,
+    "newScore": 0.7892,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.8,
+        "maxScore": 15.0,
+        "normalized": 98.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 9.5,
+        "maxScore": 15.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.1,
+        "maxScore": 15.0,
+        "normalized": 74.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 5,
+    "oldRank": 5,
+    "newRank": 7
   },
   {
     "economy": "Vanuatu",
-    "score": 0.809,
+    "score": 81.1,
+    "oldScore": 81.1,
+    "newScore": 0.809,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.2,
+        "maxScore": 15.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -128,47 +831,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 3
+    "rank": 6,
+    "oldRank": 6,
+    "newRank": 3
   },
   {
-    "economy": "Nauru",
-    "score": 0.8079,
+    "economy": "Micronesia (Federated States of)",
+    "score": 80.9,
+    "oldScore": 80.9,
+    "newScore": 0.7937,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.9,
+        "maxScore": 15.0,
+        "normalized": 72.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.9108,
+        "score": 0.7486,
         "maxScore": 1,
-        "normalized": 91.08
+        "normalized": 74.86
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.8902,
+        "score": 0.9098,
         "maxScore": 1,
-        "normalized": 89.02
+        "normalized": 90.98
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6227,
+        "score": 0.7227,
         "maxScore": 1,
-        "normalized": 62.27
+        "normalized": 72.27
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 4
-  },
-  {
-    "economy": "Micronesia (Federated States of)",
-    "score": 0.7937,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -199,12 +959,231 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 5
+    "rank": 7,
+    "oldRank": 7,
+    "newRank": 5
+  },
+  {
+    "economy": "Tuvalu",
+    "score": 80.6,
+    "oldScore": 80.6,
+    "newScore": 0.7558,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 8,
+    "oldRank": 8,
+    "newRank": 13
   },
   {
     "economy": "Turkmenistan",
-    "score": 0.7916,
+    "score": 80.5,
+    "oldScore": 80.5,
+    "newScore": 0.7916,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.7,
+        "maxScore": 3.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -235,82 +1214,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 6
-  },
-  {
-    "economy": "Palau",
-    "score": 0.7892,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.8243,
-        "maxScore": 1,
-        "normalized": 82.43
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9024,
-        "maxScore": 1,
-        "normalized": 90.24
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6409,
-        "maxScore": 1,
-        "normalized": 64.09
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 7
-  },
-  {
-    "economy": "Cook Islands",
-    "score": 0.7875,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.9243,
-        "maxScore": 1,
-        "normalized": 92.43
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.861,
-        "maxScore": 1,
-        "normalized": 86.1
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.5773,
-        "maxScore": 1,
-        "normalized": 57.73
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 8
+    "rank": 9,
+    "oldRank": 9,
+    "newRank": 6
   },
   {
     "economy": "Pakistan",
-    "score": 0.785,
+    "score": 80.2,
+    "oldScore": 80.2,
+    "newScore": 0.785,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 13.8,
+        "maxScore": 15.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -341,47 +1342,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 9
+    "rank": 10,
+    "oldRank": 10,
+    "newRank": 9
   },
   {
-    "economy": "Kiribati",
-    "score": 0.7719,
+    "economy": "Timor-Leste",
+    "score": 79.0,
+    "oldScore": 79.0,
+    "newScore": 0.7682,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.3,
+        "maxScore": 15.0,
+        "normalized": 95.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.6,
+        "maxScore": 15.0,
+        "normalized": 50.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.6541,
+        "score": 0.7189,
         "maxScore": 1,
-        "normalized": 65.41
+        "normalized": 71.89
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9024,
+        "score": 0.922,
         "maxScore": 1,
-        "normalized": 90.24
+        "normalized": 92.2
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7591,
+        "score": 0.6636,
         "maxScore": 1,
-        "normalized": 75.91
+        "normalized": 66.36
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 10
-  },
-  {
-    "economy": "Timor-Leste",
-    "score": 0.7682,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -411,12 +1469,231 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Need",
       "Readiness"
     ],
-    "rank": 11
+    "rank": 11,
+    "oldRank": 11,
+    "newRank": 11
+  },
+  {
+    "economy": "Kiribati",
+    "score": 77.9,
+    "oldScore": 77.9,
+    "newScore": 0.7719,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.9,
+        "maxScore": 15.0,
+        "normalized": 52.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 12,
+    "oldRank": 12,
+    "newRank": 10
   },
   {
     "economy": "Marshall Islands",
-    "score": 0.7596,
+    "score": 77.4,
+    "oldScore": 77.4,
+    "newScore": 0.7596,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.4,
+        "maxScore": 15.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -446,47 +1723,230 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 12
+    "rank": 13,
+    "oldRank": 13,
+    "newRank": 12
   },
   {
-    "economy": "Tuvalu",
-    "score": 0.7558,
+    "economy": "Mongolia",
+    "score": 76.5,
+    "oldScore": 76.5,
+    "newScore": 0.7385,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 31.0,
+        "maxScore": 30.0,
+        "normalized": 103.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.8892,
+        "score": 0.627,
         "maxScore": 1,
-        "normalized": 88.92
+        "normalized": 62.7
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9146,
+        "score": 0.9659,
         "maxScore": 1,
-        "normalized": 91.46
+        "normalized": 96.59
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.4636,
+        "score": 0.6227,
         "maxScore": 1,
-        "normalized": 46.36
+        "normalized": 62.27
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
     "strongAxes": [
-      "Need",
       "Readiness"
     ],
-    "rank": 13
+    "rank": 14,
+    "oldRank": 14,
+    "newRank": 17
   },
   {
     "economy": "Afghanistan",
-    "score": 0.7548,
+    "score": 76.0,
+    "oldScore": 76.0,
+    "newScore": 0.7548,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.5,
+        "maxScore": 30.0,
+        "normalized": 78.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.1,
+        "maxScore": 15.0,
+        "normalized": 47.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -517,47 +1977,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 14
+    "rank": 15,
+    "oldRank": 15,
+    "newRank": 14
   },
   {
-    "economy": "Kyrgyz Republic",
-    "score": 0.7471,
+    "economy": "Myanmar",
+    "score": 75.1,
+    "oldScore": 75.1,
+    "newScore": 0.7432,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.527,
+        "score": 0.5811,
         "maxScore": 1,
-        "normalized": 52.7
+        "normalized": 58.11
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9098,
+        "score": 0.9122,
         "maxScore": 1,
-        "normalized": 90.98
+        "normalized": 91.22
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.8045,
+        "score": 0.7364,
         "maxScore": 1,
-        "normalized": 80.45
+        "normalized": 73.64
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 15
-  },
-  {
-    "economy": "Myanmar",
-    "score": 0.7432,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -587,32 +2104,124 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 16
+    "rank": 16,
+    "oldRank": 16,
+    "newRank": 16
   },
   {
-    "economy": "Mongolia",
-    "score": 0.7385,
+    "economy": "Solomon Islands",
+    "score": 75.0,
+    "oldScore": 75.0,
+    "newScore": 0.7327,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.4,
+        "maxScore": 5.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.627,
+        "score": 0.6054,
         "maxScore": 1,
-        "normalized": 62.7
+        "normalized": 60.54
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9659,
+        "score": 0.9244,
         "maxScore": 1,
-        "normalized": 96.59
+        "normalized": 92.44
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6227,
+        "score": 0.6682,
         "maxScore": 1,
-        "normalized": 62.27
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
       }
     ],
     "profileLabel": "Focused pull on readiness",
@@ -621,12 +2230,357 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 17
+    "rank": 17,
+    "oldRank": 17,
+    "newRank": 19
+  },
+  {
+    "economy": "Kyrgyz Republic",
+    "score": 74.5,
+    "oldScore": 74.5,
+    "newScore": 0.7471,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.0,
+        "maxScore": 3.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 18,
+    "oldRank": 18,
+    "newRank": 15
+  },
+  {
+    "economy": "Philippines",
+    "score": 73.5,
+    "oldScore": 73.5,
+    "newScore": 0.7138,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 19,
+    "oldRank": 19,
+    "newRank": 21
   },
   {
     "economy": "Nepal",
-    "score": 0.7328,
+    "score": 73.4,
+    "oldScore": 73.4,
+    "newScore": 0.7328,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -656,46 +2610,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 18
+    "rank": 20,
+    "oldRank": 20,
+    "newRank": 18
   },
   {
-    "economy": "Solomon Islands",
-    "score": 0.7327,
+    "economy": "Tajikistan",
+    "score": 73.3,
+    "oldScore": 73.3,
+    "newScore": 0.7154,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.6054,
+        "score": 0.6081,
         "maxScore": 1,
-        "normalized": 60.54
+        "normalized": 60.81
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9244,
+        "score": 0.8927,
         "maxScore": 1,
-        "normalized": 92.44
+        "normalized": 89.27
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.6455,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 64.55
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 19
-  },
-  {
-    "economy": "Tajikistan",
-    "score": 0.7154,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -724,81 +2736,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 20
-  },
-  {
-    "economy": "Philippines",
-    "score": 0.7138,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.573,
-        "maxScore": 1,
-        "normalized": 57.3
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9366,
-        "maxScore": 1,
-        "normalized": 93.66
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6318,
-        "maxScore": 1,
-        "normalized": 63.18
-      }
-    ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 21
-  },
-  {
-    "economy": "Lao People's Democratic Republic",
-    "score": 0.7112,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4297,
-        "maxScore": 1,
-        "normalized": 42.97
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9585,
-        "maxScore": 1,
-        "normalized": 95.85
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.7455,
-        "maxScore": 1,
-        "normalized": 74.55
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 22
+    "rank": 21,
+    "oldRank": 21,
+    "newRank": 20
   },
   {
     "economy": "Tonga",
-    "score": 0.7,
+    "score": 72.9,
+    "oldScore": 72.9,
+    "newScore": 0.7,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.2,
+        "maxScore": 15.0,
+        "normalized": 61.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -827,12 +2862,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 23
+    "rank": 22,
+    "oldRank": 22,
+    "newRank": 23
   },
   {
     "economy": "Maldives",
-    "score": 0.698,
+    "score": 72.3,
+    "oldScore": 72.3,
+    "newScore": 0.698,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.7,
+        "maxScore": 15.0,
+        "normalized": 31.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -862,12 +2989,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Need",
       "Readiness"
     ],
-    "rank": 24
+    "rank": 23,
+    "oldRank": 23,
+    "newRank": 24
   },
   {
     "economy": "Samoa",
-    "score": 0.6972,
+    "score": 72.0,
+    "oldScore": 72.0,
+    "newScore": 0.6972,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 2.9,
+        "maxScore": 4.0,
+        "normalized": 72.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -896,12 +3115,483 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 25
+    "rank": 24,
+    "oldRank": 24,
+    "newRank": 25
+  },
+  {
+    "economy": "Lao People's Democratic Republic",
+    "score": 71.6,
+    "oldScore": 71.6,
+    "newScore": 0.7112,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.5,
+        "maxScore": 30.0,
+        "normalized": 101.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.9,
+        "maxScore": 15.0,
+        "normalized": 39.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 25,
+    "oldRank": 25,
+    "newRank": 22
+  },
+  {
+    "economy": "Fiji",
+    "score": 69.0,
+    "oldScore": 69.0,
+    "newScore": 0.6837,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 26,
+    "oldRank": 26,
+    "newRank": 27
+  },
+  {
+    "economy": "Azerbaijan",
+    "score": 68.7,
+    "oldScore": 68.7,
+    "newScore": 0.6782,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 27,
+    "oldRank": 27,
+    "newRank": 28
   },
   {
     "economy": "Sri Lanka",
-    "score": 0.6881,
+    "score": 68.1,
+    "oldScore": 68.1,
+    "newScore": 0.6881,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -931,52 +3621,87 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 26
+    "rank": 28,
+    "oldRank": 28,
+    "newRank": 26
   },
   {
-    "economy": "Fiji",
-    "score": 0.6837,
-    "dimensions": [
+    "economy": "Bhutan",
+    "score": 67.3,
+    "oldScore": 67.3,
+    "newScore": 0.6705,
+    "oldDimensions": [
       {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4919,
-        "maxScore": 1,
-        "normalized": 49.19
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
       },
       {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.8683,
-        "maxScore": 1,
-        "normalized": 86.83
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
       },
       {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6909,
-        "maxScore": 1,
-        "normalized": 69.09
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.5,
+        "maxScore": 15.0,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 27
-  },
-  {
-    "economy": "Azerbaijan",
-    "score": 0.6782,
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5054,
+        "score": 0.4459,
         "maxScore": 1,
-        "normalized": 50.54
+        "normalized": 44.59
       },
       {
         "dimension": "Readiness",
@@ -988,23 +3713,12 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.7045,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 70.45
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 28
-  },
-  {
-    "economy": "Bhutan",
-    "score": 0.6705,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1034,46 +3748,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
       "Readiness",
       "Financeability"
     ],
-    "rank": 29
+    "rank": 29,
+    "oldRank": 29,
+    "newRank": 29
   },
   {
-    "economy": "Türkiye",
-    "score": 0.6661,
+    "economy": "Uzbekistan",
+    "score": 66.5,
+    "oldScore": 66.5,
+    "newScore": 0.6604,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.5,
+        "maxScore": 3.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5946,
+        "score": 0.4,
         "maxScore": 1,
-        "normalized": 59.46
+        "normalized": 40.0
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6902,
+        "score": 0.8902,
         "maxScore": 1,
-        "normalized": 69.02
+        "normalized": 89.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7136,
+        "score": 0.6909,
         "maxScore": 1,
-        "normalized": 71.36
+        "normalized": 69.09
       }
     ],
-    "profileLabel": "Focused pull on financeability",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Financeability"
-    ],
-    "rank": 30
-  },
-  {
-    "economy": "Uzbekistan",
-    "score": 0.6604,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1102,12 +3874,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 31
+    "rank": 30,
+    "oldRank": 30,
+    "newRank": 31
   },
   {
     "economy": "Viet Nam",
-    "score": 0.6585,
+    "score": 66.4,
+    "oldScore": 66.4,
+    "newScore": 0.6585,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1136,12 +4000,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 32
+    "rank": 31,
+    "oldRank": 31,
+    "newRank": 32
   },
   {
     "economy": "Bangladesh",
-    "score": 0.6512,
+    "score": 66.2,
+    "oldScore": 66.2,
+    "newScore": 0.6512,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1170,78 +4126,230 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 33
+    "rank": 32,
+    "oldRank": 32,
+    "newRank": 33
   },
   {
-    "economy": "India",
-    "score": 0.6341,
+    "economy": "Türkiye",
+    "score": 66.0,
+    "oldScore": 66.0,
+    "newScore": 0.6661,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.0,
+        "maxScore": 30.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5162,
+        "score": 0.5946,
         "maxScore": 1,
-        "normalized": 51.62
+        "normalized": 59.46
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6951,
+        "score": 0.6902,
         "maxScore": 1,
-        "normalized": 69.51
+        "normalized": 69.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6909,
+        "score": 0.7136,
         "maxScore": 1,
-        "normalized": 69.09
+        "normalized": 71.36
       }
     ],
-    "profileLabel": "Overall low to moderate focus",
-    "profileColor": "#4E9BC3",
-    "profileTone": "blue",
-    "strongAxes": [],
-    "rank": 34
-  },
-  {
-    "economy": "Georgia",
-    "score": 0.6312,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.3865,
+        "score": 0.5946,
         "maxScore": 1,
-        "normalized": 38.65
+        "normalized": 59.46
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.839,
+        "score": 0.6902,
         "maxScore": 1,
-        "normalized": 83.9
+        "normalized": 69.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.7136,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 71.36
       }
     ],
-    "profileLabel": "Focused pull on readiness",
+    "profileLabel": "Focused pull on financeability",
     "profileColor": "#9EBB1B",
     "profileTone": "green",
     "strongAxes": [
-      "Readiness"
+      "Financeability"
     ],
-    "rank": 35
+    "rank": 33,
+    "oldRank": 33,
+    "newRank": 30
   },
   {
     "economy": "Cambodia",
-    "score": 0.6293,
+    "score": 63.9,
+    "oldScore": 63.9,
+    "newScore": 0.6293,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1270,112 +4378,354 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 36
+    "rank": 34,
+    "oldRank": 34,
+    "newRank": 36
   },
   {
-    "economy": "Malaysia",
-    "score": 0.6046,
+    "economy": "Georgia",
+    "score": 63.4,
+    "oldScore": 63.4,
+    "newScore": 0.6312,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5216,
+        "score": 0.3865,
         "maxScore": 1,
-        "normalized": 52.16
+        "normalized": 38.65
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.5878,
+        "score": 0.839,
         "maxScore": 1,
-        "normalized": 58.78
+        "normalized": 83.9
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7045,
+        "score": 0.6682,
         "maxScore": 1,
-        "normalized": 70.45
+        "normalized": 66.82
       }
     ],
-    "profileLabel": "Focused pull on financeability",
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
     "profileColor": "#9EBB1B",
     "profileTone": "green",
     "strongAxes": [
-      "Financeability"
+      "Readiness"
     ],
-    "rank": 37
+    "rank": 35,
+    "oldRank": 35,
+    "newRank": 35
   },
   {
-    "economy": "Indonesia",
-    "score": 0.6028,
-    "dimensions": [
+    "economy": "India",
+    "score": 62.8,
+    "oldScore": 62.8,
+    "newScore": 0.6341,
+    "oldDimensions": [
       {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4378,
-        "maxScore": 1,
-        "normalized": 43.78
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
       },
       {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.6707,
-        "maxScore": 1,
-        "normalized": 67.07
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
       },
       {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.7,
-        "maxScore": 1,
-        "normalized": 70.0
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.0,
+        "maxScore": 15.0,
+        "normalized": 26.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
       }
     ],
-    "profileLabel": "Focused pull on financeability",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Financeability"
-    ],
-    "rank": 38
-  },
-  {
-    "economy": "People's Republic of China",
-    "score": 0.597,
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5649,
+        "score": 0.5162,
         "maxScore": 1,
-        "normalized": 56.49
+        "normalized": 51.62
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6488,
+        "score": 0.6951,
         "maxScore": 1,
-        "normalized": 64.88
+        "normalized": 69.51
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.5773,
+        "score": 0.6909,
         "maxScore": 1,
-        "normalized": 57.73
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
       }
     ],
     "profileLabel": "Overall low to moderate focus",
     "profileColor": "#4E9BC3",
     "profileTone": "blue",
     "strongAxes": [],
-    "rank": 39
+    "rank": 36,
+    "oldRank": 36,
+    "newRank": 34
   },
   {
     "economy": "Kazakhstan",
-    "score": 0.5866,
+    "score": 60.4,
+    "oldScore": 60.4,
+    "newScore": 0.5866,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.5,
+        "maxScore": 15.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.3,
+        "maxScore": 15.0,
+        "normalized": 42.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1404,12 +4754,480 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 40
+    "rank": 37,
+    "oldRank": 37,
+    "newRank": 40
+  },
+  {
+    "economy": "People's Republic of China",
+    "score": 60.2,
+    "oldScore": 60.2,
+    "newScore": 0.597,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 22.5,
+        "maxScore": 30.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 38,
+    "oldRank": 38,
+    "newRank": 39
+  },
+  {
+    "economy": "Indonesia",
+    "score": 59.1,
+    "oldScore": 59.1,
+    "newScore": 0.6028,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.1,
+        "maxScore": 15.0,
+        "normalized": 27.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.0,
+        "maxScore": 30.0,
+        "normalized": 76.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 39,
+    "oldRank": 39,
+    "newRank": 38
+  },
+  {
+    "economy": "Malaysia",
+    "score": 58.9,
+    "oldScore": 58.9,
+    "newScore": 0.6046,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 19.0,
+        "maxScore": 30.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.5,
+        "maxScore": 15.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 40,
+    "oldRank": 40,
+    "newRank": 37
   },
   {
     "economy": "Armenia",
-    "score": 0.5846,
+    "score": 58.6,
+    "oldScore": 58.6,
+    "newScore": 0.5846,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1438,12 +5256,104 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 41
+    "rank": 41,
+    "oldRank": 41,
+    "newRank": 41
   },
   {
     "economy": "Thailand",
-    "score": 0.5542,
+    "score": 56.6,
+    "oldScore": 56.6,
+    "newScore": 0.5542,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.2,
+        "maxScore": 3.0,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.5,
+        "maxScore": 30.0,
+        "normalized": 81.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1472,15 +5382,10741 @@ export const LOW_CARBON_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 42
+    "rank": 42,
+    "oldRank": 42,
+    "newRank": 42
+  }
+];
+
+export const LOW_CARBON_OLD_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
+  {
+    "economy": "Niue",
+    "score": 86.6,
+    "oldScore": 86.6,
+    "newScore": 0.8335,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.9,
+        "maxScore": 15.0,
+        "normalized": 79.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 1,
+    "oldRank": 1,
+    "newRank": 1
+  },
+  {
+    "economy": "Nauru",
+    "score": 83.9,
+    "oldScore": 83.9,
+    "newScore": 0.8079,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.0,
+        "maxScore": 5.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 2,
+    "oldRank": 2,
+    "newRank": 4
+  },
+  {
+    "economy": "Papua New Guinea",
+    "score": 83.2,
+    "oldScore": 83.2,
+    "newScore": 0.8137,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.5,
+        "maxScore": 30.0,
+        "normalized": 98.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.4,
+        "maxScore": 15.0,
+        "normalized": 49.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 3,
+    "oldRank": 3,
+    "newRank": 2
+  },
+  {
+    "economy": "Cook Islands",
+    "score": 82.2,
+    "oldScore": 82.2,
+    "newScore": 0.7875,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 4,
+    "oldRank": 4,
+    "newRank": 8
+  },
+  {
+    "economy": "Palau",
+    "score": 81.6,
+    "oldScore": 81.6,
+    "newScore": 0.7892,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.8,
+        "maxScore": 15.0,
+        "normalized": 98.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 9.5,
+        "maxScore": 15.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.1,
+        "maxScore": 15.0,
+        "normalized": 74.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 5,
+    "oldRank": 5,
+    "newRank": 7
+  },
+  {
+    "economy": "Vanuatu",
+    "score": 81.1,
+    "oldScore": 81.1,
+    "newScore": 0.809,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.2,
+        "maxScore": 15.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 6,
+    "oldRank": 6,
+    "newRank": 3
+  },
+  {
+    "economy": "Micronesia (Federated States of)",
+    "score": 80.9,
+    "oldScore": 80.9,
+    "newScore": 0.7937,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.9,
+        "maxScore": 15.0,
+        "normalized": 72.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7486,
+        "maxScore": 1,
+        "normalized": 74.86
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7227,
+        "maxScore": 1,
+        "normalized": 72.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7486,
+        "maxScore": 1,
+        "normalized": 74.86
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7227,
+        "maxScore": 1,
+        "normalized": 72.27
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 7,
+    "oldRank": 7,
+    "newRank": 5
+  },
+  {
+    "economy": "Tuvalu",
+    "score": 80.6,
+    "oldScore": 80.6,
+    "newScore": 0.7558,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 8,
+    "oldRank": 8,
+    "newRank": 13
+  },
+  {
+    "economy": "Turkmenistan",
+    "score": 80.5,
+    "oldScore": 80.5,
+    "newScore": 0.7916,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.7,
+        "maxScore": 3.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 9,
+    "oldRank": 9,
+    "newRank": 6
+  },
+  {
+    "economy": "Pakistan",
+    "score": 80.2,
+    "oldScore": 80.2,
+    "newScore": 0.785,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 13.8,
+        "maxScore": 15.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 10,
+    "oldRank": 10,
+    "newRank": 9
+  },
+  {
+    "economy": "Timor-Leste",
+    "score": 79.0,
+    "oldScore": 79.0,
+    "newScore": 0.7682,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.3,
+        "maxScore": 15.0,
+        "normalized": 95.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.6,
+        "maxScore": 15.0,
+        "normalized": 50.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7189,
+        "maxScore": 1,
+        "normalized": 71.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.922,
+        "maxScore": 1,
+        "normalized": 92.2
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6636,
+        "maxScore": 1,
+        "normalized": 66.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7189,
+        "maxScore": 1,
+        "normalized": 71.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.922,
+        "maxScore": 1,
+        "normalized": 92.2
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6636,
+        "maxScore": 1,
+        "normalized": 66.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 11,
+    "oldRank": 11,
+    "newRank": 11
+  },
+  {
+    "economy": "Kiribati",
+    "score": 77.9,
+    "oldScore": 77.9,
+    "newScore": 0.7719,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.9,
+        "maxScore": 15.0,
+        "normalized": 52.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 12,
+    "oldRank": 12,
+    "newRank": 10
+  },
+  {
+    "economy": "Marshall Islands",
+    "score": 77.4,
+    "oldScore": 77.4,
+    "newScore": 0.7596,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.4,
+        "maxScore": 15.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 13,
+    "oldRank": 13,
+    "newRank": 12
+  },
+  {
+    "economy": "Mongolia",
+    "score": 76.5,
+    "oldScore": 76.5,
+    "newScore": 0.7385,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 31.0,
+        "maxScore": 30.0,
+        "normalized": 103.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 14,
+    "oldRank": 14,
+    "newRank": 17
+  },
+  {
+    "economy": "Afghanistan",
+    "score": 76.0,
+    "oldScore": 76.0,
+    "newScore": 0.7548,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.5,
+        "maxScore": 30.0,
+        "normalized": 78.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.1,
+        "maxScore": 15.0,
+        "normalized": 47.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 15,
+    "oldRank": 15,
+    "newRank": 14
+  },
+  {
+    "economy": "Myanmar",
+    "score": 75.1,
+    "oldScore": 75.1,
+    "newScore": 0.7432,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5811,
+        "maxScore": 1,
+        "normalized": 58.11
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9122,
+        "maxScore": 1,
+        "normalized": 91.22
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5811,
+        "maxScore": 1,
+        "normalized": 58.11
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9122,
+        "maxScore": 1,
+        "normalized": 91.22
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 16,
+    "oldRank": 16,
+    "newRank": 16
+  },
+  {
+    "economy": "Solomon Islands",
+    "score": 75.0,
+    "oldScore": 75.0,
+    "newScore": 0.7327,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.4,
+        "maxScore": 5.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 17,
+    "oldRank": 17,
+    "newRank": 19
+  },
+  {
+    "economy": "Kyrgyz Republic",
+    "score": 74.5,
+    "oldScore": 74.5,
+    "newScore": 0.7471,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.0,
+        "maxScore": 3.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 18,
+    "oldRank": 18,
+    "newRank": 15
+  },
+  {
+    "economy": "Philippines",
+    "score": 73.5,
+    "oldScore": 73.5,
+    "newScore": 0.7138,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 19,
+    "oldRank": 19,
+    "newRank": 21
+  },
+  {
+    "economy": "Nepal",
+    "score": 73.4,
+    "oldScore": 73.4,
+    "newScore": 0.7328,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 20,
+    "oldRank": 20,
+    "newRank": 18
+  },
+  {
+    "economy": "Tajikistan",
+    "score": 73.3,
+    "oldScore": 73.3,
+    "newScore": 0.7154,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6081,
+        "maxScore": 1,
+        "normalized": 60.81
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8927,
+        "maxScore": 1,
+        "normalized": 89.27
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6081,
+        "maxScore": 1,
+        "normalized": 60.81
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8927,
+        "maxScore": 1,
+        "normalized": 89.27
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 21,
+    "oldRank": 21,
+    "newRank": 20
+  },
+  {
+    "economy": "Tonga",
+    "score": 72.9,
+    "oldScore": 72.9,
+    "newScore": 0.7,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.2,
+        "maxScore": 15.0,
+        "normalized": 61.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 22,
+    "oldRank": 22,
+    "newRank": 23
+  },
+  {
+    "economy": "Maldives",
+    "score": 72.3,
+    "oldScore": 72.3,
+    "newScore": 0.698,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.7,
+        "maxScore": 15.0,
+        "normalized": 31.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 23,
+    "oldRank": 23,
+    "newRank": 24
+  },
+  {
+    "economy": "Samoa",
+    "score": 72.0,
+    "oldScore": 72.0,
+    "newScore": 0.6972,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 2.9,
+        "maxScore": 4.0,
+        "normalized": 72.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 24,
+    "oldRank": 24,
+    "newRank": 25
+  },
+  {
+    "economy": "Lao People's Democratic Republic",
+    "score": 71.6,
+    "oldScore": 71.6,
+    "newScore": 0.7112,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.5,
+        "maxScore": 30.0,
+        "normalized": 101.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.9,
+        "maxScore": 15.0,
+        "normalized": 39.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 25,
+    "oldRank": 25,
+    "newRank": 22
+  },
+  {
+    "economy": "Fiji",
+    "score": 69.0,
+    "oldScore": 69.0,
+    "newScore": 0.6837,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 26,
+    "oldRank": 26,
+    "newRank": 27
+  },
+  {
+    "economy": "Azerbaijan",
+    "score": 68.7,
+    "oldScore": 68.7,
+    "newScore": 0.6782,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 27,
+    "oldRank": 27,
+    "newRank": 28
+  },
+  {
+    "economy": "Sri Lanka",
+    "score": 68.1,
+    "oldScore": 68.1,
+    "newScore": 0.6881,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 28,
+    "oldRank": 28,
+    "newRank": 26
+  },
+  {
+    "economy": "Bhutan",
+    "score": 67.3,
+    "oldScore": 67.3,
+    "newScore": 0.6705,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.5,
+        "maxScore": 15.0,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4459,
+        "maxScore": 1,
+        "normalized": 44.59
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4459,
+        "maxScore": 1,
+        "normalized": 44.59
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 29,
+    "oldRank": 29,
+    "newRank": 29
+  },
+  {
+    "economy": "Uzbekistan",
+    "score": 66.5,
+    "oldScore": 66.5,
+    "newScore": 0.6604,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.5,
+        "maxScore": 3.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4,
+        "maxScore": 1,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4,
+        "maxScore": 1,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 30,
+    "oldRank": 30,
+    "newRank": 31
+  },
+  {
+    "economy": "Viet Nam",
+    "score": 66.4,
+    "oldScore": 66.4,
+    "newScore": 0.6585,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 31,
+    "oldRank": 31,
+    "newRank": 32
+  },
+  {
+    "economy": "Bangladesh",
+    "score": 66.2,
+    "oldScore": 66.2,
+    "newScore": 0.6512,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 32,
+    "oldRank": 32,
+    "newRank": 33
+  },
+  {
+    "economy": "Türkiye",
+    "score": 66.0,
+    "oldScore": 66.0,
+    "newScore": 0.6661,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.0,
+        "maxScore": 30.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5946,
+        "maxScore": 1,
+        "normalized": 59.46
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6902,
+        "maxScore": 1,
+        "normalized": 69.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5946,
+        "maxScore": 1,
+        "normalized": 59.46
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6902,
+        "maxScore": 1,
+        "normalized": 69.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 33,
+    "oldRank": 33,
+    "newRank": 30
+  },
+  {
+    "economy": "Cambodia",
+    "score": 63.9,
+    "oldScore": 63.9,
+    "newScore": 0.6293,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 34,
+    "oldRank": 34,
+    "newRank": 36
+  },
+  {
+    "economy": "Georgia",
+    "score": 63.4,
+    "oldScore": 63.4,
+    "newScore": 0.6312,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 35,
+    "oldRank": 35,
+    "newRank": 35
+  },
+  {
+    "economy": "India",
+    "score": 62.8,
+    "oldScore": 62.8,
+    "newScore": 0.6341,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.0,
+        "maxScore": 15.0,
+        "normalized": 26.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 36,
+    "oldRank": 36,
+    "newRank": 34
+  },
+  {
+    "economy": "Kazakhstan",
+    "score": 60.4,
+    "oldScore": 60.4,
+    "newScore": 0.5866,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.5,
+        "maxScore": 15.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.3,
+        "maxScore": 15.0,
+        "normalized": 42.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 37,
+    "oldRank": 37,
+    "newRank": 40
+  },
+  {
+    "economy": "People's Republic of China",
+    "score": 60.2,
+    "oldScore": 60.2,
+    "newScore": 0.597,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 22.5,
+        "maxScore": 30.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 38,
+    "oldRank": 38,
+    "newRank": 39
+  },
+  {
+    "economy": "Indonesia",
+    "score": 59.1,
+    "oldScore": 59.1,
+    "newScore": 0.6028,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.1,
+        "maxScore": 15.0,
+        "normalized": 27.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.0,
+        "maxScore": 30.0,
+        "normalized": 76.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 39,
+    "oldRank": 39,
+    "newRank": 38
+  },
+  {
+    "economy": "Malaysia",
+    "score": 58.9,
+    "oldScore": 58.9,
+    "newScore": 0.6046,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 19.0,
+        "maxScore": 30.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.5,
+        "maxScore": 15.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 40,
+    "oldRank": 40,
+    "newRank": 37
+  },
+  {
+    "economy": "Armenia",
+    "score": 58.6,
+    "oldScore": 58.6,
+    "newScore": 0.5846,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 41,
+    "oldRank": 41,
+    "newRank": 41
+  },
+  {
+    "economy": "Thailand",
+    "score": 56.6,
+    "oldScore": 56.6,
+    "newScore": 0.5542,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.2,
+        "maxScore": 3.0,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.5,
+        "maxScore": 30.0,
+        "normalized": 81.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 42,
+    "oldRank": 42,
+    "newRank": 42
+  }
+];
+
+export const LOW_CARBON_NEW_SCREENER_RANKING: LowCarbonScreenerEconomy[] = [
+  {
+    "economy": "Niue",
+    "score": 86.6,
+    "oldScore": 86.6,
+    "newScore": 0.8335,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.9,
+        "maxScore": 15.0,
+        "normalized": 79.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 1,
+    "oldRank": 1,
+    "newRank": 1
+  },
+  {
+    "economy": "Papua New Guinea",
+    "score": 83.2,
+    "oldScore": 83.2,
+    "newScore": 0.8137,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.5,
+        "maxScore": 30.0,
+        "normalized": 98.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.4,
+        "maxScore": 15.0,
+        "normalized": 49.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 3,
+    "oldRank": 3,
+    "newRank": 2
+  },
+  {
+    "economy": "Vanuatu",
+    "score": 81.1,
+    "oldScore": 81.1,
+    "newScore": 0.809,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.2,
+        "maxScore": 15.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 6,
+    "oldRank": 6,
+    "newRank": 3
+  },
+  {
+    "economy": "Nauru",
+    "score": 83.9,
+    "oldScore": 83.9,
+    "newScore": 0.8079,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.0,
+        "maxScore": 5.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 2,
+    "oldRank": 2,
+    "newRank": 4
+  },
+  {
+    "economy": "Micronesia (Federated States of)",
+    "score": 80.9,
+    "oldScore": 80.9,
+    "newScore": 0.7937,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.9,
+        "maxScore": 15.0,
+        "normalized": 72.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7486,
+        "maxScore": 1,
+        "normalized": 74.86
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7227,
+        "maxScore": 1,
+        "normalized": 72.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7486,
+        "maxScore": 1,
+        "normalized": 74.86
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7227,
+        "maxScore": 1,
+        "normalized": 72.27
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 7,
+    "oldRank": 7,
+    "newRank": 5
+  },
+  {
+    "economy": "Turkmenistan",
+    "score": 80.5,
+    "oldScore": 80.5,
+    "newScore": 0.7916,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.7,
+        "maxScore": 3.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 9,
+    "oldRank": 9,
+    "newRank": 6
+  },
+  {
+    "economy": "Palau",
+    "score": 81.6,
+    "oldScore": 81.6,
+    "newScore": 0.7892,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.8,
+        "maxScore": 15.0,
+        "normalized": 98.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 9.5,
+        "maxScore": 15.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.1,
+        "maxScore": 15.0,
+        "normalized": 74.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 5,
+    "oldRank": 5,
+    "newRank": 7
+  },
+  {
+    "economy": "Cook Islands",
+    "score": 82.2,
+    "oldScore": 82.2,
+    "newScore": 0.7875,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 4,
+    "oldRank": 4,
+    "newRank": 8
+  },
+  {
+    "economy": "Pakistan",
+    "score": 80.2,
+    "oldScore": 80.2,
+    "newScore": 0.785,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 13.8,
+        "maxScore": 15.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 10,
+    "oldRank": 10,
+    "newRank": 9
+  },
+  {
+    "economy": "Kiribati",
+    "score": 77.9,
+    "oldScore": 77.9,
+    "newScore": 0.7719,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.9,
+        "maxScore": 15.0,
+        "normalized": 52.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 12,
+    "oldRank": 12,
+    "newRank": 10
+  },
+  {
+    "economy": "Timor-Leste",
+    "score": 79.0,
+    "oldScore": 79.0,
+    "newScore": 0.7682,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.3,
+        "maxScore": 15.0,
+        "normalized": 95.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.6,
+        "maxScore": 15.0,
+        "normalized": 50.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7189,
+        "maxScore": 1,
+        "normalized": 71.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.922,
+        "maxScore": 1,
+        "normalized": 92.2
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6636,
+        "maxScore": 1,
+        "normalized": 66.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7189,
+        "maxScore": 1,
+        "normalized": 71.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.922,
+        "maxScore": 1,
+        "normalized": 92.2
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6636,
+        "maxScore": 1,
+        "normalized": 66.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 11,
+    "oldRank": 11,
+    "newRank": 11
+  },
+  {
+    "economy": "Marshall Islands",
+    "score": 77.4,
+    "oldScore": 77.4,
+    "newScore": 0.7596,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.4,
+        "maxScore": 15.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 13,
+    "oldRank": 13,
+    "newRank": 12
+  },
+  {
+    "economy": "Tuvalu",
+    "score": 80.6,
+    "oldScore": 80.6,
+    "newScore": 0.7558,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 8,
+    "oldRank": 8,
+    "newRank": 13
+  },
+  {
+    "economy": "Afghanistan",
+    "score": 76.0,
+    "oldScore": 76.0,
+    "newScore": 0.7548,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.5,
+        "maxScore": 30.0,
+        "normalized": 78.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.1,
+        "maxScore": 15.0,
+        "normalized": 47.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "profileLabel": "Strong pull across all three axes",
+    "profileColor": "#E64B2A",
+    "profileTone": "red",
+    "strongAxes": [
+      "Need",
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 15,
+    "oldRank": 15,
+    "newRank": 14
+  },
+  {
+    "economy": "Kyrgyz Republic",
+    "score": 74.5,
+    "oldScore": 74.5,
+    "newScore": 0.7471,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.0,
+        "maxScore": 3.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 18,
+    "oldRank": 18,
+    "newRank": 15
+  },
+  {
+    "economy": "Myanmar",
+    "score": 75.1,
+    "oldScore": 75.1,
+    "newScore": 0.7432,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5811,
+        "maxScore": 1,
+        "normalized": 58.11
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9122,
+        "maxScore": 1,
+        "normalized": 91.22
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5811,
+        "maxScore": 1,
+        "normalized": 58.11
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9122,
+        "maxScore": 1,
+        "normalized": 91.22
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 16,
+    "oldRank": 16,
+    "newRank": 16
+  },
+  {
+    "economy": "Mongolia",
+    "score": 76.5,
+    "oldScore": 76.5,
+    "newScore": 0.7385,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 31.0,
+        "maxScore": 30.0,
+        "normalized": 103.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 14,
+    "oldRank": 14,
+    "newRank": 17
+  },
+  {
+    "economy": "Nepal",
+    "score": 73.4,
+    "oldScore": 73.4,
+    "newScore": 0.7328,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 20,
+    "oldRank": 20,
+    "newRank": 18
+  },
+  {
+    "economy": "Solomon Islands",
+    "score": 75.0,
+    "oldScore": 75.0,
+    "newScore": 0.7327,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.4,
+        "maxScore": 5.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 17,
+    "oldRank": 17,
+    "newRank": 19
+  },
+  {
+    "economy": "Tajikistan",
+    "score": 73.3,
+    "oldScore": 73.3,
+    "newScore": 0.7154,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6081,
+        "maxScore": 1,
+        "normalized": 60.81
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8927,
+        "maxScore": 1,
+        "normalized": 89.27
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6081,
+        "maxScore": 1,
+        "normalized": 60.81
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8927,
+        "maxScore": 1,
+        "normalized": 89.27
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 21,
+    "oldRank": 21,
+    "newRank": 20
+  },
+  {
+    "economy": "Philippines",
+    "score": 73.5,
+    "oldScore": 73.5,
+    "newScore": 0.7138,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 19,
+    "oldRank": 19,
+    "newRank": 21
+  },
+  {
+    "economy": "Lao People's Democratic Republic",
+    "score": 71.6,
+    "oldScore": 71.6,
+    "newScore": 0.7112,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.5,
+        "maxScore": 30.0,
+        "normalized": 101.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.9,
+        "maxScore": 15.0,
+        "normalized": 39.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 25,
+    "oldRank": 25,
+    "newRank": 22
+  },
+  {
+    "economy": "Tonga",
+    "score": 72.9,
+    "oldScore": 72.9,
+    "newScore": 0.7,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.2,
+        "maxScore": 15.0,
+        "normalized": 61.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 22,
+    "oldRank": 22,
+    "newRank": 23
+  },
+  {
+    "economy": "Maldives",
+    "score": 72.3,
+    "oldScore": 72.3,
+    "newScore": 0.698,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.7,
+        "maxScore": 15.0,
+        "normalized": 31.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 23,
+    "oldRank": 23,
+    "newRank": 24
+  },
+  {
+    "economy": "Samoa",
+    "score": 72.0,
+    "oldScore": 72.0,
+    "newScore": 0.6972,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 2.9,
+        "maxScore": 4.0,
+        "normalized": 72.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 24,
+    "oldRank": 24,
+    "newRank": 25
+  },
+  {
+    "economy": "Sri Lanka",
+    "score": 68.1,
+    "oldScore": 68.1,
+    "newScore": 0.6881,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 28,
+    "oldRank": 28,
+    "newRank": 26
+  },
+  {
+    "economy": "Fiji",
+    "score": 69.0,
+    "oldScore": 69.0,
+    "newScore": 0.6837,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 26,
+    "oldRank": 26,
+    "newRank": 27
+  },
+  {
+    "economy": "Azerbaijan",
+    "score": 68.7,
+    "oldScore": 68.7,
+    "newScore": 0.6782,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 27,
+    "oldRank": 27,
+    "newRank": 28
+  },
+  {
+    "economy": "Bhutan",
+    "score": 67.3,
+    "oldScore": 67.3,
+    "newScore": 0.6705,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.5,
+        "maxScore": 15.0,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4459,
+        "maxScore": 1,
+        "normalized": 44.59
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4459,
+        "maxScore": 1,
+        "normalized": 44.59
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 29,
+    "oldRank": 29,
+    "newRank": 29
+  },
+  {
+    "economy": "Türkiye",
+    "score": 66.0,
+    "oldScore": 66.0,
+    "newScore": 0.6661,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.0,
+        "maxScore": 30.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5946,
+        "maxScore": 1,
+        "normalized": 59.46
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6902,
+        "maxScore": 1,
+        "normalized": 69.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5946,
+        "maxScore": 1,
+        "normalized": 59.46
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6902,
+        "maxScore": 1,
+        "normalized": 69.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 33,
+    "oldRank": 33,
+    "newRank": 30
+  },
+  {
+    "economy": "Uzbekistan",
+    "score": 66.5,
+    "oldScore": 66.5,
+    "newScore": 0.6604,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.5,
+        "maxScore": 3.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4,
+        "maxScore": 1,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4,
+        "maxScore": 1,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 30,
+    "oldRank": 30,
+    "newRank": 31
+  },
+  {
+    "economy": "Viet Nam",
+    "score": 66.4,
+    "oldScore": 66.4,
+    "newScore": 0.6585,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 31,
+    "oldRank": 31,
+    "newRank": 32
+  },
+  {
+    "economy": "Bangladesh",
+    "score": 66.2,
+    "oldScore": 66.2,
+    "newScore": 0.6512,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 32,
+    "oldRank": 32,
+    "newRank": 33
+  },
+  {
+    "economy": "India",
+    "score": 62.8,
+    "oldScore": 62.8,
+    "newScore": 0.6341,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.0,
+        "maxScore": 15.0,
+        "normalized": 26.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 36,
+    "oldRank": 36,
+    "newRank": 34
+  },
+  {
+    "economy": "Georgia",
+    "score": 63.4,
+    "oldScore": 63.4,
+    "newScore": 0.6312,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 35,
+    "oldRank": 35,
+    "newRank": 35
+  },
+  {
+    "economy": "Cambodia",
+    "score": 63.9,
+    "oldScore": 63.9,
+    "newScore": 0.6293,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 34,
+    "oldRank": 34,
+    "newRank": 36
+  },
+  {
+    "economy": "Malaysia",
+    "score": 58.9,
+    "oldScore": 58.9,
+    "newScore": 0.6046,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 19.0,
+        "maxScore": 30.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.5,
+        "maxScore": 15.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 40,
+    "oldRank": 40,
+    "newRank": 37
+  },
+  {
+    "economy": "Indonesia",
+    "score": 59.1,
+    "oldScore": 59.1,
+    "newScore": 0.6028,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.1,
+        "maxScore": 15.0,
+        "normalized": 27.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.0,
+        "maxScore": 30.0,
+        "normalized": 76.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 39,
+    "oldRank": 39,
+    "newRank": 38
+  },
+  {
+    "economy": "People's Republic of China",
+    "score": 60.2,
+    "oldScore": 60.2,
+    "newScore": 0.597,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 22.5,
+        "maxScore": 30.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 38,
+    "oldRank": 38,
+    "newRank": 39
+  },
+  {
+    "economy": "Kazakhstan",
+    "score": 60.4,
+    "oldScore": 60.4,
+    "newScore": 0.5866,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.5,
+        "maxScore": 15.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.3,
+        "maxScore": 15.0,
+        "normalized": 42.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 37,
+    "oldRank": 37,
+    "newRank": 40
+  },
+  {
+    "economy": "Armenia",
+    "score": 58.6,
+    "oldScore": 58.6,
+    "newScore": 0.5846,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 41,
+    "oldRank": 41,
+    "newRank": 41
+  },
+  {
+    "economy": "Thailand",
+    "score": 56.6,
+    "oldScore": 56.6,
+    "newScore": 0.5542,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.2,
+        "maxScore": 3.0,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.5,
+        "maxScore": 30.0,
+        "normalized": 81.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 42,
+    "oldRank": 42,
+    "newRank": 42
   }
 ];
 
 export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEconomy> = {
   "Niue": {
     "economy": "Niue",
-    "score": 0.8335,
+    "score": 86.6,
+    "oldScore": 86.6,
+    "newScore": 0.8335,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.9,
+        "maxScore": 15.0,
+        "normalized": 79.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9784,
+        "maxScore": 1,
+        "normalized": 97.84
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1510,12 +16146,231 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Need",
       "Readiness"
     ],
-    "rank": 1
+    "rank": 1,
+    "oldRank": 1,
+    "newRank": 1
+  },
+  "Nauru": {
+    "economy": "Nauru",
+    "score": 83.9,
+    "oldScore": 83.9,
+    "newScore": 0.8079,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.0,
+        "maxScore": 5.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9108,
+        "maxScore": 1,
+        "normalized": 91.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8902,
+        "maxScore": 1,
+        "normalized": 89.02
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 2,
+    "oldRank": 2,
+    "newRank": 4
   },
   "Papua New Guinea": {
     "economy": "Papua New Guinea",
-    "score": 0.8137,
+    "score": 83.2,
+    "oldScore": 83.2,
+    "newScore": 0.8137,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.5,
+        "maxScore": 30.0,
+        "normalized": 98.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.4,
+        "maxScore": 15.0,
+        "normalized": 49.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7676,
+        "maxScore": 1,
+        "normalized": 76.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1546,12 +16401,358 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 2
+    "rank": 3,
+    "oldRank": 3,
+    "newRank": 2
+  },
+  "Cook Islands": {
+    "economy": "Cook Islands",
+    "score": 82.2,
+    "oldScore": 82.2,
+    "newScore": 0.7875,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.9243,
+        "maxScore": 1,
+        "normalized": 92.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 4,
+    "oldRank": 4,
+    "newRank": 8
+  },
+  "Palau": {
+    "economy": "Palau",
+    "score": 81.6,
+    "oldScore": 81.6,
+    "newScore": 0.7892,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.8,
+        "maxScore": 15.0,
+        "normalized": 98.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 9.5,
+        "maxScore": 15.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.1,
+        "maxScore": 15.0,
+        "normalized": 74.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8243,
+        "maxScore": 1,
+        "normalized": 82.43
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6409,
+        "maxScore": 1,
+        "normalized": 64.09
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 5,
+    "oldRank": 5,
+    "newRank": 7
   },
   "Vanuatu": {
     "economy": "Vanuatu",
-    "score": 0.809,
+    "score": 81.1,
+    "oldScore": 81.1,
+    "newScore": 0.809,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.2,
+        "maxScore": 15.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6703,
+        "maxScore": 1,
+        "normalized": 67.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9293,
+        "maxScore": 1,
+        "normalized": 92.93
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8273,
+        "maxScore": 1,
+        "normalized": 82.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1581,47 +16782,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 3
+    "rank": 6,
+    "oldRank": 6,
+    "newRank": 3
   },
-  "Nauru": {
-    "economy": "Nauru",
-    "score": 0.8079,
+  "Micronesia (Federated States of)": {
+    "economy": "Micronesia (Federated States of)",
+    "score": 80.9,
+    "oldScore": 80.9,
+    "newScore": 0.7937,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.9,
+        "maxScore": 15.0,
+        "normalized": 72.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.9108,
+        "score": 0.7486,
         "maxScore": 1,
-        "normalized": 91.08
+        "normalized": 74.86
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.8902,
+        "score": 0.9098,
         "maxScore": 1,
-        "normalized": 89.02
+        "normalized": 90.98
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6227,
+        "score": 0.7227,
         "maxScore": 1,
-        "normalized": 62.27
+        "normalized": 72.27
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 4
-  },
-  "Micronesia (Federated States of)": {
-    "economy": "Micronesia (Federated States of)",
-    "score": 0.7937,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1652,12 +16910,231 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 5
+    "rank": 7,
+    "oldRank": 7,
+    "newRank": 5
+  },
+  "Tuvalu": {
+    "economy": "Tuvalu",
+    "score": 80.6,
+    "oldScore": 80.6,
+    "newScore": 0.7558,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 2.0,
+        "maxScore": 7.0,
+        "normalized": 28.57
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.8892,
+        "maxScore": 1,
+        "normalized": 88.92
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9146,
+        "maxScore": 1,
+        "normalized": 91.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.4636,
+        "maxScore": 1,
+        "normalized": 46.36
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Need",
+      "Readiness"
+    ],
+    "rank": 8,
+    "oldRank": 8,
+    "newRank": 13
   },
   "Turkmenistan": {
     "economy": "Turkmenistan",
-    "score": 0.7916,
+    "score": 80.5,
+    "oldScore": 80.5,
+    "newScore": 0.7916,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.7,
+        "maxScore": 3.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.5,
+        "maxScore": 30.0,
+        "normalized": 91.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 13.0,
+        "maxScore": 15.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7622,
+        "maxScore": 1,
+        "normalized": 76.22
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7273,
+        "maxScore": 1,
+        "normalized": 72.73
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1688,82 +17165,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 6
-  },
-  "Palau": {
-    "economy": "Palau",
-    "score": 0.7892,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.8243,
-        "maxScore": 1,
-        "normalized": 82.43
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9024,
-        "maxScore": 1,
-        "normalized": 90.24
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6409,
-        "maxScore": 1,
-        "normalized": 64.09
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 7
-  },
-  "Cook Islands": {
-    "economy": "Cook Islands",
-    "score": 0.7875,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.9243,
-        "maxScore": 1,
-        "normalized": 92.43
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.861,
-        "maxScore": 1,
-        "normalized": 86.1
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.5773,
-        "maxScore": 1,
-        "normalized": 57.73
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Need",
-      "Readiness"
-    ],
-    "rank": 8
+    "rank": 9,
+    "oldRank": 9,
+    "newRank": 6
   },
   "Pakistan": {
     "economy": "Pakistan",
-    "score": 0.785,
+    "score": 80.2,
+    "oldScore": 80.2,
+    "newScore": 0.785,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 13.8,
+        "maxScore": 15.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9415,
+        "maxScore": 1,
+        "normalized": 94.15
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1794,47 +17293,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 9
+    "rank": 10,
+    "oldRank": 10,
+    "newRank": 9
   },
-  "Kiribati": {
-    "economy": "Kiribati",
-    "score": 0.7719,
+  "Timor-Leste": {
+    "economy": "Timor-Leste",
+    "score": 79.0,
+    "oldScore": 79.0,
+    "newScore": 0.7682,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.3,
+        "maxScore": 15.0,
+        "normalized": 95.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.6,
+        "maxScore": 15.0,
+        "normalized": 50.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.6541,
+        "score": 0.7189,
         "maxScore": 1,
-        "normalized": 65.41
+        "normalized": 71.89
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9024,
+        "score": 0.922,
         "maxScore": 1,
-        "normalized": 90.24
+        "normalized": 92.2
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7591,
+        "score": 0.6636,
         "maxScore": 1,
-        "normalized": 75.91
+        "normalized": 66.36
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 10
-  },
-  "Timor-Leste": {
-    "economy": "Timor-Leste",
-    "score": 0.7682,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1864,12 +17420,231 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Need",
       "Readiness"
     ],
-    "rank": 11
+    "rank": 11,
+    "oldRank": 11,
+    "newRank": 11
+  },
+  "Kiribati": {
+    "economy": "Kiribati",
+    "score": 77.9,
+    "oldScore": 77.9,
+    "newScore": 0.7719,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.8,
+        "maxScore": 15.0,
+        "normalized": 65.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.9,
+        "maxScore": 15.0,
+        "normalized": 52.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6541,
+        "maxScore": 1,
+        "normalized": 65.41
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9024,
+        "maxScore": 1,
+        "normalized": 90.24
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7591,
+        "maxScore": 1,
+        "normalized": 75.91
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 12,
+    "oldRank": 12,
+    "newRank": 10
   },
   "Marshall Islands": {
     "economy": "Marshall Islands",
-    "score": 0.7596,
+    "score": 77.4,
+    "oldScore": 77.4,
+    "newScore": 0.7596,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.8,
+        "maxScore": 5.0,
+        "normalized": 96.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 11.4,
+        "maxScore": 15.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6189,
+        "maxScore": 1,
+        "normalized": 61.89
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7136,
+        "maxScore": 1,
+        "normalized": 71.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1899,47 +17674,230 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 12
+    "rank": 13,
+    "oldRank": 13,
+    "newRank": 12
   },
-  "Tuvalu": {
-    "economy": "Tuvalu",
-    "score": 0.7558,
+  "Mongolia": {
+    "economy": "Mongolia",
+    "score": 76.5,
+    "oldScore": 76.5,
+    "newScore": 0.7385,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 31.0,
+        "maxScore": 30.0,
+        "normalized": 103.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.8892,
+        "score": 0.627,
         "maxScore": 1,
-        "normalized": 88.92
+        "normalized": 62.7
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9146,
+        "score": 0.9659,
         "maxScore": 1,
-        "normalized": 91.46
+        "normalized": 96.59
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.4636,
+        "score": 0.6227,
         "maxScore": 1,
-        "normalized": 46.36
+        "normalized": 62.27
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.627,
+        "maxScore": 1,
+        "normalized": 62.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9659,
+        "maxScore": 1,
+        "normalized": 96.59
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
     "strongAxes": [
-      "Need",
       "Readiness"
     ],
-    "rank": 13
+    "rank": 14,
+    "oldRank": 14,
+    "newRank": 17
   },
   "Afghanistan": {
     "economy": "Afghanistan",
-    "score": 0.7548,
+    "score": 76.0,
+    "oldScore": 76.0,
+    "newScore": 0.7548,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 5.0,
+        "maxScore": 5.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 14.0,
+        "maxScore": 15.0,
+        "normalized": 93.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.5,
+        "maxScore": 30.0,
+        "normalized": 78.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.1,
+        "maxScore": 15.0,
+        "normalized": 47.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8171,
+        "maxScore": 1,
+        "normalized": 81.71
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7364,
+        "maxScore": 1,
+        "normalized": 73.64
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -1970,47 +17928,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 14
+    "rank": 15,
+    "oldRank": 15,
+    "newRank": 14
   },
-  "Kyrgyz Republic": {
-    "economy": "Kyrgyz Republic",
-    "score": 0.7471,
+  "Myanmar": {
+    "economy": "Myanmar",
+    "score": 75.1,
+    "oldScore": 75.1,
+    "newScore": 0.7432,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 6.0,
+        "maxScore": 7.0,
+        "normalized": 85.71
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.527,
+        "score": 0.5811,
         "maxScore": 1,
-        "normalized": 52.7
+        "normalized": 58.11
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9098,
+        "score": 0.9122,
         "maxScore": 1,
-        "normalized": 90.98
+        "normalized": 91.22
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.8045,
+        "score": 0.7364,
         "maxScore": 1,
-        "normalized": 80.45
+        "normalized": 73.64
       }
     ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 15
-  },
-  "Myanmar": {
-    "economy": "Myanmar",
-    "score": 0.7432,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2040,32 +18055,124 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 16
+    "rank": 16,
+    "oldRank": 16,
+    "newRank": 16
   },
-  "Mongolia": {
-    "economy": "Mongolia",
-    "score": 0.7385,
+  "Solomon Islands": {
+    "economy": "Solomon Islands",
+    "score": 75.0,
+    "oldScore": 75.0,
+    "newScore": 0.7327,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.4,
+        "maxScore": 5.0,
+        "normalized": 88.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.627,
+        "score": 0.6054,
         "maxScore": 1,
-        "normalized": 62.7
+        "normalized": 60.54
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9659,
+        "score": 0.9244,
         "maxScore": 1,
-        "normalized": 96.59
+        "normalized": 92.44
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6227,
+        "score": 0.6682,
         "maxScore": 1,
-        "normalized": 62.27
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6054,
+        "maxScore": 1,
+        "normalized": 60.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9244,
+        "maxScore": 1,
+        "normalized": 92.44
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
       }
     ],
     "profileLabel": "Focused pull on readiness",
@@ -2074,12 +18181,357 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 17
+    "rank": 17,
+    "oldRank": 17,
+    "newRank": 19
+  },
+  "Kyrgyz Republic": {
+    "economy": "Kyrgyz Republic",
+    "score": 74.5,
+    "oldScore": 74.5,
+    "newScore": 0.7471,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.0,
+        "maxScore": 3.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.5,
+        "maxScore": 15.0,
+        "normalized": 56.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 28.5,
+        "maxScore": 30.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.7,
+        "maxScore": 15.0,
+        "normalized": 84.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.527,
+        "maxScore": 1,
+        "normalized": 52.7
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9098,
+        "maxScore": 1,
+        "normalized": 90.98
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.8045,
+        "maxScore": 1,
+        "normalized": 80.45
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 18,
+    "oldRank": 18,
+    "newRank": 15
+  },
+  "Philippines": {
+    "economy": "Philippines",
+    "score": 73.5,
+    "oldScore": 73.5,
+    "newScore": 0.7138,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.0,
+        "maxScore": 4.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.573,
+        "maxScore": 1,
+        "normalized": 57.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9366,
+        "maxScore": 1,
+        "normalized": 93.66
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 19,
+    "oldRank": 19,
+    "newRank": 21
   },
   "Nepal": {
     "economy": "Nepal",
-    "score": 0.7328,
+    "score": 73.4,
+    "oldScore": 73.4,
+    "newScore": 0.7328,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.0,
+        "maxScore": 30.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4703,
+        "maxScore": 1,
+        "normalized": 47.03
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9463,
+        "maxScore": 1,
+        "normalized": 94.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2109,46 +18561,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 18
+    "rank": 20,
+    "oldRank": 20,
+    "newRank": 18
   },
-  "Solomon Islands": {
-    "economy": "Solomon Islands",
-    "score": 0.7327,
+  "Tajikistan": {
+    "economy": "Tajikistan",
+    "score": 73.3,
+    "oldScore": 73.3,
+    "newScore": 0.7154,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.6,
+        "maxScore": 5.0,
+        "normalized": 92.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.6054,
+        "score": 0.6081,
         "maxScore": 1,
-        "normalized": 60.54
+        "normalized": 60.81
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.9244,
+        "score": 0.8927,
         "maxScore": 1,
-        "normalized": 92.44
+        "normalized": 89.27
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.6455,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 64.55
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 19
-  },
-  "Tajikistan": {
-    "economy": "Tajikistan",
-    "score": 0.7154,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2177,81 +18687,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 20
-  },
-  "Philippines": {
-    "economy": "Philippines",
-    "score": 0.7138,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.573,
-        "maxScore": 1,
-        "normalized": 57.3
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9366,
-        "maxScore": 1,
-        "normalized": 93.66
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6318,
-        "maxScore": 1,
-        "normalized": 63.18
-      }
-    ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 21
-  },
-  "Lao People's Democratic Republic": {
-    "economy": "Lao People's Democratic Republic",
-    "score": 0.7112,
-    "dimensions": [
-      {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4297,
-        "maxScore": 1,
-        "normalized": 42.97
-      },
-      {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.9585,
-        "maxScore": 1,
-        "normalized": 95.85
-      },
-      {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.7455,
-        "maxScore": 1,
-        "normalized": 74.55
-      }
-    ],
-    "profileLabel": "Stronger pull across two axes",
-    "profileColor": "#F5C400",
-    "profileTone": "yellow",
-    "strongAxes": [
-      "Readiness",
-      "Financeability"
-    ],
-    "rank": 22
+    "rank": 21,
+    "oldRank": 21,
+    "newRank": 20
   },
   "Tonga": {
     "economy": "Tonga",
-    "score": 0.7,
+    "score": 72.9,
+    "oldScore": 72.9,
+    "newScore": 0.7,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.2,
+        "maxScore": 15.0,
+        "normalized": 61.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6649,
+        "maxScore": 1,
+        "normalized": 66.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8805,
+        "maxScore": 1,
+        "normalized": 88.05
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5545,
+        "maxScore": 1,
+        "normalized": 55.45
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2280,12 +18813,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 23
+    "rank": 22,
+    "oldRank": 22,
+    "newRank": 23
   },
   "Maldives": {
     "economy": "Maldives",
-    "score": 0.698,
+    "score": 72.3,
+    "oldScore": 72.3,
+    "newScore": 0.698,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 15.0,
+        "maxScore": 15.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.7,
+        "maxScore": 15.0,
+        "normalized": 31.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.7108,
+        "maxScore": 1,
+        "normalized": 71.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8195,
+        "maxScore": 1,
+        "normalized": 81.95
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5636,
+        "maxScore": 1,
+        "normalized": 56.36
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2315,12 +18940,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Need",
       "Readiness"
     ],
-    "rank": 24
+    "rank": 23,
+    "oldRank": 23,
+    "newRank": 24
   },
   "Samoa": {
     "economy": "Samoa",
-    "score": 0.6972,
+    "score": 72.0,
+    "oldScore": 72.0,
+    "newScore": 0.6972,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 2.9,
+        "maxScore": 4.0,
+        "normalized": 72.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.3,
+        "maxScore": 5.0,
+        "normalized": 86.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 4.0,
+        "maxScore": 7.0,
+        "normalized": 57.14
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.6108,
+        "maxScore": 1,
+        "normalized": 61.08
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8854,
+        "maxScore": 1,
+        "normalized": 88.54
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5955,
+        "maxScore": 1,
+        "normalized": 59.55
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2349,12 +19066,483 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 25
+    "rank": 24,
+    "oldRank": 24,
+    "newRank": 25
+  },
+  "Lao People's Democratic Republic": {
+    "economy": "Lao People's Democratic Republic",
+    "score": 71.6,
+    "oldScore": 71.6,
+    "newScore": 0.7112,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 30.5,
+        "maxScore": 30.0,
+        "normalized": 101.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.9,
+        "maxScore": 15.0,
+        "normalized": 39.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.4,
+        "maxScore": 15.0,
+        "normalized": 62.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.9585,
+        "maxScore": 1,
+        "normalized": 95.85
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7455,
+        "maxScore": 1,
+        "normalized": 74.55
+      }
+    ],
+    "profileLabel": "Stronger pull across two axes",
+    "profileColor": "#F5C400",
+    "profileTone": "yellow",
+    "strongAxes": [
+      "Readiness",
+      "Financeability"
+    ],
+    "rank": 25,
+    "oldRank": 25,
+    "newRank": 22
+  },
+  "Fiji": {
+    "economy": "Fiji",
+    "score": 69.0,
+    "oldScore": 69.0,
+    "newScore": 0.6837,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 4.1,
+        "maxScore": 5.0,
+        "normalized": 82.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.2,
+        "maxScore": 15.0,
+        "normalized": 81.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4919,
+        "maxScore": 1,
+        "normalized": 49.19
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8683,
+        "maxScore": 1,
+        "normalized": 86.83
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 26,
+    "oldRank": 26,
+    "newRank": 27
+  },
+  "Azerbaijan": {
+    "economy": "Azerbaijan",
+    "score": 68.7,
+    "oldScore": 68.7,
+    "newScore": 0.6782,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5054,
+        "maxScore": 1,
+        "normalized": 50.54
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Readiness"
+    ],
+    "rank": 27,
+    "oldRank": 27,
+    "newRank": 28
   },
   "Sri Lanka": {
     "economy": "Sri Lanka",
-    "score": 0.6881,
+    "score": 68.1,
+    "oldScore": 68.1,
+    "newScore": 0.6881,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.3,
+        "maxScore": 15.0,
+        "normalized": 35.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.2,
+        "maxScore": 15.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4216,
+        "maxScore": 1,
+        "normalized": 42.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.861,
+        "maxScore": 1,
+        "normalized": 86.1
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7818,
+        "maxScore": 1,
+        "normalized": 78.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2384,52 +19572,87 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 26
+    "rank": 28,
+    "oldRank": 28,
+    "newRank": 26
   },
-  "Fiji": {
-    "economy": "Fiji",
-    "score": 0.6837,
-    "dimensions": [
+  "Bhutan": {
+    "economy": "Bhutan",
+    "score": 67.3,
+    "oldScore": 67.3,
+    "newScore": 0.6705,
+    "oldDimensions": [
       {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4919,
-        "maxScore": 1,
-        "normalized": 49.19
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.2,
+        "maxScore": 3.0,
+        "normalized": 73.33
       },
       {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.8683,
-        "maxScore": 1,
-        "normalized": 86.83
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.3,
+        "maxScore": 4.0,
+        "normalized": 82.5
       },
       {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.6909,
-        "maxScore": 1,
-        "normalized": 69.09
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.8,
+        "maxScore": 5.0,
+        "normalized": 76.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.5,
+        "maxScore": 30.0,
+        "normalized": 88.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.5,
+        "maxScore": 15.0,
+        "normalized": 70.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 5.0,
+        "maxScore": 7.0,
+        "normalized": 71.43
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 27
-  },
-  "Azerbaijan": {
-    "economy": "Azerbaijan",
-    "score": 0.6782,
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5054,
+        "score": 0.4459,
         "maxScore": 1,
-        "normalized": 50.54
+        "normalized": 44.59
       },
       {
         "dimension": "Readiness",
@@ -2441,23 +19664,12 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.7045,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 70.45
       }
     ],
-    "profileLabel": "Focused pull on readiness",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Readiness"
-    ],
-    "rank": 28
-  },
-  "Bhutan": {
-    "economy": "Bhutan",
-    "score": 0.6705,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2487,46 +19699,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
       "Readiness",
       "Financeability"
     ],
-    "rank": 29
+    "rank": 29,
+    "oldRank": 29,
+    "newRank": 29
   },
-  "Türkiye": {
-    "economy": "Türkiye",
-    "score": 0.6661,
+  "Uzbekistan": {
+    "economy": "Uzbekistan",
+    "score": 66.5,
+    "oldScore": 66.5,
+    "newScore": 0.6604,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.5,
+        "maxScore": 3.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 29.0,
+        "maxScore": 30.0,
+        "normalized": 96.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5946,
+        "score": 0.4,
         "maxScore": 1,
-        "normalized": 59.46
+        "normalized": 40.0
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6902,
+        "score": 0.8902,
         "maxScore": 1,
-        "normalized": 69.02
+        "normalized": 89.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7136,
+        "score": 0.6909,
         "maxScore": 1,
-        "normalized": 71.36
+        "normalized": 69.09
       }
     ],
-    "profileLabel": "Focused pull on financeability",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Financeability"
-    ],
-    "rank": 30
-  },
-  "Uzbekistan": {
-    "economy": "Uzbekistan",
-    "score": 0.6604,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2555,12 +19825,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 31
+    "rank": 30,
+    "oldRank": 30,
+    "newRank": 31
   },
   "Viet Nam": {
     "economy": "Viet Nam",
-    "score": 0.6585,
+    "score": 66.4,
+    "oldScore": 66.4,
+    "newScore": 0.6585,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.8,
+        "maxScore": 15.0,
+        "normalized": 38.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5838,
+        "maxScore": 1,
+        "normalized": 58.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7463,
+        "maxScore": 1,
+        "normalized": 74.63
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6455,
+        "maxScore": 1,
+        "normalized": 64.55
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2589,12 +19951,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 32
+    "rank": 31,
+    "oldRank": 31,
+    "newRank": 32
   },
   "Bangladesh": {
     "economy": "Bangladesh",
-    "score": 0.6512,
+    "score": 66.2,
+    "oldScore": 66.2,
+    "newScore": 0.6512,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 3.8,
+        "maxScore": 15.0,
+        "normalized": 25.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 7.2,
+        "maxScore": 15.0,
+        "normalized": 48.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.9,
+        "maxScore": 15.0,
+        "normalized": 46.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.473,
+        "maxScore": 1,
+        "normalized": 47.3
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8488,
+        "maxScore": 1,
+        "normalized": 84.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6318,
+        "maxScore": 1,
+        "normalized": 63.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2623,78 +20077,230 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 33
+    "rank": 32,
+    "oldRank": 32,
+    "newRank": 33
   },
-  "India": {
-    "economy": "India",
-    "score": 0.6341,
+  "Türkiye": {
+    "economy": "Türkiye",
+    "score": 66.0,
+    "oldScore": 66.0,
+    "newScore": 0.6661,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 4.0,
+        "maxScore": 4.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 10.0,
+        "maxScore": 15.0,
+        "normalized": 66.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.0,
+        "maxScore": 30.0,
+        "normalized": 80.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.0,
+        "maxScore": 15.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5162,
+        "score": 0.5946,
         "maxScore": 1,
-        "normalized": 51.62
+        "normalized": 59.46
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6951,
+        "score": 0.6902,
         "maxScore": 1,
-        "normalized": 69.51
+        "normalized": 69.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6909,
+        "score": 0.7136,
         "maxScore": 1,
-        "normalized": 69.09
+        "normalized": 71.36
       }
     ],
-    "profileLabel": "Overall low to moderate focus",
-    "profileColor": "#4E9BC3",
-    "profileTone": "blue",
-    "strongAxes": [],
-    "rank": 34
-  },
-  "Georgia": {
-    "economy": "Georgia",
-    "score": 0.6312,
-    "dimensions": [
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.3865,
+        "score": 0.5946,
         "maxScore": 1,
-        "normalized": 38.65
+        "normalized": 59.46
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.839,
+        "score": 0.6902,
         "maxScore": 1,
-        "normalized": 83.9
+        "normalized": 69.02
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.6682,
+        "score": 0.7136,
         "maxScore": 1,
-        "normalized": 66.82
+        "normalized": 71.36
       }
     ],
-    "profileLabel": "Focused pull on readiness",
+    "profileLabel": "Focused pull on financeability",
     "profileColor": "#9EBB1B",
     "profileTone": "green",
     "strongAxes": [
-      "Readiness"
+      "Financeability"
     ],
-    "rank": 35
+    "rank": 33,
+    "oldRank": 33,
+    "newRank": 30
   },
   "Cambodia": {
     "economy": "Cambodia",
-    "score": 0.6293,
+    "score": 63.9,
+    "oldScore": 63.9,
+    "newScore": 0.6293,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 3.0,
+        "maxScore": 3.0,
+        "normalized": 100.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.6,
+        "maxScore": 5.0,
+        "normalized": 72.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 27.0,
+        "maxScore": 30.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 6.4,
+        "maxScore": 15.0,
+        "normalized": 42.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4838,
+        "maxScore": 1,
+        "normalized": 48.38
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7951,
+        "maxScore": 1,
+        "normalized": 79.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6091,
+        "maxScore": 1,
+        "normalized": 60.91
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2723,112 +20329,354 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 36
+    "rank": 34,
+    "oldRank": 34,
+    "newRank": 36
   },
-  "Malaysia": {
-    "economy": "Malaysia",
-    "score": 0.6046,
+  "Georgia": {
+    "economy": "Georgia",
+    "score": 63.4,
+    "oldScore": 63.4,
+    "newScore": 0.6312,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.9,
+        "maxScore": 5.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.3,
+        "maxScore": 15.0,
+        "normalized": 28.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.5,
+        "maxScore": 30.0,
+        "normalized": 85.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 11.7,
+        "maxScore": 15.0,
+        "normalized": 78.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5216,
+        "score": 0.3865,
         "maxScore": 1,
-        "normalized": 52.16
+        "normalized": 38.65
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.5878,
+        "score": 0.839,
         "maxScore": 1,
-        "normalized": 58.78
+        "normalized": 83.9
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.7045,
+        "score": 0.6682,
         "maxScore": 1,
-        "normalized": 70.45
+        "normalized": 66.82
       }
     ],
-    "profileLabel": "Focused pull on financeability",
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3865,
+        "maxScore": 1,
+        "normalized": 38.65
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.839,
+        "maxScore": 1,
+        "normalized": 83.9
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6682,
+        "maxScore": 1,
+        "normalized": 66.82
+      }
+    ],
+    "profileLabel": "Focused pull on readiness",
     "profileColor": "#9EBB1B",
     "profileTone": "green",
     "strongAxes": [
-      "Financeability"
+      "Readiness"
     ],
-    "rank": 37
+    "rank": 35,
+    "oldRank": 35,
+    "newRank": 35
   },
-  "Indonesia": {
-    "economy": "Indonesia",
-    "score": 0.6028,
-    "dimensions": [
+  "India": {
+    "economy": "India",
+    "score": 62.8,
+    "oldScore": 62.8,
+    "newScore": 0.6341,
+    "oldDimensions": [
       {
-        "dimension": "Need",
-        "shortLabel": "Need Axis",
-        "score": 0.4378,
-        "maxScore": 1,
-        "normalized": 43.78
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
       },
       {
-        "dimension": "Readiness",
-        "shortLabel": "Readiness Axis",
-        "score": 0.6707,
-        "maxScore": 1,
-        "normalized": 67.07
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
       },
       {
-        "dimension": "Financeability",
-        "shortLabel": "Financeability Axis",
-        "score": 0.7,
-        "maxScore": 1,
-        "normalized": 70.0
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 8.8,
+        "maxScore": 15.0,
+        "normalized": 58.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.0,
+        "maxScore": 15.0,
+        "normalized": 26.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.2,
+        "maxScore": 15.0,
+        "normalized": 54.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
       }
     ],
-    "profileLabel": "Focused pull on financeability",
-    "profileColor": "#9EBB1B",
-    "profileTone": "green",
-    "strongAxes": [
-      "Financeability"
-    ],
-    "rank": 38
-  },
-  "People's Republic of China": {
-    "economy": "People's Republic of China",
-    "score": 0.597,
     "dimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
-        "score": 0.5649,
+        "score": 0.5162,
         "maxScore": 1,
-        "normalized": 56.49
+        "normalized": 51.62
       },
       {
         "dimension": "Readiness",
         "shortLabel": "Readiness Axis",
-        "score": 0.6488,
+        "score": 0.6951,
         "maxScore": 1,
-        "normalized": 64.88
+        "normalized": 69.51
       },
       {
         "dimension": "Financeability",
         "shortLabel": "Financeability Axis",
-        "score": 0.5773,
+        "score": 0.6909,
         "maxScore": 1,
-        "normalized": 57.73
+        "normalized": 69.09
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5162,
+        "maxScore": 1,
+        "normalized": 51.62
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6951,
+        "maxScore": 1,
+        "normalized": 69.51
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6909,
+        "maxScore": 1,
+        "normalized": 69.09
       }
     ],
     "profileLabel": "Overall low to moderate focus",
     "profileColor": "#4E9BC3",
     "profileTone": "blue",
     "strongAxes": [],
-    "rank": 39
+    "rank": 36,
+    "oldRank": 36,
+    "newRank": 34
   },
   "Kazakhstan": {
     "economy": "Kazakhstan",
-    "score": 0.5866,
+    "score": 60.4,
+    "oldScore": 60.4,
+    "newScore": 0.5866,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.1,
+        "maxScore": 4.0,
+        "normalized": 77.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.4,
+        "maxScore": 5.0,
+        "normalized": 68.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.5,
+        "maxScore": 15.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 25.0,
+        "maxScore": 30.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.3,
+        "maxScore": 15.0,
+        "normalized": 42.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.7,
+        "maxScore": 15.0,
+        "normalized": 58.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 5.0,
+        "maxScore": 6.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4135,
+        "maxScore": 1,
+        "normalized": 41.35
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.8146,
+        "maxScore": 1,
+        "normalized": 81.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5318,
+        "maxScore": 1,
+        "normalized": 53.18
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2857,12 +20705,480 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 40
+    "rank": 37,
+    "oldRank": 37,
+    "newRank": 40
+  },
+  "People's Republic of China": {
+    "economy": "People's Republic of China",
+    "score": 60.2,
+    "oldScore": 60.2,
+    "newScore": 0.597,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.4,
+        "maxScore": 3.0,
+        "normalized": 46.67
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.8,
+        "maxScore": 4.0,
+        "normalized": 95.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.1,
+        "maxScore": 15.0,
+        "normalized": 60.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 22.5,
+        "maxScore": 30.0,
+        "normalized": 75.0
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 9.7,
+        "maxScore": 15.0,
+        "normalized": 64.67
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 1.0,
+        "maxScore": 6.0,
+        "normalized": 16.67
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5649,
+        "maxScore": 1,
+        "normalized": 56.49
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6488,
+        "maxScore": 1,
+        "normalized": 64.88
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5773,
+        "maxScore": 1,
+        "normalized": 57.73
+      }
+    ],
+    "profileLabel": "Overall low to moderate focus",
+    "profileColor": "#4E9BC3",
+    "profileTone": "blue",
+    "strongAxes": [],
+    "rank": 38,
+    "oldRank": 38,
+    "newRank": 39
+  },
+  "Indonesia": {
+    "economy": "Indonesia",
+    "score": 59.1,
+    "oldScore": 59.1,
+    "newScore": 0.6028,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 2.5,
+        "maxScore": 3.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.5,
+        "maxScore": 5.0,
+        "normalized": 50.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.1,
+        "maxScore": 15.0,
+        "normalized": 27.33
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 23.0,
+        "maxScore": 30.0,
+        "normalized": 76.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.1,
+        "maxScore": 15.0,
+        "normalized": 40.67
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 7.0,
+        "maxScore": 7.0,
+        "normalized": 100.0
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4378,
+        "maxScore": 1,
+        "normalized": 43.78
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.6707,
+        "maxScore": 1,
+        "normalized": 67.07
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7,
+        "maxScore": 1,
+        "normalized": 70.0
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 39,
+    "oldRank": 39,
+    "newRank": 38
+  },
+  "Malaysia": {
+    "economy": "Malaysia",
+    "score": 58.9,
+    "oldScore": 58.9,
+    "newScore": 0.6046,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.9,
+        "maxScore": 3.0,
+        "normalized": 30.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.1,
+        "maxScore": 5.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 9.3,
+        "maxScore": 15.0,
+        "normalized": 62.0
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 19.0,
+        "maxScore": 30.0,
+        "normalized": 63.33
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 5.6,
+        "maxScore": 15.0,
+        "normalized": 37.33
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 12.5,
+        "maxScore": 15.0,
+        "normalized": 83.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
+    "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "newDimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.5216,
+        "maxScore": 1,
+        "normalized": 52.16
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.5878,
+        "maxScore": 1,
+        "normalized": 58.78
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.7045,
+        "maxScore": 1,
+        "normalized": 70.45
+      }
+    ],
+    "profileLabel": "Focused pull on financeability",
+    "profileColor": "#9EBB1B",
+    "profileTone": "green",
+    "strongAxes": [
+      "Financeability"
+    ],
+    "rank": 40,
+    "oldRank": 40,
+    "newRank": 37
   },
   "Armenia": {
     "economy": "Armenia",
-    "score": 0.5846,
+    "score": 58.6,
+    "oldScore": 58.6,
+    "newScore": 0.5846,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 0.6,
+        "maxScore": 3.0,
+        "normalized": 20.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.6,
+        "maxScore": 4.0,
+        "normalized": 90.0
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 3.3,
+        "maxScore": 5.0,
+        "normalized": 66.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 26.0,
+        "maxScore": 30.0,
+        "normalized": 86.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 4.8,
+        "maxScore": 15.0,
+        "normalized": 32.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 10.7,
+        "maxScore": 15.0,
+        "normalized": 71.33
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.3676,
+        "maxScore": 1,
+        "normalized": 36.76
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7634,
+        "maxScore": 1,
+        "normalized": 76.34
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.6227,
+        "maxScore": 1,
+        "normalized": 62.27
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2891,12 +21207,104 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 41
+    "rank": 41,
+    "oldRank": 41,
+    "newRank": 41
   },
   "Thailand": {
     "economy": "Thailand",
-    "score": 0.5542,
+    "score": 56.6,
+    "oldScore": 56.6,
+    "newScore": 0.5542,
+    "oldDimensions": [
+      {
+        "dimension": "Infrastructure",
+        "shortLabel": "Infrastructure",
+        "score": 1.2,
+        "maxScore": 3.0,
+        "normalized": 40.0
+      },
+      {
+        "dimension": "Transport Activity",
+        "shortLabel": "Transport Activity",
+        "score": 3.5,
+        "maxScore": 4.0,
+        "normalized": 87.5
+      },
+      {
+        "dimension": "Fuel Transition",
+        "shortLabel": "Fuel Transition",
+        "score": 2.8,
+        "maxScore": 5.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Transport Carbon Emissions",
+        "shortLabel": "Transport Carbon Emissions",
+        "score": 4.6,
+        "maxScore": 15.0,
+        "normalized": 30.67
+      },
+      {
+        "dimension": "Low Carbon Transport Policies",
+        "shortLabel": "Low Carbon Transport Policies",
+        "score": 24.5,
+        "maxScore": 30.0,
+        "normalized": 81.67
+      },
+      {
+        "dimension": "Co-Benefits",
+        "shortLabel": "Co-Benefits",
+        "score": 6.6,
+        "maxScore": 15.0,
+        "normalized": 44.0
+      },
+      {
+        "dimension": "Economic and Financial",
+        "shortLabel": "Economic and Financial",
+        "score": 8.4,
+        "maxScore": 15.0,
+        "normalized": 56.0
+      },
+      {
+        "dimension": "Institutional",
+        "shortLabel": "Institutional",
+        "score": 2.0,
+        "maxScore": 6.0,
+        "normalized": 33.33
+      },
+      {
+        "dimension": "International Support",
+        "shortLabel": "International Support",
+        "score": 3.0,
+        "maxScore": 7.0,
+        "normalized": 42.86
+      }
+    ],
     "dimensions": [
+      {
+        "dimension": "Need",
+        "shortLabel": "Need Axis",
+        "score": 0.4297,
+        "maxScore": 1,
+        "normalized": 42.97
+      },
+      {
+        "dimension": "Readiness",
+        "shortLabel": "Readiness Axis",
+        "score": 0.7146,
+        "maxScore": 1,
+        "normalized": 71.46
+      },
+      {
+        "dimension": "Financeability",
+        "shortLabel": "Financeability Axis",
+        "score": 0.5182,
+        "maxScore": 1,
+        "normalized": 51.82
+      }
+    ],
+    "newDimensions": [
       {
         "dimension": "Need",
         "shortLabel": "Need Axis",
@@ -2925,6 +21333,8 @@ export const LOW_CARBON_SCREENER_BY_ECONOMY: Record<string, LowCarbonScreenerEco
     "strongAxes": [
       "Readiness"
     ],
-    "rank": 42
+    "rank": 42,
+    "oldRank": 42,
+    "newRank": 42
   }
 };
