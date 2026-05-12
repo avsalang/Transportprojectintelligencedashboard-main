@@ -139,7 +139,7 @@ export function CRSOverview() {
           <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} sub={activeFinanceSub} />
           <KPICard label="Recipients" value={crsFmt.num(stats.recipientCount)} sub="ATO economies and Asia regional recipients" />
           <KPICard label="Donors" value={crsFmt.num(stats.donorCount)} sub="Finance sources in view" />
-          <KPICard label="Project Records" value={crsFmt.num(stats.count)} sub="CRS transaction lines" />
+          <KPICard label="Records" value={crsFmt.num(stats.count)} sub="CRS transaction lines" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr,1fr] gap-6">

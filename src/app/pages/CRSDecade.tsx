@@ -397,9 +397,9 @@ export function CRSDecade() {
         />
 
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
-          <KPICard label="Screened Project Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />
+          <KPICard label="Screened Records" value={isLoading ? 'Loading...' : crsFmt.num(stats.count)} sub="CRS transaction lines in view" />
           <KPICard
-            label="Projects"
+            label="Records"
             value={crsFmt.num(stats.taggedCount)}
             sub={
               selectedThemes.length

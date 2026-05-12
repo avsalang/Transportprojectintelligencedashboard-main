@@ -560,7 +560,7 @@ function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; record
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <KPICard label="Projects" value={num(summary.recordCount)} />
+        <KPICard label="Records" value={num(summary.recordCount)} />
         <KPICard label="Commitments" value={usdM(summary.commitment_defl)} />
         <KPICard label="Disbursements" value={usdM(summary.disbursement_defl)} />
         <KPICard label="Recipients" value={num(summary.recipientCount)} sub="Recipient economies" />

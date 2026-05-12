@@ -183,7 +183,7 @@ export function CRSDonorProfile() {
           <KPICard label={activeFinanceLabel} value={crsFmt.usdM(stats[measure] ?? 0)} />
           <KPICard label="Recipients" value={crsFmt.num(donorRecipients)} />
           <KPICard label="Agencies" value={crsFmt.num(donorAgencies)} />
-          <KPICard label="Project Records" value={crsFmt.num(stats.count)} />
+          <KPICard label="Records" value={crsFmt.num(stats.count)} />
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] gap-6">
