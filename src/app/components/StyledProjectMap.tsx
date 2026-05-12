@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl, { GeoJSONSource, LngLatBounds, MapStyleDataEvent } from 'maplibre-gl';
 import { Project, MDB_COLORS } from '../data/mockData';
 import { ATO_STYLE_URL, atoMapFallbackStyle } from '../map/atoMapStyle';
+import { canCreateWebGLContext } from '../utils/webgl';
 
 type MapViewMode = 'points' | 'heatmap';
 
@@ -146,6 +147,19 @@ function fitToProjects(map: maplibregl.Map, featureCollection: ReturnType<typeof
   map.fitBounds(bounds, { padding: 24, maxZoom: 7, duration: 600 });
 }
 
+function WebGLFallback({ height }: { height: number }) {
+  return (
+    <div className="flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-6 text-center" style={{ height }}>
+      <div className="max-w-md">
+        <p className="text-base font-semibold text-slate-800">Interactive map unavailable</p>
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          This browser session could not create a WebGL context. The surrounding charts and rankings still show the same filtered project data.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function StyledProjectMap({
   projects,
   viewMode = 'points',
@@ -157,6 +171,7 @@ export function StyledProjectMap({
   height?: number;
   onProjectSelect?: (project: Project) => void;
 }) {
+  const [mapUnavailable, setMapUnavailable] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
@@ -176,15 +191,39 @@ export function StyledProjectMap({
   }, [onProjectSelect, projectLookup]);
 
   useEffect(() => {
-    if (!containerRef.current || mapRef.current) return;
+    if (!containerRef.current || mapRef.current || mapUnavailable) return;
+    if (!canCreateWebGLContext()) {
+      setMapUnavailable(true);
+      return;
+    }
 
-    const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: ATO_STYLE_URL,
-      center: [95, 18],
-      zoom: 2,
-      attributionControl: true,
-    });
+    let map: maplibregl.Map;
+    try {
+      map = new maplibregl.Map({
+        container: containerRef.current,
+        style: ATO_STYLE_URL,
+        center: [95, 18],
+        zoom: 2,
+        attributionControl: true,
+      });
+    } catch {
+      setMapUnavailable(true);
+      return;
+    }
+    let isRemoved = false;
+
+    const removeMap = () => {
+      if (isRemoved) return;
+      isRemoved = true;
+      if (fallbackTimeoutRef.current !== null) {
+        window.clearTimeout(fallbackTimeoutRef.current);
+      }
+      popupRef.current?.remove();
+      popupRef.current = null;
+      map.remove();
+      mapRef.current = null;
+      hasBoundInteractionsRef.current = false;
+    };
 
     const switchToFallbackStyle = () => {
       if (usingFallbackStyleRef.current) return;
@@ -222,7 +261,13 @@ export function StyledProjectMap({
         syncMap();
       }
     });
-    map.on('error', () => {
+    map.on('error', (event) => {
+      const error = (event as { error?: unknown }).error as { message?: string; type?: string } | undefined;
+      if (error?.type === 'webglcontextcreationerror' || error?.message?.toLowerCase().includes('webgl')) {
+        setMapUnavailable(true);
+        removeMap();
+        return;
+      }
       if (!map.isStyleLoaded()) {
         switchToFallbackStyle();
       }
@@ -262,17 +307,8 @@ export function StyledProjectMap({
       hasBoundInteractionsRef.current = true;
     }
 
-    return () => {
-      if (fallbackTimeoutRef.current !== null) {
-        window.clearTimeout(fallbackTimeoutRef.current);
-      }
-      popupRef.current?.remove();
-      popupRef.current = null;
-      map.remove();
-      mapRef.current = null;
-      hasBoundInteractionsRef.current = false;
-    };
-  }, [featureCollection, viewMode]);
+    return removeMap;
+  }, [featureCollection, mapUnavailable, viewMode]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -283,6 +319,8 @@ export function StyledProjectMap({
       fitToProjects(map, featureCollection);
     }
   }, [featureCollection, viewMode]);
+
+  if (mapUnavailable) return <WebGLFallback height={height} />;
 
   return <div ref={containerRef} className="rounded-xl overflow-hidden border border-slate-200 bg-slate-50" style={{ height }} />;
 }

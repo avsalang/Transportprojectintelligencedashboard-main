@@ -24,8 +24,8 @@ export function YearRangeSelector({ label, min, max, yearMin, yearMax, onChange 
   };
 
   return (
-    <div className="px-2 pb-2">
-      <label className="mb-1.5 ml-1 block whitespace-nowrap text-[14px] font-semibold text-slate-500">
+    <div>
+      <label className="mb-1.5 ml-1 block whitespace-nowrap text-[13px] font-semibold text-slate-500">
         {label}
       </label>
       <div className="flex items-center gap-2">
@@ -33,7 +33,7 @@ export function YearRangeSelector({ label, min, max, yearMin, yearMax, onChange 
           <select
             value={yearMin}
             onChange={handleStartChange}
-            className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2 pr-8 text-[15px] font-medium text-slate-700 shadow-sm hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
+            className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2 pr-8 text-[14px] font-medium text-slate-700 shadow-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
           >
             {years.map((y) => (
               <option key={y} value={y}>
@@ -53,7 +53,7 @@ export function YearRangeSelector({ label, min, max, yearMin, yearMax, onChange 
           <select
             value={yearMax}
             onChange={handleEndChange}
-            className="w-full appearance-none bg-white border border-slate-200 rounded-lg px-3 py-2 pr-8 text-[15px] font-medium text-slate-700 shadow-sm hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all cursor-pointer"
+            className="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2 pr-8 text-[14px] font-medium text-slate-700 shadow-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
           >
             {years.map((y) => (
               <option key={y} value={y}>

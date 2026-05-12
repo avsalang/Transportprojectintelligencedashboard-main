@@ -16,11 +16,12 @@ import { YearRangeSelector } from '../components/YearRangeSelector';
 import { CRSPageIntro } from '../components/CRSPageIntro';
 import { getFlowLegendItems, getFlowTypeColor, normalizeFlowType } from '../utils/flowTypeColors';
 import {
-  THEME_RECORDS,
+  THEME_RECORDS_URL,
   THEME_SUMMARIES,
   type ThemeId,
   type ThemeRankingRow,
   type ThemeRecord,
+  type ThemeRecordsByTheme,
   type ThemeSankeyData,
 } from '../data/themeData';
 
@@ -62,6 +63,13 @@ function createInitialFilters(): ThemeFilterState {
     };
     return filters;
   }, {} as ThemeFilterState);
+}
+
+function createEmptyThemeRecords(): ThemeRecordsByTheme {
+  return THEME_IDS.reduce((records, themeId) => {
+    records[themeId] = [];
+    return records;
+  }, {} as ThemeRecordsByTheme);
 }
 
 function buildFilterOptions(records: ThemeRecord[], valuesForRecord: (record: ThemeRecord) => string[]): FilterOption[] {
@@ -526,11 +534,11 @@ function FilterSelect({
   );
 }
 
-function ThemeSection({ theme, filters }: { theme: ThemeSummary; filters: ThemeFilters }) {
+function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; records: ThemeRecord[]; filters: ThemeFilters }) {
   const themeId = theme.id as ThemeId;
   const themeRecords = useMemo(
-    () => filterThemeRecords(THEME_RECORDS[themeId], filters),
-    [filters, themeId],
+    () => filterThemeRecords(records, filters),
+    [filters, records],
   );
   const summary = useMemo(() => summarizeThemeRows(themeRecords), [themeRecords]);
   const series = useMemo(() => yearSeriesFor(themeRecords, filters.yearMin, filters.yearMax), [filters.yearMax, filters.yearMin, themeRecords]);
@@ -620,9 +628,13 @@ function ThemeSection({ theme, filters }: { theme: ThemeSummary; filters: ThemeF
 export function ThemeExplorer() {
   const [filtersByTheme, setFiltersByTheme] = useState<ThemeFilterState>(() => createInitialFilters());
   const [activeThemeId, setActiveThemeId] = useState<ThemeId>(THEME_IDS[0]);
+  const [themeRecords, setThemeRecords] = useState<ThemeRecordsByTheme | null>(null);
+  const [recordsError, setRecordsError] = useState(false);
+  const emptyThemeRecords = useMemo(() => createEmptyThemeRecords(), []);
+  const recordsByTheme = themeRecords ?? emptyThemeRecords;
   const activeTheme = THEME_SUMMARIES.find((theme) => theme.id === activeThemeId) ?? THEME_SUMMARIES[0];
   const activeFilters = filtersByTheme[activeThemeId];
-  const activeThemeRecords = THEME_RECORDS[activeThemeId];
+  const activeThemeRecords = recordsByTheme[activeThemeId] ?? [];
   const filterOptions = useMemo(
     () => ({
       donors: buildFilterOptions(activeThemeRecords, (record) => [record.donor]),
@@ -631,6 +643,30 @@ export function ThemeExplorer() {
     }),
     [activeThemeRecords],
   );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch(THEME_RECORDS_URL)
+      .then((response) => {
+        if (!response.ok) throw new Error(`Unable to load theme records: ${response.status}`);
+        return response.json();
+      })
+      .then((data: ThemeRecordsByTheme) => {
+        if (cancelled) return;
+        setThemeRecords(data);
+        setRecordsError(false);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setThemeRecords(createEmptyThemeRecords());
+        setRecordsError(true);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const sections = THEME_IDS.map((themeId) => document.getElementById(themeSectionId(themeId))).filter(Boolean);
@@ -752,12 +788,19 @@ export function ThemeExplorer() {
               Reset
             </button>
           </div>
+          {recordsError ? (
+            <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+              Theme records could not be loaded. Check that the static data file was published with the dashboard.
+            </p>
+          ) : !themeRecords ? (
+            <p className="mt-3 text-xs text-slate-400">Loading theme records...</p>
+          ) : null}
         </div>
 
         {THEME_SUMMARIES.map((theme, index) => (
           <div key={theme.id} className="space-y-12">
             {index > 0 && <div className="h-px bg-slate-300" />}
-            <ThemeSection theme={theme} filters={filtersByTheme[theme.id as ThemeId]} />
+            <ThemeSection theme={theme} records={recordsByTheme[theme.id as ThemeId] ?? []} filters={filtersByTheme[theme.id as ThemeId]} />
           </div>
         ))}
       </div>
