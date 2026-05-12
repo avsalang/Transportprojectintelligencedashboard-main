@@ -1,6 +1,5 @@
 export type CRSFilters = {
   donors: string[];
-  agencies: string[];
   recipients: string[];
   modes: string[];
   flows: string[];
@@ -52,9 +51,6 @@ export function matchesCRSFilters(
 
   // Donor filter
   if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
-
-  // Agency filter
-  if (filters.agencies.length && !filters.agencies.includes(record.agency || 'Unknown')) return false;
 
   // Recipient filter
   if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;

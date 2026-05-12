@@ -99,7 +99,7 @@ const EMPTY_RECORD_COLUMN_FILTERS: RecordColumnFilters = {
   amount: '',
 };
 
-const RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'agency', 'mode'] as const;
+const RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'mode'] as const;
 type RecordDropdownFilterKey = typeof RECORD_DROPDOWN_FILTER_KEYS[number];
 
 function isRecordDropdownFilter(key: RecordSortKey): key is RecordDropdownFilterKey {
@@ -249,7 +249,6 @@ export function CRSDecade() {
     return {
       year: years,
       donor: unique(filteredRecords.map((record) => record.donor)),
-      agency: unique(filteredRecords.map((record) => record.agency)),
       mode: unique(filteredRecords.map((record) => record.mode)),
     };
   }, [filteredRecords]);
@@ -616,7 +615,7 @@ export function CRSDecade() {
                 <tr className="border-b border-slate-200 bg-slate-50/40">
                   {RECORD_COLUMNS.map((column) => (
                     <th key={`${column.key}-filter`} className="px-4 pb-3 text-left">
-                      {column.key === 'amount' ? (
+                      {column.key === 'amount' || column.key === 'agency' ? (
                         <div className="h-8" aria-hidden="true" />
                       ) : isRecordDropdownFilter(column.key) ? (
                         <select

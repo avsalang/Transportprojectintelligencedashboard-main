@@ -5,7 +5,7 @@ import { BasisDropdown } from './BasisDropdown';
 import { CRSFilters } from '../utils/crsFiltering';
 import { useCRSFilters } from '../context/CRSFilterContext';
 
-type FilterKey = 'year' | 'donor' | 'agency' | 'recipient' | 'mode' | 'flow' | 'sector' | 'basis';
+type FilterKey = 'year' | 'donor' | 'recipient' | 'mode' | 'flow' | 'sector' | 'basis';
 
 type CRSPageFiltersProps = {
   filters: CRSFilters;
@@ -15,11 +15,10 @@ type CRSPageFiltersProps = {
 };
 
 export function CRSPageFilters({ filters, setFilters, resetFilters, enabled }: CRSPageFiltersProps) {
-  const { donorOptions, agencyOptions, recipientOptions, modeOptions, flowOptions, sectorOptions } = useCRSFilters();
+  const { donorOptions, recipientOptions, modeOptions, flowOptions, sectorOptions } = useCRSFilters();
   const enabledSet = new Set(enabled);
   const activeCount =
     filters.donors.length +
-    filters.agencies.length +
     filters.recipients.length +
     filters.modes.length +
     filters.flows.length +
@@ -75,15 +74,6 @@ export function CRSPageFilters({ filters, setFilters, resetFilters, enabled }: C
             options={donorOptions}
             selected={filters.donors}
             onChange={(value) => setFilters((prev) => ({ ...prev, donors: value }))}
-          />
-        ) : null}
-
-        {enabledSet.has('agency') ? (
-          <CheckboxDropdown
-            label="Agency"
-            options={agencyOptions}
-            selected={filters.agencies}
-            onChange={(value) => setFilters((prev) => ({ ...prev, agencies: value }))}
           />
         ) : null}
 

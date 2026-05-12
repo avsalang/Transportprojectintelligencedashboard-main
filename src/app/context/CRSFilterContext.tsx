@@ -9,7 +9,6 @@ type CRSFilterContextValue = {
   facts: CRSFact[];
   filteredFacts: CRSFact[];
   donorOptions: string[];
-  agencyOptions: string[];
   recipientOptions: string[];
   modeOptions: string[];
   flowOptions: string[];
@@ -18,7 +17,6 @@ type CRSFilterContextValue = {
 
 export const DEFAULT_CRS_FILTERS: CRSFilters = {
   donors: [],
-  agencies: [],
   recipients: [],
   modes: [],
   flows: [],
@@ -46,7 +44,6 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
       facts: atoScopedFacts,
       filteredFacts: atoScopedFacts,
       donorOptions: CRS_DONOR_OPTIONS,
-      agencyOptions: uniqueSorted(atoScopedFacts.map((fact) => fact.agency)),
       recipientOptions: uniqueSorted(atoScopedFacts.map((fact) => fact.recipient)),
       modeOptions: CRS_MODE_OPTIONS,
       flowOptions: uniqueSorted(atoScopedFacts.map((fact) => fact.flow)),

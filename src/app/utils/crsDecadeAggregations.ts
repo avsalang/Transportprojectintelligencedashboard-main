@@ -30,7 +30,6 @@ export function matchesDecadeFilters(
   selectedThemes: CRSDecadeThemeId[],
 ) {
   if (filters.donors.length && !filters.donors.includes(record.donor)) return false;
-  if (filters.agencies.length && !filters.agencies.includes(record.agency || 'Unknown')) return false;
   if (filters.recipients.length && !filters.recipients.includes(record.recipient || 'Unknown')) return false;
   if (filters.modes.length && !filters.modes.includes(record.mode || 'Other')) return false;
   if (filters.flows.length && !filters.flows.includes(record.flow || 'Unknown')) return false;

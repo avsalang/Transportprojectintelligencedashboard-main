@@ -99,7 +99,7 @@ const EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS: RecipientRecordColumnFilters = {
   amount: '',
 };
 
-const RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'agency', 'mode'] as const;
+const RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'mode'] as const;
 type RecipientRecordDropdownFilterKey = typeof RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS[number];
 
 function isRecipientRecordDropdownFilter(key: RecipientRecordSortKey): key is RecipientRecordDropdownFilterKey {
@@ -291,7 +291,6 @@ export function CRSRecipientProfile() {
     return {
       year: years,
       donor: unique(profileRecords.map((record) => record.donor)),
-      agency: unique(profileRecords.map((record) => record.agency)),
       mode: unique(profileRecords.map((record) => record.mode)),
     };
   }, [profileRecords]);
@@ -386,7 +385,7 @@ export function CRSRecipientProfile() {
           filters={filters}
           setFilters={setFilters}
           resetFilters={resetFilters}
-          enabled={['year', 'donor', 'agency', 'mode', 'sector', 'basis']}
+          enabled={['year', 'donor', 'mode', 'sector', 'basis']}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -673,7 +672,7 @@ export function CRSRecipientProfile() {
                 <tr className="border-b border-slate-200 bg-slate-50/40">
                   {RECIPIENT_RECORD_COLUMNS.map((column) => (
                     <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
-                      {column.key === 'amount' ? (
+                      {column.key === 'amount' || column.key === 'agency' ? (
                         <div className="h-8" aria-hidden="true" />
                       ) : isRecipientRecordDropdownFilter(column.key) ? (
                         <select
