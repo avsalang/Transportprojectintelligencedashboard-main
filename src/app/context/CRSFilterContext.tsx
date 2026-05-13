@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { CRS_DONOR_OPTIONS, CRS_FACTS_URL, CRS_MODE_OPTIONS, CRSFact } from '../data/crsData';
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import { CRS_DONOR_OPTIONS, CRS_FACTS, CRS_MODE_OPTIONS, CRSFact } from '../data/crsData';
 import { ATO_ECONOMIES } from '../data/atoEconomies';
 import { CRSFilters, CRS_SECTOR6_OPTIONS, isATOScopedRecipient, matchesCRSFilters } from '../utils/crsFiltering';
 
@@ -13,8 +13,6 @@ type CRSFilterContextValue = {
   modeOptions: string[];
   flowOptions: string[];
   sectorOptions: string[];
-  isLoading: boolean;
-  error: string | null;
 };
 
 export const DEFAULT_CRS_FILTERS: CRSFilters = {
@@ -39,53 +37,19 @@ function uniqueSorted(values: Array<string | undefined | null>) {
 }
 
 export function CRSFilterProvider({ children }: { children: ReactNode }) {
-  const [facts, setFacts] = useState<CRSFact[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const value = useMemo<CRSFilterContextValue>(() => {
+    const atoScopedFacts = CRS_FACTS.filter((fact) => isATOScopedRecipient(fact, ATO_ECONOMIES));
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function loadFacts() {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const response = await fetch(CRS_FACTS_URL);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const rows = (await response.json()) as CRSFact[];
-        if (!cancelled) {
-          setFacts(rows.filter((fact) => isATOScopedRecipient(fact, ATO_ECONOMIES)));
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setFacts([]);
-          setError(err instanceof Error ? err.message : 'Unable to load CRS facts');
-        }
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    }
-
-    const loadTimer = window.setTimeout(loadFacts, 800);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(loadTimer);
+    return {
+      facts: atoScopedFacts,
+      filteredFacts: atoScopedFacts,
+      donorOptions: CRS_DONOR_OPTIONS,
+      recipientOptions: uniqueSorted(atoScopedFacts.map((fact) => fact.recipient)),
+      modeOptions: CRS_MODE_OPTIONS,
+      flowOptions: uniqueSorted(atoScopedFacts.map((fact) => fact.flow)),
+      sectorOptions: [...CRS_SECTOR6_OPTIONS],
     };
   }, []);
-
-  const value = useMemo<CRSFilterContextValue>(() => {
-    return {
-      facts,
-      filteredFacts: facts,
-      donorOptions: CRS_DONOR_OPTIONS,
-      recipientOptions: uniqueSorted(facts.map((fact) => fact.recipient)),
-      modeOptions: CRS_MODE_OPTIONS,
-      flowOptions: uniqueSorted(facts.map((fact) => fact.flow)),
-      sectorOptions: [...CRS_SECTOR6_OPTIONS],
-      isLoading,
-      error,
-    };
-  }, [error, facts, isLoading]);
 
   return <CRSFilterContext.Provider value={value}>{children}</CRSFilterContext.Provider>;
 }
@@ -97,7 +61,7 @@ export function useCRSFilters() {
 }
 
 export function useCRSPageFilters(initialFilters?: Partial<CRSFilters>) {
-  const { error, facts, isLoading } = useCRSFilters();
+  const { facts } = useCRSFilters();
   const [filters, setFiltersState] = useState<CRSFilters>({
     ...DEFAULT_CRS_FILTERS,
     ...initialFilters,
@@ -110,7 +74,5 @@ export function useCRSPageFilters(initialFilters?: Partial<CRSFilters>) {
     setFilters: (updater: (prev: CRSFilters) => CRSFilters) => setFiltersState((prev) => updater(prev)),
     resetFilters: () => setFiltersState({ ...DEFAULT_CRS_FILTERS, ...initialFilters }),
     filteredFacts,
-    isLoading,
-    error,
   };
 }

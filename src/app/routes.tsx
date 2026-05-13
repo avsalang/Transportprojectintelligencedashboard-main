@@ -1,13 +1,11 @@
-import { lazy } from 'react';
 import { createHashRouter, Navigate } from 'react-router';
 import { CRSLayout } from './components/CRSLayout';
-
-const CRSOverview = lazy(() => import('./pages/CRSOverview').then((module) => ({ default: module.CRSOverview })));
-const CRSDonorProfile = lazy(() => import('./pages/CRSDonorProfile').then((module) => ({ default: module.CRSDonorProfile })));
-const CRSRecipientProfile = lazy(() => import('./pages/CRSRecipientProfile').then((module) => ({ default: module.CRSRecipientProfile })));
-const CRSDecade = lazy(() => import('./pages/CRSDecade').then((module) => ({ default: module.CRSDecade })));
-const ThemeExplorer = lazy(() => import('./pages/ThemeExplorer').then((module) => ({ default: module.ThemeExplorer })));
-const About = lazy(() => import('./pages/About').then((module) => ({ default: module.About })));
+import { CRSOverview } from './pages/CRSOverview';
+import { CRSDonorProfile } from './pages/CRSDonorProfile';
+import { CRSRecipientProfile } from './pages/CRSRecipientProfile';
+import { CRSDecade } from './pages/CRSDecade';
+import { ThemeExplorer } from './pages/ThemeExplorer';
+import { About } from './pages/About';
 
 // Hash routing keeps the static build portable across hosts like GitHub Pages.
 export const router = createHashRouter([
