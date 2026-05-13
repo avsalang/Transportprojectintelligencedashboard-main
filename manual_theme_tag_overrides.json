@@ -1,0 +1,107 @@
+{
+  "notes": "Manual corrections from remove_recheck.csv review. Row numbers refer to CRS rows in the dashboard data.",
+  "remove_theme_rows": [
+    {
+      "theme_id": "urban_transport",
+      "reason": "Expressway/corridor project; no primary urban transport scope in available CRS text.",
+      "row_numbers": ["76807", "76854", "90384", "97115", "104896", "104898", "127563", "128195", "152225", "152227", "160579", "160581", "177700", "177702"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Interurban/regional highway corridor, not city-level transport.",
+      "row_numbers": ["91430", "171446", "179846"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Trade and logistics facilitation, not urban passenger mobility.",
+      "row_numbers": ["127527", "144092", "152399", "160212", "168942", "26750", "30707", "34956", "38434", "42439", "46597", "51334", "54839", "59860", "64973", "70468", "76546", "83521", "90141", "97291", "105020"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Plain Armenia Transport Project is national road/rail and ministry capacity; separate Yerevan urban transport record is retained.",
+      "row_numbers": ["26230", "30173", "34385", "37845", "41803", "45954", "50707", "64892", "70757", "76522", "83514", "90267", "97332", "104935", "26226", "30168", "34378", "37836", "41801", "45952", "50706", "64570", "70440", "76514", "83509", "90266", "97331", "104934"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Rail sector electrification/construction programme without urban or metro scope.",
+      "row_numbers": ["31850", "36005", "39492", "43557"]
+    },
+    {
+      "theme_id": "e_mobility",
+      "reason": "Generic railway electrification is outside the updated e-mobility definition.",
+      "row_numbers": ["26775", "30736", "34984", "38460", "42465", "46627", "51303", "55182", "59796", "64975", "70792", "76716", "83362", "89921", "97534"]
+    },
+    {
+      "theme_id": "active_transport",
+      "reason": "Rural roads and markets record without explicit walking, cycling, NMT, or vulnerable-road-user infrastructure.",
+      "row_numbers": ["26774", "26825", "30731", "30788", "34982", "35108", "38459", "38516", "42462", "42519", "46623", "46760", "50778", "51514", "54891", "55229", "59826", "59919", "64348", "64430", "70280", "70677", "76431", "76699", "83727", "83767", "90103", "90353", "97079", "97213", "104273", "104702"]
+    },
+    {
+      "theme_id": "active_transport",
+      "reason": "Highway corridor record without explicit pedestrian/cycling infrastructure.",
+      "row_numbers": ["25694", "29632", "33849", "37307", "41277", "45426", "50028", "54208", "59302", "64137", "69570", "75733", "82490", "89240", "96694", "103874"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Municipal Services/Flood Restoration records do not clearly support urban transport; some rows are aviation.",
+      "row_numbers": ["26311", "30262", "34468", "37935", "41903", "46050", "50647", "54974", "59631", "59862", "64704", "64744", "70347", "70582", "70670", "76611", "82950", "82995", "90018", "90459", "90661", "97319", "97385", "97444", "104279", "104298", "104613", "26321", "30268", "34475", "37942", "41910", "46056", "50655", "54875", "59894", "60076", "64349", "64422", "70275", "70345", "70596", "76650", "82957", "82996", "90027", "90466", "90664", "97320", "97386", "97445", "104334", "104610", "104614"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Port-sector congestion and terminals are not urban transport terminals or city traffic operations.",
+      "row_numbers": ["25972", "25974", "29925", "29926", "34144", "34146", "37597", "37600", "41559", "45707", "50118", "54303", "59625"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Peripheral expressway ITS without clear city-level urban transport scope.",
+      "row_numbers": ["118308", "118326", "133589", "141699", "142017", "149785", "149786", "157828", "157829", "166963", "166964", "174655", "174656"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "SASEC intercity/regional highway corridor; urban-area safety elements are not enough for Urban Transport.",
+      "row_numbers": ["137590", "153443", "162025"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "National/sector transport governance support, not urban transport policy or city-level planning.",
+      "row_numbers": ["159166", "168218", "168219"]
+    },
+    {
+      "theme_id": "e_mobility",
+      "reason": "CNG/LNG refueling infrastructure is not electric mobility.",
+      "row_numbers": ["137715", "145763"]
+    },
+    {
+      "theme_id": "e_mobility",
+      "reason": "Maritime development cooperation, not electric public transport.",
+      "row_numbers": ["147385", "155546"]
+    },
+    {
+      "theme_id": "active_transport",
+      "reason": "Rural road safety without explicit walking, cycling, NMT, or pedestrian/cyclist infrastructure.",
+      "row_numbers": ["65910", "72077"]
+    }
+  ],
+  "remove_subtheme_rows": [
+    {
+      "theme_id": "urban_transport",
+      "reason": "Colombo expressway remains urban roads/traffic, but not urban logistics/shared mobility or multimodal integration.",
+      "subtheme_ids": ["multimodal_integration_and_first_last_mile_connectivity", "urban_logistics_shared_mobility_and_demand_management"],
+      "row_numbers": ["162098", "180253"]
+    },
+    {
+      "theme_id": "urban_transport",
+      "reason": "Southeast Asia facility is mixed scope; retain explicit public transport/urban rail tags only.",
+      "subtheme_ids": ["urban_transport_policy_planning_and_governance"],
+      "row_numbers": ["145901", "170986", "179413", "145902", "170987", "179414"]
+    }
+  ],
+  "replace_subtheme_rows": [
+    {
+      "theme_id": "urban_transport",
+      "reason": "Fill blank subtheme for Urban Transport Network, AF - Indonesia.",
+      "replacement_subtheme_id": "urban_public_transport_systems",
+      "row_numbers": ["6504", "14757", "16620", "18791", "21075", "23314", "27050", "31249", "35472", "38968", "43020", "47035"]
+    }
+  ]
+}

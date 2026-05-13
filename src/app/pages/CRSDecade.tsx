@@ -11,11 +11,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Check, ChevronDown, ChevronUp, Circle, Search } from 'lucide-react';
+import { Check, Circle } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { CRSPageIntro } from '../components/CRSPageIntro';
-import { Sheet, SheetContent } from '../components/ui/sheet';
+import { ProjectRecordsTable, type ProjectRecordTableRecord } from '../components/ProjectRecordsTable';
 import { crsFmt } from '../data/crsData';
 import { CRSDecadeRecord, CRSDecadeRecordIndex, CRSDecadeThemeId, CRS_DECADE_THEMES } from '../data/crsDecadeData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
@@ -73,39 +73,6 @@ function DonorPortfolioDividers({ yAxisMap, offset, data }: any) {
   );
 }
 
-type RecordSortKey = 'year' | 'record' | 'donor' | 'agency' | 'recipient' | 'mode' | 'themes' | 'amount';
-type SortDirection = 'asc' | 'desc';
-type RecordColumnFilters = Record<RecordSortKey, string>;
-
-const RECORD_COLUMNS: Array<{ key: RecordSortKey; label: string; align?: 'right' }> = [
-  { key: 'year', label: 'Year' },
-  { key: 'record', label: 'Record' },
-  { key: 'donor', label: 'Donor' },
-  { key: 'agency', label: 'Agency' },
-  { key: 'recipient', label: 'Recipient' },
-  { key: 'mode', label: 'Mode' },
-  { key: 'themes', label: 'UN Decade Themes' },
-  { key: 'amount', label: 'Amount', align: 'right' },
-];
-
-const EMPTY_RECORD_COLUMN_FILTERS: RecordColumnFilters = {
-  year: '',
-  record: '',
-  donor: '',
-  agency: '',
-  recipient: '',
-  mode: '',
-  themes: '',
-  amount: '',
-};
-
-const RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'mode'] as const;
-type RecordDropdownFilterKey = typeof RECORD_DROPDOWN_FILTER_KEYS[number];
-
-function isRecordDropdownFilter(key: RecordSortKey): key is RecordDropdownFilterKey {
-  return (RECORD_DROPDOWN_FILTER_KEYS as readonly RecordSortKey[]).includes(key);
-}
-
 function themeColor(label: string) {
   const theme = CRS_DECADE_THEMES.find((item) => item.label === label);
   return theme ? THEME_COLORS[theme.id] : '#64748B';
@@ -154,13 +121,6 @@ export function CRSDecade() {
   const [selectedThemes, setSelectedThemes] = useState<CRSDecadeThemeId[]>([]);
   const [records, setRecords] = useState<CRSDecadeRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [recordSearch, setRecordSearch] = useState('');
-  const [activeRecord, setActiveRecord] = useState<CRSDecadeRecord | null>(null);
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [recordSortKey, setRecordSortKey] = useState<RecordSortKey>('amount');
-  const [recordSortDirection, setRecordSortDirection] = useState<SortDirection>('desc');
-  const [recordColumnFilters, setRecordColumnFilters] = useState<RecordColumnFilters>(EMPTY_RECORD_COLUMN_FILTERS);
   const measure = filters.measure;
 
   useEffect(() => {
@@ -216,94 +176,10 @@ export function CRSDecade() {
   const topRecipients = useMemo(() => buildTopThemeByRecipient(filteredRecords, measure, 5, selectedThemes), [filteredRecords, measure, selectedThemes]);
   const recordThemeLabels = (record: CRSDecadeRecord) =>
     CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
-  const recordColumnText = (record: CRSDecadeRecord, key: RecordSortKey) => {
-    switch (key) {
-      case 'year':
-        return String(record.year ?? '');
-      case 'record':
-        return [record.title, record.purpose, record.short_description, record.long_description].filter(Boolean).join(' ');
-      case 'donor':
-        return record.donor;
-      case 'agency':
-        return record.agency;
-      case 'recipient':
-        return record.recipient;
-      case 'mode':
-        return [record.mode, record.mode_detail].filter(Boolean).join(' ');
-      case 'themes':
-        return recordThemeLabels(record).join(' ');
-      case 'amount':
-        return String(record[measure] ?? 0);
-    }
-  };
-  const recordSortValue = (record: CRSDecadeRecord, key: RecordSortKey) => {
-    if (key === 'year') return record.year ?? 0;
-    if (key === 'amount') return record[measure] ?? 0;
-    return recordColumnText(record, key).toLowerCase();
-  };
-  const recordFilterOptions = useMemo<Record<RecordDropdownFilterKey, string[]>>(() => {
-    const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
-    const years = [...new Set(filteredRecords.map((record) => String(record.year ?? '')).filter(Boolean))]
-      .sort((a, b) => Number(b) - Number(a));
-
-    return {
-      year: years,
-      donor: unique(filteredRecords.map((record) => record.donor)),
-      mode: unique(filteredRecords.map((record) => record.mode)),
-    };
-  }, [filteredRecords]);
-  const fullListRecords = useMemo(() => {
-    const query = recordSearch.trim().toLowerCase();
-    const activeColumnFilters = Object.entries(recordColumnFilters)
-      .map(([key, value]) => [key as RecordSortKey, value.trim().toLowerCase()] as const)
-      .filter(([, value]) => value.length > 0);
-    return [...filteredRecords]
-      .filter((record) => {
-        const matchesSearch = !query || (
-          record.title.toLowerCase().includes(query) ||
-          record.purpose.toLowerCase().includes(query) ||
-          record.short_description.toLowerCase().includes(query) ||
-          record.long_description.toLowerCase().includes(query) ||
-          record.donor.toLowerCase().includes(query) ||
-          record.agency.toLowerCase().includes(query) ||
-          record.recipient.toLowerCase().includes(query) ||
-          record.mode.toLowerCase().includes(query) ||
-          recordThemeLabels(record).join(' ').toLowerCase().includes(query) ||
-          String(record.year || '').includes(query)
-        );
-        if (!matchesSearch) return false;
-        return activeColumnFilters.every(([key, value]) => recordColumnText(record, key).toLowerCase().includes(value));
-      })
-      .sort((a, b) => {
-        const aValue = recordSortValue(a, recordSortKey);
-        const bValue = recordSortValue(b, recordSortKey);
-        const direction = recordSortDirection === 'asc' ? 1 : -1;
-
-        if (typeof aValue === 'number' && typeof bValue === 'number') {
-          return (aValue - bValue) * direction;
-        }
-        return String(aValue).localeCompare(String(bValue)) * direction;
-      });
-  }, [filteredRecords, measure, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey]);
-  const totalPages = Math.max(1, Math.ceil(fullListRecords.length / rowsPerPage));
-  const pagedRecords = fullListRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   const taggedShare = stats.count > 0 ? (stats.taggedCount / stats.count) * 100 : 0;
   const activeMeasureLabel = measure.includes('commitment') ? 'commitments' : 'disbursements';
   const activeMeasureTitle = measure.includes('commitment') ? 'Commitments' : 'Disbursements';
-
-  useEffect(() => {
-    setPage(1);
-  }, [filters, recordColumnFilters, recordSearch, rowsPerPage, selectedThemes]);
-
-  function handleRecordSort(key: RecordSortKey) {
-    if (recordSortKey === key) {
-      setRecordSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
-      return;
-    }
-    setRecordSortKey(key);
-    setRecordSortDirection(key === 'year' || key === 'amount' ? 'desc' : 'asc');
-  }
 
   function toggleTheme(theme: CRSDecadeThemeId) {
     setSelectedThemes((current) =>
@@ -311,34 +187,55 @@ export function CRSDecade() {
     );
   }
 
-  function themeChips(record: CRSDecadeRecord, dense = false) {
-    const activeThemes = CRS_DECADE_THEMES.filter((theme) => record[theme.id]);
-    if (!activeThemes.length) {
-      return <span className="text-[12px] text-slate-400">No theme assigned</span>;
-    }
-    return activeThemes.map((theme) => (
-      <span
-        key={theme.id}
-        className={`rounded-md font-medium text-white ${dense ? 'px-2 py-0.5 text-[10px]' : 'px-2.5 py-1 text-[11px]'}`}
-        style={{ backgroundColor: THEME_COLORS[theme.id] }}
-      >
-        {theme.label}
-      </span>
-    ));
-  }
-
   function recordDescription(record: CRSDecadeRecord) {
     return record.long_description || record.short_description || '';
   }
 
-  function sortIcon(key: RecordSortKey) {
-    if (recordSortKey !== key) {
-      return <ChevronUp size={12} className="text-slate-300" />;
-    }
-    return recordSortDirection === 'asc'
-      ? <ChevronUp size={12} className="text-blue-600" />
-      : <ChevronDown size={12} className="text-blue-600" />;
-  }
+  const decadeProjectRecordRows = useMemo<ProjectRecordTableRecord[]>(
+    () => filteredRecords.map((record) => ({
+      id: String(record.row_number),
+      rowNumber: record.row_number,
+      year: record.year,
+      title: record.title,
+      description: recordDescription(record) || record.purpose || '',
+      donor: record.donor,
+      agency: record.agency,
+      recipient: record.recipient,
+      mode: record.mode,
+      flow: record.flow,
+      amount: Number(record[measure] ?? 0),
+      commitment: record.commitment,
+      disbursement: record.disbursement,
+      commitment_defl: record.commitment_defl,
+      disbursement_defl: record.disbursement_defl,
+      themes: recordThemeLabels(record).map((label) => ({ label, color: themeColor(label) })),
+      markers: [
+        ['Mitigation', record.climate_mitigation],
+        ['Adaptation', record.climate_adaptation],
+        ['Gender', record.gender],
+        ['DRR', record.drr],
+        ['Biodiversity', record.biodiversity],
+        ['Environment', record.environment],
+      ]
+        .filter(([, value]) => Number(value) > 0)
+        .map(([label]) => ({ label: String(label), color: '#059669' })),
+      searchText: [
+        record.title,
+        record.purpose,
+        record.short_description,
+        record.long_description,
+        record.donor,
+        record.agency,
+        record.recipient,
+        record.mode,
+        record.mode_detail,
+        record.flow,
+        record.year,
+        recordThemeLabels(record).join(' '),
+      ].filter(Boolean).join(' '),
+    })),
+    [filteredRecords, measure],
+  );
 
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
@@ -541,265 +438,24 @@ export function CRSDecade() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
-              <p className="text-slate-500 text-[14px] mt-1">
-                Select a project record to view details.
-              </p>
-            </div>
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
-                <Search size={16} className="text-slate-400" />
-                <input
-                  value={recordSearch}
-                  onChange={(event) => setRecordSearch(event.target.value)}
-                  placeholder="Search project records"
-                  className="bg-transparent border-none focus:ring-0 text-[14px] w-48 placeholder:text-slate-400"
-                />
-              </div>
-              <div className="flex items-center gap-2 text-[13px] text-slate-500">
-                <span>Rows</span>
-                <select
-                  value={rowsPerPage}
-                  onChange={(event) => setRowsPerPage(Number(event.target.value))}
-                  className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-[13px] text-slate-700"
-                >
-                  {[25, 50, 100].map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {Object.values(recordColumnFilters).some(Boolean) ? (
-                <button
-                  onClick={() => setRecordColumnFilters(EMPTY_RECORD_COLUMN_FILTERS)}
-                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] font-medium text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
-                >
-                  Clear column filters
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[1160px] table-fixed border-collapse">
-              <colgroup>
-                <col className="w-[7%]" />
-                <col className="w-[18%]" />
-                <col className="w-[13%]" />
-                <col className="w-[15%]" />
-                <col className="w-[11%]" />
-                <col className="w-[8%]" />
-                <col className="w-[19%]" />
-                <col className="w-[9%]" />
-              </colgroup>
-              <thead>
-                <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
-                  {RECORD_COLUMNS.map((column) => (
-                    <th key={column.key} className={`px-4 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
-                      <button
-                        type="button"
-                        onClick={() => handleRecordSort(column.key)}
-                        className={`inline-flex items-center gap-1.5 font-semibold transition-colors hover:text-slate-800 ${
-                          column.align === 'right' ? 'justify-end' : 'justify-start'
-                        }`}
-                      >
-                        <span>{column.label}</span>
-                        {sortIcon(column.key)}
-                      </button>
-                    </th>
-                  ))}
-                </tr>
-                <tr className="border-b border-slate-200 bg-slate-50/40">
-                  {RECORD_COLUMNS.map((column) => (
-                    <th key={`${column.key}-filter`} className="px-4 pb-3 text-left">
-                      {column.key === 'amount' || column.key === 'agency' ? (
-                        <div className="h-8" aria-hidden="true" />
-                      ) : isRecordDropdownFilter(column.key) ? (
-                        <select
-                          value={recordColumnFilters[column.key]}
-                          onChange={(event) =>
-                            setRecordColumnFilters((current) => ({
-                              ...current,
-                              [column.key]: event.target.value,
-                            }))
-                          }
-                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                        >
-                          <option value="">All</option>
-                          {recordFilterOptions[column.key].map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          value={recordColumnFilters[column.key]}
-                          onChange={(event) =>
-                            setRecordColumnFilters((current) => ({
-                              ...current,
-                              [column.key]: event.target.value,
-                            }))
-                          }
-                          placeholder="Filter"
-                          className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
-                            column.align === 'right' ? 'text-right' : 'text-left'
-                          }`}
-                        />
-                      )}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {pagedRecords.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} className="px-4 py-20 text-center text-slate-400">
-                      No project records match the current filters and search.
-                    </td>
-                  </tr>
-                ) : (
-                  pagedRecords.map((record) => (
-                    <tr
-                      key={record.row_number}
-                      onClick={() => setActiveRecord(record)}
-                      className="hover:bg-slate-50 cursor-pointer transition-colors"
-                    >
-                      <td className="px-4 py-4 text-[14px] text-slate-600">{record.year}</td>
-                      <td className="px-4 py-4">
-                        <div className="min-w-0">
-                          <p className="text-[14px] font-medium text-slate-900 line-clamp-1">{record.title}</p>
-                          <p className="text-[13px] text-slate-500 line-clamp-2 mt-1">{record.purpose || 'No purpose description available.'}</p>
-                        </div>
-                      </td>
-                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.donor}</td>
-                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.agency}</td>
-                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.recipient}</td>
-                      <td className="break-words px-4 py-4 text-[14px] text-slate-600">{record.mode}</td>
-                      <td className="px-4 py-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {themeChips(record, true)}
-                        </div>
-                      </td>
-                      <td className="whitespace-nowrap px-4 py-4 text-right text-[14px] font-medium text-slate-900">{crsFmt.usdM(record[measure])}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="px-6 py-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <p className="text-[13px] text-slate-500">
-              Showing {fullListRecords.length ? (page - 1) * rowsPerPage + 1 : 0}-
-              {Math.min(page * rowsPerPage, fullListRecords.length)} of {fullListRecords.length.toLocaleString()} project records
-            </p>
-            <div className="flex items-center gap-2 text-[13px] text-slate-500">
-              <button
-                onClick={() => setPage((current) => Math.max(1, current - 1))}
-                disabled={page <= 1}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40"
-              >
-                Prev
-              </button>
-              <span>Page {page} of {totalPages}</span>
-              <button
-                onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
-                disabled={page >= totalPages}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
+        <ProjectRecordsTable
+          records={decadeProjectRecordRows}
+          columns={[
+            'year',
+            'record',
+            'donor',
+            'agency',
+            'recipient',
+            'mode',
+            'flow',
+            { key: 'themes', label: 'UN Decade Themes' },
+            'amount',
+          ]}
+          subtitle="Records matching the current UN Decade focus-area and page filters."
+          minWidthClass="min-w-[1320px]"
+        />
       </div>
 
-      <Sheet open={!!activeRecord} onOpenChange={(open) => !open && setActiveRecord(null)}>
-        <SheetContent className="sm:max-w-2xl border-l border-slate-200 bg-white/95 backdrop-blur-xl p-0 shadow-2xl">
-          {activeRecord && (
-            <div className="h-full flex flex-col">
-              <div className="bg-slate-900 p-10 text-white">
-                <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-semibold">
-                  Record detail
-                </span>
-                <h2 className="text-2xl text-white font-bold leading-tight mt-6 tracking-tight">{activeRecord.title}</h2>
-              </div>
-              <div className="flex-1 overflow-y-auto p-10 space-y-8">
-                <div>
-                  <p className="text-[12px] font-medium text-slate-500 mb-3">UN Decade themes</p>
-                  <div className="flex flex-wrap gap-2">{themeChips(activeRecord)}</div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <KPICard label="Commitment" value={crsFmt.usdM(activeRecord.commitment)} />
-                  <KPICard label="Disbursement" value={crsFmt.usdM(activeRecord.disbursement)} />
-                </div>
-
-                <div className="grid grid-cols-2 gap-6">
-                  {[
-                    ['Donor', activeRecord.donor],
-                    ['Agency', activeRecord.agency],
-                    ['Recipient', activeRecord.recipient],
-                    ['Flow', activeRecord.flow],
-                    ['Mode', activeRecord.mode],
-                    ['Year', activeRecord.year],
-                  ].map(([label, value]) => (
-                    <div key={label}>
-                      <p className="text-[12px] font-medium text-slate-500">{label}</p>
-                      <p className="text-[15px] text-slate-900 mt-1">{value || 'Not specified'}</p>
-                    </div>
-                  ))}
-                </div>
-
-                <div>
-                  <p className="text-[12px] font-medium text-slate-500 mb-3">Sustainability-related Tags</p>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      ['Mitigation', activeRecord.climate_mitigation],
-                      ['Adaptation', activeRecord.climate_adaptation],
-                      ['Gender', activeRecord.gender],
-                      ['DRR', activeRecord.drr],
-                      ['Biodiversity', activeRecord.biodiversity],
-                      ['Environment', activeRecord.environment],
-                    ].map(([label, value]) => (
-                      <div
-                        key={label}
-                        className={`px-2 py-1 rounded-lg text-[11px] border ${
-                          Number(value) > 0
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
-                            : 'bg-slate-50 text-slate-400 border-slate-200'
-                        }`}
-                      >
-                        {label}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 text-[15px] leading-relaxed text-slate-700">
-                  Tagged using CRS project text, purpose, mode, recipient context, and CRS markers against the six UN Decade focus areas.
-                </div>
-
-                <div>
-                  <p className="text-[12px] font-medium text-slate-500 mb-3">Description</p>
-                  <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                    {recordDescription(activeRecord) ? (
-                      <p className="whitespace-pre-line text-[14px] leading-relaxed text-slate-700">
-                        {recordDescription(activeRecord)}
-                      </p>
-                    ) : (
-                      <p className="text-[14px] text-slate-500">No project description is available for this CRS record.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }

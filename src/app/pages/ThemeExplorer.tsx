@@ -10,7 +10,9 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { BasisDropdown, type BasisMeasure } from '../components/BasisDropdown';
 import { KPICard } from '../components/KPICard';
+import { ProjectRecordsTable, type ProjectRecordTableRecord } from '../components/ProjectRecordsTable';
 import { wrapTickLabel, WrappedCategoryTick } from '../components/ChartTicks';
 import { YearRangeSelector } from '../components/YearRangeSelector';
 import { CRSPageIntro } from '../components/CRSPageIntro';
@@ -43,7 +45,8 @@ const GLOBAL_THEME_YEAR_MAX = Math.max(...THEME_SUMMARIES.map((theme) => theme.y
 type ThemeSummary = (typeof THEME_SUMMARIES)[number];
 type ThemeFilters = { yearMin: number; yearMax: number; donor: string; recipient: string; subtag: string };
 type ThemeFilterState = Record<ThemeId, ThemeFilters>;
-type FilterOption = { value: string; label: string; commitment_defl: number; count: number };
+type FilterOption = { value: string; label: string; amount: number; count: number };
+type ThemeRecordListItem = ThemeRecord & { rowKey: string; themeLabels: string[]; themeColors: string[]; allTags: string[] };
 
 const THEME_IDS = THEME_SUMMARIES.map((theme) => theme.id as ThemeId);
 
@@ -72,13 +75,23 @@ function createEmptyThemeRecords(): ThemeRecordsByTheme {
   }, {} as ThemeRecordsByTheme);
 }
 
-function buildFilterOptions(records: ThemeRecord[], valuesForRecord: (record: ThemeRecord) => string[]): FilterOption[] {
+function amountFor(record: ThemeRecord, measure: BasisMeasure) {
+  return measure === 'disbursement_defl' ? record.disbursement_defl : record.commitment_defl;
+}
+
+function measureCopy(measure: BasisMeasure) {
+  return measure === 'disbursement_defl'
+    ? { title: 'Disbursements', lower: 'disbursements', singular: 'disbursement' }
+    : { title: 'Commitments', lower: 'commitments', singular: 'commitment' };
+}
+
+function buildFilterOptions(records: ThemeRecord[], valuesForRecord: (record: ThemeRecord) => string[], measure: BasisMeasure): FilterOption[] {
   const buckets = new Map<string, Omit<FilterOption, 'value' | 'label'>>();
   records.forEach((record) => {
     const values = valuesForRecord(record).filter(Boolean);
     values.forEach((value) => {
-      const bucket = buckets.get(value) ?? { commitment_defl: 0, count: 0 };
-      bucket.commitment_defl += record.commitment_defl;
+      const bucket = buckets.get(value) ?? { amount: 0, count: 0 };
+      bucket.amount += amountFor(record, measure);
       bucket.count += 1;
       buckets.set(value, bucket);
     });
@@ -86,7 +99,7 @@ function buildFilterOptions(records: ThemeRecord[], valuesForRecord: (record: Th
 
   return [...buckets.entries()]
     .map(([value, bucket]) => ({ value, label: value, ...bucket }))
-    .sort((a, b) => b.commitment_defl - a.commitment_defl || a.label.localeCompare(b.label));
+    .sort((a, b) => b.amount - a.amount || a.label.localeCompare(b.label));
 }
 
 function filterThemeRecords(records: ThemeRecord[], filters: ThemeFilters) {
@@ -109,7 +122,7 @@ function num(value: number): string {
   return value.toLocaleString();
 }
 
-function TooltipBox({ active, payload, label }: any) {
+function TooltipBox({ active, payload, label, measureLabel = 'Constant 2024 USD' }: any) {
   if (!active || !payload?.length) return null;
   const row = payload[0];
 
@@ -118,6 +131,7 @@ function TooltipBox({ active, payload, label }: any) {
       <p className="text-[13px] font-semibold text-slate-900">{label}</p>
       <p className="mt-1 text-[12px] font-medium text-slate-700">{usdM(Number(row.value))}</p>
       {row.payload?.count != null && <p className="mt-1 text-[11px] text-slate-400">{num(row.payload.count)} records</p>}
+      <p className="mt-1 border-t border-slate-100 pt-1 text-[11px] text-slate-400">{measureLabel}</p>
     </div>
   );
 }
@@ -132,7 +146,7 @@ function addRecord(values: Omit<ThemeRankingRow, 'label'>, record: ThemeRecord) 
   values.count += 1;
 }
 
-function rankingRows(records: ThemeRecord[], key: 'donor' | 'recipient' | 'mode', top = 10): ThemeRankingRow[] {
+function rankingRows(records: ThemeRecord[], key: 'donor' | 'recipient' | 'mode', measure: BasisMeasure, top = 10): ThemeRankingRow[] {
   const buckets = new Map<string, Omit<ThemeRankingRow, 'label'>>();
   records.forEach((record) => {
     const label = record[key] || 'Unknown';
@@ -142,7 +156,7 @@ function rankingRows(records: ThemeRecord[], key: 'donor' | 'recipient' | 'mode'
   });
   return [...buckets.entries()]
     .map(([label, values]) => ({ label, ...values }))
-    .sort((a, b) => b.commitment_defl - a.commitment_defl || a.label.localeCompare(b.label))
+    .sort((a, b) => b[measure] - a[measure] || a.label.localeCompare(b.label))
     .slice(0, top);
 }
 
@@ -162,28 +176,29 @@ function summarizeThemeRows(records: ThemeRecord[]) {
   );
 }
 
-function yearSeriesFor(records: ThemeRecord[], yearMin: number, yearMax: number) {
-  const byYear = new Map<number, { year: number; commitments: number; count: number }>();
+function yearSeriesFor(records: ThemeRecord[], yearMin: number, yearMax: number, measure: BasisMeasure) {
+  const byYear = new Map<number, { year: number; amount: number; count: number }>();
   for (let year = yearMin; year <= yearMax; year += 1) {
-    byYear.set(year, { year, commitments: 0, count: 0 });
+    byYear.set(year, { year, amount: 0, count: 0 });
   }
   records.forEach((record) => {
     if (record.year == null) return;
     const row = byYear.get(record.year);
     if (!row) return;
-    row.commitments += record.commitment_defl;
+    row.amount += amountFor(record, measure);
     row.count += 1;
   });
   return [...byYear.values()];
 }
 
-function buildTechnologyEnablerSankey(records: ThemeRecord[], topDonorCount = 8, topRecipientCount = 10): ThemeSankeyData {
+function buildTechnologyEnablerSankey(records: ThemeRecord[], measure: BasisMeasure, topDonorCount = 8, topRecipientCount = 10): ThemeSankeyData {
   const MIN_VISIBLE_FLOW_VALUE = 0.05;
   const donorTotals = new Map<string, number>();
   const recipientTotals = new Map<string, number>();
   records.forEach((record) => {
-    if (!record.tags.length || record.commitment_defl <= 0) return;
-    const value = record.commitment_defl / record.tags.length;
+    const amount = amountFor(record, measure);
+    if (!record.tags.length || amount <= 0) return;
+    const value = amount / record.tags.length;
     donorTotals.set(record.donor || 'Unknown donor', (donorTotals.get(record.donor || 'Unknown donor') ?? 0) + value);
     recipientTotals.set(record.recipient || 'Unknown recipient', (recipientTotals.get(record.recipient || 'Unknown recipient') ?? 0) + value);
   });
@@ -193,11 +208,12 @@ function buildTechnologyEnablerSankey(records: ThemeRecord[], topDonorCount = 8,
   const tagRecipient = new Map<string, number>();
 
   records.forEach((record) => {
-    if (!record.tags.length || record.commitment_defl <= 0) return;
+    const amount = amountFor(record, measure);
+    if (!record.tags.length || amount <= 0) return;
     const donor = topDonors.has(record.donor) ? record.donor : 'Other donors';
     const recipient = topRecipients.has(record.recipient) ? record.recipient : 'Other recipients';
     const flowType = record.flow || 'Other Flow Types';
-    const value = record.commitment_defl / record.tags.length;
+    const value = amount / record.tags.length;
     record.tags.forEach((tag) => {
       donorTag.set(`${donor}|||${tag}`, (donorTag.get(`${donor}|||${tag}`) ?? 0) + value);
       tagRecipient.set(`${tag}|||${recipient}|||${flowType}`, (tagRecipient.get(`${tag}|||${recipient}|||${flowType}`) ?? 0) + value);
@@ -258,7 +274,7 @@ function getHoverCoordinate(entry: any, type: 'node' | 'link') {
   return { x: (entry.sourceX + entry.targetX) / 2, y: (entry.sourceY + entry.targetY) / 2 };
 }
 
-function buildSankeyHoverState(entry: any, type: 'node' | 'link') {
+function buildSankeyHoverState(entry: any, type: 'node' | 'link', measureLabel: string) {
   const coordinate = getHoverCoordinate(entry, type);
   if (type === 'link') {
     if (!entry.sourceName || !entry.targetName || !(entry.value >= 0.05)) return null;
@@ -267,7 +283,9 @@ function buildSankeyHoverState(entry: any, type: 'node' | 'link') {
       y: coordinate.y,
       title: `${entry.sourceName} -> ${entry.targetName}`,
       value: usdM(entry.value),
-      subtitle: entry.flowType ? `${normalizeFlowType(entry.flowType)} · allocated commitments, constant 2024 USD` : 'Allocated commitments, constant 2024 USD',
+      subtitle: entry.flowType
+        ? `${normalizeFlowType(entry.flowType)} · allocated ${measureLabel}, constant 2024 USD`
+        : `Allocated ${measureLabel}, constant 2024 USD`,
     };
   }
 
@@ -371,8 +389,9 @@ function estimateThemeSankeyHeight(nodes: ThemeSankeyData['nodes']) {
   return Math.max(700, columnHeight('donor'), columnHeight('subtag'), columnHeight('recipient'));
 }
 
-function TechnologyEnablerSankey({ data, theme }: { data: ThemeSankeyData; theme: ThemeSummary }) {
+function TechnologyEnablerSankey({ data, theme, measure }: { data: ThemeSankeyData; theme: ThemeSummary; measure: BasisMeasure }) {
   const [hoveredItem, setHoveredItem] = useState<{ x: number; y: number; title: string; value: string; subtitle: string } | null>(null);
+  const activeMeasure = measureCopy(measure);
   const nodes = data.nodes.map((node, index) => ({
     ...node,
     color:
@@ -400,7 +419,7 @@ function TechnologyEnablerSankey({ data, theme }: { data: ThemeSankeyData; theme
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
       <p className="mb-1 text-lg font-semibold text-slate-900">Subtheme Flow</p>
       <p className="mb-4 text-sm text-slate-500">
-        Donor to {theme.shortLabel.toLowerCase()} subtheme to recipient. If a project has multiple subthemes under this theme, its commitment value is allocated evenly across those subthemes to avoid double counting.
+        Donor to {theme.shortLabel.toLowerCase()} subtheme to recipient. If a project has multiple subthemes under this theme, its {activeMeasure.singular} value is allocated evenly across those subthemes to avoid double counting.
       </p>
       {flowLegendItems.length ? (
         <div className="mb-4 rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-2">
@@ -426,7 +445,7 @@ function TechnologyEnablerSankey({ data, theme }: { data: ThemeSankeyData; theme
               margin={{ top: 28, right: 260, left: 250, bottom: 28 }}
               node={<SankeyNode />}
               link={<SankeyLink />}
-              onMouseEnter={(entry: any, type: 'node' | 'link') => setHoveredItem(buildSankeyHoverState(entry, type))}
+              onMouseEnter={(entry: any, type: 'node' | 'link') => setHoveredItem(buildSankeyHoverState(entry, type, activeMeasure.lower))}
               onMouseLeave={() => setHoveredItem(null)}
             />
           </ResponsiveContainer>
@@ -455,12 +474,16 @@ function RankingChart({
   subtitle,
   data,
   color,
+  measure,
+  measureLabel,
   axisWidth = 250,
 }: {
   title: string;
   subtitle: string;
   data: ThemeRankingRow[];
   color: string;
+  measure: BasisMeasure;
+  measureLabel: string;
   axisWidth?: number;
 }) {
   const chartHeight = Math.max(330, data.length * 38 + 58);
@@ -489,8 +512,8 @@ function RankingChart({
               axisLine={false}
               interval={0}
             />
-            <Tooltip content={<TooltipBox />} />
-            <Bar dataKey="commitment_defl" fill={color} fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={15} />
+            <Tooltip content={<TooltipBox measureLabel={measureLabel} />} />
+            <Bar dataKey={measure} fill={color} fillOpacity={0.86} radius={[0, 3, 3, 0]} maxBarSize={15} />
           </BarChart>
         </ResponsiveContainer>
       ) : (
@@ -534,18 +557,19 @@ function FilterSelect({
   );
 }
 
-function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; records: ThemeRecord[]; filters: ThemeFilters }) {
+function ThemeSection({ theme, records, filters, measure }: { theme: ThemeSummary; records: ThemeRecord[]; filters: ThemeFilters; measure: BasisMeasure }) {
   const themeId = theme.id as ThemeId;
+  const activeMeasure = measureCopy(measure);
   const themeRecords = useMemo(
     () => filterThemeRecords(records, filters),
     [filters, records],
   );
   const summary = useMemo(() => summarizeThemeRows(themeRecords), [themeRecords]);
-  const series = useMemo(() => yearSeriesFor(themeRecords, filters.yearMin, filters.yearMax), [filters.yearMax, filters.yearMin, themeRecords]);
-  const topRecipients = useMemo(() => rankingRows(themeRecords, 'recipient'), [themeRecords]);
-  const topDonors = useMemo(() => rankingRows(themeRecords, 'donor'), [themeRecords]);
-  const modeBreakdown = useMemo(() => rankingRows(themeRecords, 'mode', 8), [themeRecords]);
-  const sankeyData = useMemo(() => buildTechnologyEnablerSankey(themeRecords), [themeRecords]);
+  const series = useMemo(() => yearSeriesFor(themeRecords, filters.yearMin, filters.yearMax, measure), [filters.yearMax, filters.yearMin, measure, themeRecords]);
+  const topRecipients = useMemo(() => rankingRows(themeRecords, 'recipient', measure), [measure, themeRecords]);
+  const topDonors = useMemo(() => rankingRows(themeRecords, 'donor', measure), [measure, themeRecords]);
+  const modeBreakdown = useMemo(() => rankingRows(themeRecords, 'mode', measure, 8), [measure, themeRecords]);
+  const sankeyData = useMemo(() => buildTechnologyEnablerSankey(themeRecords, measure), [measure, themeRecords]);
 
   return (
     <section id={themeSectionId(themeId)} className="scroll-mt-48 space-y-6">
@@ -559,17 +583,16 @@ function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; record
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <KPICard label="Records" value={num(summary.recordCount)} />
-        <KPICard label="Commitments" value={usdM(summary.commitment_defl)} />
-        <KPICard label="Disbursements" value={usdM(summary.disbursement_defl)} />
+        <KPICard label={activeMeasure.title} value={usdM(summary[measure])} />
         <KPICard label="Recipients" value={num(summary.recipientCount)} sub="Recipient economies" />
         <KPICard label="Donors" value={num(summary.donorCount)} sub="Finance sources" />
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <p className="mb-1 text-base font-semibold text-slate-900">Development Finance over Time</p>
-        <p className="mb-4 text-sm text-slate-500">Commitments by year, constant 2024 USD.</p>
+        <p className="mb-4 text-sm text-slate-500">{activeMeasure.title} by year, constant 2024 USD.</p>
         <ResponsiveContainer width="100%" height={320}>
           <BarChart data={series} margin={{ top: 10, right: 24, left: 8, bottom: 10 }} barCategoryGap="10%">
             <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
@@ -582,11 +605,11 @@ function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; record
               axisLine={false}
               tickFormatter={(value: number) => usdM(value)}
             />
-            <Tooltip content={<TooltipBox />} />
+            <Tooltip content={<TooltipBox measureLabel={activeMeasure.title} />} />
             <Legend wrapperStyle={{ fontSize: 12 }} />
             <Bar
-              dataKey="commitments"
-              name={`${theme.shortLabel} commitments`}
+              dataKey="amount"
+              name={`${theme.shortLabel} ${activeMeasure.lower}`}
               fill={theme.color}
               fillOpacity={0.84}
               maxBarSize={28}
@@ -598,15 +621,19 @@ function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; record
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <RankingChart
           title="Top Recipients"
-          subtitle={`Largest ${theme.shortLabel.toLowerCase()} recipients by constant 2024 USD commitments.`}
+          subtitle={`Largest ${theme.shortLabel.toLowerCase()} recipients by constant 2024 USD ${activeMeasure.lower}.`}
           data={topRecipients}
           color={theme.color}
+          measure={measure}
+          measureLabel={activeMeasure.title}
         />
         <RankingChart
           title="Top Donors"
-          subtitle={`Largest ${theme.shortLabel.toLowerCase()} finance sources by constant 2024 USD commitments.`}
+          subtitle={`Largest ${theme.shortLabel.toLowerCase()} finance sources by constant 2024 USD ${activeMeasure.lower}.`}
           data={topDonors}
           color={theme.color}
+          measure={measure}
+          measureLabel={activeMeasure.title}
         />
       </div>
 
@@ -616,17 +643,105 @@ function ThemeSection({ theme, records, filters }: { theme: ThemeSummary; record
           subtitle="Theme finance grouped by CRS transport mode."
           data={modeBreakdown}
           color={theme.color}
+          measure={measure}
+          measureLabel={activeMeasure.title}
           axisWidth={210}
         />
       </div>
 
-      {sankeyData.links.length > 0 && <TechnologyEnablerSankey data={sankeyData} theme={theme} />}
+      {sankeyData.links.length > 0 && <TechnologyEnablerSankey data={sankeyData} theme={theme} measure={measure} />}
     </section>
   );
 }
 
+function mergeFilteredThemeRecords(recordsByTheme: ThemeRecordsByTheme, filtersByTheme: ThemeFilterState): ThemeRecordListItem[] {
+  const merged = new Map<string, ThemeRecordListItem>();
+
+  THEME_SUMMARIES.forEach((theme) => {
+    const themeId = theme.id as ThemeId;
+    const filteredRecords = filterThemeRecords(recordsByTheme[themeId] ?? [], filtersByTheme[themeId]);
+    filteredRecords.forEach((record) => {
+      const rowKey = record.rowNumber || `${themeId}-${record.year ?? 'unknown'}-${record.donor}-${record.recipient}-${record.title}`;
+      const existing = merged.get(rowKey);
+
+      if (!existing) {
+        merged.set(rowKey, {
+          ...record,
+          rowKey,
+          themeLabels: [theme.label],
+          themeColors: [theme.color],
+          allTags: [...new Set(record.tags.filter(Boolean))],
+        });
+        return;
+      }
+
+      if (!existing.themeLabels.includes(theme.label)) {
+        existing.themeLabels.push(theme.label);
+        existing.themeColors.push(theme.color);
+      }
+      record.tags.forEach((tag) => {
+        if (tag && !existing.allTags.includes(tag)) existing.allTags.push(tag);
+      });
+    });
+  });
+
+  return [...merged.values()];
+}
+
+function ThemeRecordTable({ records, measure }: { records: ThemeRecordListItem[]; measure: BasisMeasure }) {
+  const measureInfo = measureCopy(measure);
+  const projectRows = useMemo<ProjectRecordTableRecord[]>(
+    () => records.map((record) => ({
+      id: record.rowKey,
+      rowNumber: record.rowNumber,
+      year: record.year,
+      title: record.title,
+      description: record.description,
+      donor: record.donor,
+      recipient: record.recipient,
+      mode: record.mode,
+      flow: record.flow,
+      amount: amountFor(record, measure),
+      commitment_defl: record.commitment_defl,
+      disbursement_defl: record.disbursement_defl,
+      themes: record.themeLabels.map((label, index) => ({ label, color: record.themeColors[index] })),
+      subtags: record.allTags.map((label) => ({ label })),
+      searchText: [
+        record.year,
+        record.title,
+        record.description,
+        record.donor,
+        record.recipient,
+        record.mode,
+        record.flow,
+        record.themeLabels.join(' '),
+        record.allTags.join(' '),
+      ].filter(Boolean).join(' '),
+      detailRows: [
+        { label: 'Donor', value: record.donor },
+        { label: 'Recipient', value: record.recipient },
+        { label: 'Flow', value: record.flow },
+        { label: 'Mode', value: record.mode },
+        { label: 'Year', value: record.year },
+        { label: 'Row', value: record.rowNumber },
+      ],
+    })),
+    [measure, records],
+  );
+
+  return (
+    <ProjectRecordsTable
+      records={projectRows}
+      columns={['year', 'record', 'donor', 'recipient', 'mode', 'flow', 'themes', 'subtags', 'amount']}
+      subtitle={`Records tagged under the theme filters above. Amounts use selected ${measureInfo.lower}.`}
+      emptyMessage="No project records match the current theme filters and search."
+      minWidthClass="min-w-[1280px]"
+    />
+  );
+}
 export function ThemeExplorer() {
   const [filtersByTheme, setFiltersByTheme] = useState<ThemeFilterState>(() => createInitialFilters());
+  const [measure, setMeasure] = useState<BasisMeasure>('commitment_defl');
   const [activeThemeId, setActiveThemeId] = useState<ThemeId>(THEME_IDS[0]);
   const [themeRecords, setThemeRecords] = useState<ThemeRecordsByTheme | null>(null);
   const [recordsError, setRecordsError] = useState(false);
@@ -637,11 +752,15 @@ export function ThemeExplorer() {
   const activeThemeRecords = recordsByTheme[activeThemeId] ?? [];
   const filterOptions = useMemo(
     () => ({
-      donors: buildFilterOptions(activeThemeRecords, (record) => [record.donor]),
-      recipients: buildFilterOptions(activeThemeRecords, (record) => [record.recipient]),
-      subtags: buildFilterOptions(activeThemeRecords, (record) => record.tags),
+      donors: buildFilterOptions(activeThemeRecords, (record) => [record.donor], measure),
+      recipients: buildFilterOptions(activeThemeRecords, (record) => [record.recipient], measure),
+      subtags: buildFilterOptions(activeThemeRecords, (record) => record.tags, measure),
     }),
-    [activeThemeRecords],
+    [activeThemeRecords, measure],
+  );
+  const themeRecordTableRows = useMemo(
+    () => mergeFilteredThemeRecords(recordsByTheme, filtersByTheme),
+    [filtersByTheme, recordsByTheme],
   );
 
   useEffect(() => {
@@ -699,6 +818,7 @@ export function ThemeExplorer() {
 
   const resetActiveFilters = () => {
     const fresh = createInitialFilters()[activeThemeId];
+    setMeasure('commitment_defl');
     setFiltersByTheme((current) => ({
       ...current,
       [activeThemeId]: fresh,
@@ -726,7 +846,7 @@ export function ThemeExplorer() {
           <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-semibold text-slate-900">Filters for {activeTheme.label}</p>
-              <p className="mt-0.5 text-xs text-slate-500">Selections are saved separately for each theme as you scroll.</p>
+              <p className="mt-0.5 text-xs text-slate-500">Theme filters are saved separately as you scroll; basis applies to all themes.</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {THEME_SUMMARIES.map((theme) => {
@@ -748,7 +868,7 @@ export function ThemeExplorer() {
             </div>
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-[minmax(320px,0.9fr)_repeat(3,minmax(0,1fr))_auto] lg:items-end">
+          <div className="grid gap-3 lg:grid-cols-[minmax(320px,0.9fr)_repeat(4,minmax(0,1fr))_auto] lg:items-end">
             <YearRangeSelector
               label="Year"
               min={activeTheme.yearMin ?? GLOBAL_THEME_YEAR_MIN}
@@ -780,6 +900,7 @@ export function ThemeExplorer() {
               allLabel="All subtags"
               onChange={(subtag) => updateActiveFilters({ subtag })}
             />
+            <BasisDropdown value={measure} onChange={setMeasure} />
             <button
               type="button"
               onClick={resetActiveFilters}
@@ -800,9 +921,11 @@ export function ThemeExplorer() {
         {THEME_SUMMARIES.map((theme, index) => (
           <div key={theme.id} className="space-y-12">
             {index > 0 && <div className="h-px bg-slate-300" />}
-            <ThemeSection theme={theme} records={recordsByTheme[theme.id as ThemeId] ?? []} filters={filtersByTheme[theme.id as ThemeId]} />
+            <ThemeSection theme={theme} records={recordsByTheme[theme.id as ThemeId] ?? []} filters={filtersByTheme[theme.id as ThemeId]} measure={measure} />
           </div>
         ))}
+
+        <ThemeRecordTable records={themeRecordTableRows} measure={measure} />
       </div>
     </div>
   );
