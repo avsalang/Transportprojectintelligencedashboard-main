@@ -86,28 +86,6 @@ export function CRSFilterProvider({ children }: { children: ReactNode }) {
     };
   }, [error, facts, isLoading]);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-center">
-        <div>
-          <p className="text-base font-semibold text-slate-900">Loading dashboard data...</p>
-          <p className="mt-2 text-sm text-slate-500">Fetching CRS aggregates for Asia and the Pacific.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 px-6 text-center">
-        <div className="max-w-md rounded-xl border border-red-100 bg-white p-6 shadow-sm">
-          <p className="text-base font-semibold text-slate-900">Dashboard data could not load</p>
-          <p className="mt-2 text-sm text-slate-500">CRS facts request failed: {error}</p>
-        </div>
-      </div>
-    );
-  }
-
   return <CRSFilterContext.Provider value={value}>{children}</CRSFilterContext.Provider>;
 }
 
@@ -118,7 +96,7 @@ export function useCRSFilters() {
 }
 
 export function useCRSPageFilters(initialFilters?: Partial<CRSFilters>) {
-  const { facts } = useCRSFilters();
+  const { error, facts, isLoading } = useCRSFilters();
   const [filters, setFiltersState] = useState<CRSFilters>({
     ...DEFAULT_CRS_FILTERS,
     ...initialFilters,
@@ -131,5 +109,7 @@ export function useCRSPageFilters(initialFilters?: Partial<CRSFilters>) {
     setFilters: (updater: (prev: CRSFilters) => CRSFilters) => setFiltersState((prev) => updater(prev)),
     resetFilters: () => setFiltersState({ ...DEFAULT_CRS_FILTERS, ...initialFilters }),
     filteredFacts,
+    isLoading,
+    error,
   };
 }
