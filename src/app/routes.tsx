@@ -1,8 +1,8 @@
 import { lazy } from 'react';
 import { createHashRouter, Navigate } from 'react-router';
 import { CRSLayout } from './components/CRSLayout';
+import { CRSOverview } from './pages/CRSOverview';
 
-const CRSOverview = lazy(() => import('./pages/CRSOverview').then((module) => ({ default: module.CRSOverview })));
 const CRSDonorProfile = lazy(() => import('./pages/CRSDonorProfile').then((module) => ({ default: module.CRSDonorProfile })));
 const CRSRecipientProfile = lazy(() => import('./pages/CRSRecipientProfile').then((module) => ({ default: module.CRSRecipientProfile })));
 const CRSDecade = lazy(() => import('./pages/CRSDecade').then((module) => ({ default: module.CRSDecade })));
