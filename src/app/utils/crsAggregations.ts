@@ -1,4 +1,4 @@
-import { CRS_COUNTRY_MAP_POINTS, CRS_FACTS, CRSFact } from '../data/crsData';
+import { CRS_COUNTRY_MAP_POINTS, CRSFact } from '../data/crsData';
 import { CRS_SECTOR6_OPTIONS, getSustainabilityTags } from './crsFiltering';
 
 export type CRSMeasure = 'commitment' | 'disbursement' | 'commitment_defl' | 'disbursement_defl';
@@ -615,8 +615,8 @@ export function getLatestYearFromFacts(facts: CRSFact[]) {
   return facts.reduce((maxYear, fact) => Math.max(maxYear, fact.year), 0);
 }
 
-export function getLatestYearChange() {
-  const years = buildYearSeries(CRS_FACTS);
+export function getLatestYearChange(facts: CRSFact[]) {
+  const years = buildYearSeries(facts);
   const latest = years.at(-1);
   const previous = years.at(-2);
   if (!latest || !previous || previous.commitment === 0) return null;

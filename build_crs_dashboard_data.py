@@ -9,6 +9,7 @@ CRS_CSV = ROOT.parent / "crs_transport_dashboard_ready.csv"
 COUNTRY_COORD_SOURCE = ROOT.parent / "transport_projects_cross_mdb_shareable_v5.csv"
 OUT_TS = ROOT / "src" / "app" / "data" / "crsData.ts"
 PUBLIC_DATA_DIR = ROOT / "public" / "data"
+OUT_FACTS_JSON = PUBLIC_DATA_DIR / "crs-facts.json"
 RECORDS_DIR = PUBLIC_DATA_DIR / "crs-records"
 OUT_RECORDS_INDEX = RECORDS_DIR / "index.json"
 LEGACY_RECORDS_JSON = PUBLIC_DATA_DIR / "crs-records.json"
@@ -21,6 +22,30 @@ MODE_COLORS = {
     "Aviation": "#8B5CF6",
     "Other": "#64748B",
 }
+
+
+def load_ato_economies():
+    source = ROOT / "src" / "app" / "data" / "atoEconomies.ts"
+    text = source.read_text(encoding="utf-8")
+    economies = set()
+    for line in text.splitlines():
+        line = line.strip().rstrip(",")
+        if line.startswith('"') and line.endswith('"'):
+            economies.add(line.strip('"'))
+    return economies
+
+
+def is_asia_regional_recipient(recipient, scope):
+    if scope != "regional" or not recipient:
+        return False
+    text = recipient.lower()
+    return ", regional" in text and "asia" in text
+
+
+def is_ato_scoped_fact(record, ato_economies):
+    if record.get("recipient_scope") == "economy":
+        return record.get("recipient") in ato_economies
+    return is_asia_regional_recipient(record.get("recipient"), record.get("recipient_scope"))
 
 
 def clean_text(value):
@@ -163,6 +188,7 @@ def load_country_coords():
 
 
 def main():
+    ato_economies = load_ato_economies()
     country_coords = load_country_coords()
 
     facts = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0})
@@ -444,6 +470,9 @@ def main():
     mode_options = sorted({row["mode"] for row in facts_list})
     region_options = sorted({row["region"] for row in facts_list if row["region"]} | {"Asia-Pacific (ATO)"})
     region_detail_options = sorted({row["recipient_region_detail"] for row in facts_list if row["recipient_region_detail"]})
+    ato_facts_list = [row for row in facts_list if is_ato_scoped_fact(row, ato_economies)]
+    ato_donor_options = sorted({row["donor"] for row in ato_facts_list})
+    ato_mode_options = sorted({row["mode"] for row in ato_facts_list})
 
     overview_stats = {
         "totalCommitment": round(sum(d["commitment"] for d in donor_summary), 2),
@@ -556,22 +585,10 @@ export interface CRSCountryRecord {{
 }}
 
 export const CRS_MODE_COLORS: Record<string, string> = {to_js(MODE_COLORS)};
-export const CRS_OVERVIEW_STATS = {to_js(overview_stats)};
-export const CRS_FACTS: CRSFact[] = {to_js(facts_list)};
-export const CRS_YEAR_SERIES = {to_js(year_series)};
-export const CRS_DONOR_SUMMARY = {to_js(donor_summary)};
-export const CRS_RECIPIENT_SUMMARY: CRSRecipientSummary[] = {to_js(recipient_summary)};
-export const CRS_MODE_SUMMARY = {to_js(mode_summary)};
-export const CRS_REGION_DETAIL_SUMMARY = {to_js(region_detail_summary_list)};
+export const CRS_FACTS_URL = './data/crs-facts.json';
 export const CRS_COUNTRY_MAP_POINTS: CRSRecipientSummary[] = {to_js(country_map_points)};
-export const CRS_REGIONAL_RECIPIENTS = {to_js(regional_flow_nodes)};
-export const CRS_DONOR_OPTIONS = {to_js(donor_options)};
-export const CRS_MODE_OPTIONS = {to_js(mode_options)};
-export const CRS_REGION_OPTIONS = {to_js(region_options)};
-export const CRS_REGION_DETAIL_OPTIONS = {to_js(region_detail_options)};
-export const CRS_TOP_RECORDS = {to_js(top_records)};
-export const CRS_COUNTRY_RECORDS: Record<string, CRSCountryRecord[]> = {to_js(country_records_export)};
-export const CRS_SANKEY_DATA = {to_js(sankey_data)};
+export const CRS_DONOR_OPTIONS = {to_js(ato_donor_options or donor_options)};
+export const CRS_MODE_OPTIONS = {to_js(ato_mode_options or mode_options)};
 
 export const crsFmt = {{
   usdM: (v: number): string => {{
@@ -585,11 +602,17 @@ export const crsFmt = {{
 
     OUT_TS.write_text(file_text, encoding="utf-8")
     PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    OUT_FACTS_JSON.write_text(
+        json.dumps(ato_facts_list, ensure_ascii=False, separators=(",", ":")),
+        encoding="utf-8",
+    )
     records_index = shard_records(all_records)
     print(f"Wrote {OUT_TS}")
+    print(f"Wrote {OUT_FACTS_JSON}")
     print(f"Wrote {OUT_RECORDS_INDEX}")
     print(f"Record chunks: {len(records_index['chunks'])}")
     print(f"Facts: {len(facts_list)}")
+    print(f"ATO-scoped facts: {len(ato_facts_list)}")
 
 
 if __name__ == "__main__":
