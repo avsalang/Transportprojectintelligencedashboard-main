@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { NavLink, Outlet } from 'react-router';
 import { ChevronRight } from 'lucide-react';
 import { CRSFilterProvider } from '../context/CRSFilterContext';
@@ -61,17 +60,6 @@ function SupportFooter() {
   );
 }
 
-function PageFallback() {
-  return (
-    <div className="flex min-h-[420px] items-center justify-center px-6 text-center">
-      <div>
-        <p className="text-base font-semibold text-slate-900">Loading view...</p>
-        <p className="mt-2 text-sm text-slate-500">Preparing the selected dashboard section.</p>
-      </div>
-    </div>
-  );
-}
-
 export function CRSLayout() {
   return (
     <CRSFilterProvider>
@@ -131,9 +119,7 @@ export function CRSLayout() {
           </div>
           <div className="flex min-h-[calc(100vh-81px)] flex-col">
             <div className="flex-1">
-              <Suspense fallback={<PageFallback />}>
-                <Outlet />
-              </Suspense>
+              <Outlet />
             </div>
             <SupportFooter />
           </div>

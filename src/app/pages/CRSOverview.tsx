@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Bar,
   BarChart,
@@ -13,17 +13,14 @@ import {
 import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
+import { StyledCRSCountryMap } from '../components/StyledCRSCountryMap';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { WrappedCategoryTick } from '../components/ChartTicks';
 import { CRSPageIntro } from '../components/CRSPageIntro';
-import { CRS_DEFAULT_OVERVIEW, crsFmt } from '../data/crsData';
+import { crsFmt } from '../data/crsData';
 import { LOW_CARBON_OLD_SCREENER_DIMENSIONS, LOW_CARBON_OLD_SCREENER_RANKING } from '../data/lowCarbonScreenerData';
 import { useCRSPageFilters } from '../context/CRSFilterContext';
 import { aggregateFacts, aggregateSustainabilityTags, buildCountryMapPoints, buildModeStackByDonor, buildYearModeStack, summarizeFacts } from '../utils/crsAggregations';
-
-const StyledCRSCountryMap = lazy(() =>
-  import('../components/StyledCRSCountryMap').then((module) => ({ default: module.StyledCRSCountryMap })),
-);
 
 const MODE_AREA_COLORS = {
   Rail: '#10B981',
@@ -90,60 +87,18 @@ function ScreenerStackTooltip({ active, payload, label }: any) {
   );
 }
 
-function MapPlaceholder() {
-  return <div className="h-[500px] rounded-xl border border-slate-200 bg-slate-50" />;
-}
-
 export function CRSOverview() {
-  const { error, filteredFacts, filters, isLoading, setFilters, resetFilters } = useCRSPageFilters();
+  const { filteredFacts, filters, setFilters, resetFilters } = useCRSPageFilters();
   const measure = filters.measure;
-  const canUseDefaultSnapshot =
-    isLoading &&
-    !filteredFacts.length &&
-    !filters.donors.length &&
-    !filters.recipients.length &&
-    !filters.modes.length &&
-    !filters.flows.length &&
-    !filters.sectors.length &&
-    filters.yearMin === 1973 &&
-    filters.yearMax === 2024 &&
-    filters.measure === 'commitment_defl';
-  const stats = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.stats : summarizeFacts(filteredFacts)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const countryPoints = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.countryPoints : buildCountryMapPoints(filteredFacts)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const yearlyModeStack = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.yearModeStack : buildYearModeStack(filteredFacts, measure)),
-    [canUseDefaultSnapshot, filteredFacts, measure],
-  );
-  const topRecipients = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.topRecipients : aggregateFacts(filteredFacts, (fact) => fact.recipient).slice(0, 10)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const topDonors = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.topDonors : aggregateFacts(filteredFacts, (fact) => fact.donor).slice(0, 10)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const modeSeries = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.modeSeries : aggregateFacts(filteredFacts, (fact) => fact.mode).slice(0, 10)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const sectorSeries = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.sectorSeries : aggregateSustainabilityTags(filteredFacts)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const donorModeStack = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.donorModeStack : buildModeStackByDonor(filteredFacts, 8)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
-  const financingSeries = useMemo(
-    () => (canUseDefaultSnapshot ? CRS_DEFAULT_OVERVIEW.financingSeries : aggregateFacts(filteredFacts, (fact) => fact.flow).slice(0, 10)),
-    [canUseDefaultSnapshot, filteredFacts],
-  );
+  const stats = useMemo(() => summarizeFacts(filteredFacts), [filteredFacts]);
+  const countryPoints = useMemo(() => buildCountryMapPoints(filteredFacts), [filteredFacts]);
+  const yearlyModeStack = useMemo(() => buildYearModeStack(filteredFacts, measure), [filteredFacts, measure]);
+  const topRecipients = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.recipient).slice(0, 10), [filteredFacts]);
+  const topDonors = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.donor).slice(0, 10), [filteredFacts]);
+  const modeSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.mode).slice(0, 10), [filteredFacts]);
+  const sectorSeries = useMemo(() => aggregateSustainabilityTags(filteredFacts), [filteredFacts]);
+  const donorModeStack = useMemo(() => buildModeStackByDonor(filteredFacts, 8), [filteredFacts]);
+  const financingSeries = useMemo(() => aggregateFacts(filteredFacts, (fact) => fact.flow).slice(0, 10), [filteredFacts]);
   const lowCarbonRanking = useMemo(
     () => LOW_CARBON_OLD_SCREENER_RANKING.map((row) => ({
       ...row,
@@ -193,9 +148,7 @@ export function CRSOverview() {
               <p className="text-slate-900 text-sm font-semibold">Recipient Map</p>
               <p className="text-slate-400 text-xs mt-1">Map of ATO economy recipients in the current filtered view. Circles show amounts in constant 2024 USD.</p>
             </div>
-            <Suspense fallback={<MapPlaceholder />}>
-              <StyledCRSCountryMap points={countryPoints} measure={measure} viewMode="points" height={500} />
-            </Suspense>
+            <StyledCRSCountryMap points={countryPoints} measure={measure} viewMode="points" height={500} />
           </div>
 
           <div className="space-y-6">
@@ -266,15 +219,13 @@ export function CRSOverview() {
             </div>
           </div>
 
-        {!canUseDefaultSnapshot && !error ? (
-          <CRSFlowPanel
-            facts={filteredFacts}
-            measure={measure}
-            title="Finance Flows"
-            subtitle="Donor to agency to recipient pathways in the current filtered view."
-            sankeyOptions={{ topDonors: 10, topAgencies: 10, topRecipients: 10, groupOtherNodes: true }}
-          />
-        ) : null}
+        <CRSFlowPanel
+          facts={filteredFacts}
+          measure={measure}
+          title="Finance Flows"
+          subtitle="Donor to agency to recipient pathways in the current filtered view."
+          sankeyOptions={{ topDonors: 10, topAgencies: 10, topRecipients: 10, groupOtherNodes: true }}
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CRSRankingCard

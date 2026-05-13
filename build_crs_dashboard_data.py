@@ -9,7 +9,6 @@ CRS_CSV = ROOT.parent / "crs_transport_dashboard_ready.csv"
 COUNTRY_COORD_SOURCE = ROOT.parent / "transport_projects_cross_mdb_shareable_v5.csv"
 OUT_TS = ROOT / "src" / "app" / "data" / "crsData.ts"
 PUBLIC_DATA_DIR = ROOT / "public" / "data"
-OUT_FACTS_JSON = PUBLIC_DATA_DIR / "crs-facts.json"
 RECORDS_DIR = PUBLIC_DATA_DIR / "crs-records"
 OUT_RECORDS_INDEX = RECORDS_DIR / "index.json"
 LEGACY_RECORDS_JSON = PUBLIC_DATA_DIR / "crs-records.json"
@@ -22,30 +21,6 @@ MODE_COLORS = {
     "Aviation": "#8B5CF6",
     "Other": "#64748B",
 }
-
-
-def load_ato_economies():
-    source = ROOT / "src" / "app" / "data" / "atoEconomies.ts"
-    text = source.read_text(encoding="utf-8")
-    economies = set()
-    for line in text.splitlines():
-        line = line.strip().rstrip(",")
-        if line.startswith('"') and line.endswith('"'):
-            economies.add(line.strip('"'))
-    return economies
-
-
-def is_asia_regional_recipient(recipient, scope):
-    if scope != "regional" or not recipient:
-        return False
-    text = recipient.lower()
-    return ", regional" in text and "asia" in text
-
-
-def is_ato_scoped_fact(record, ato_economies):
-    if record.get("recipient_scope") == "economy":
-        return record.get("recipient") in ato_economies
-    return is_asia_regional_recipient(record.get("recipient"), record.get("recipient_scope"))
 
 
 def clean_text(value):
@@ -187,173 +162,7 @@ def load_country_coords():
     }
 
 
-def dashboard_value(row, measure):
-    if measure == "commitment":
-        return row.get("commitment_defl") or row.get("commitment") or 0.0
-    if measure == "disbursement":
-        return row.get("disbursement_defl") or row.get("disbursement") or 0.0
-    return row.get(measure) or 0.0
-
-
-def normalize_mode_label(mode):
-    lower = (mode or "Other").lower()
-    if "road" in lower:
-        return "Road"
-    if "rail" in lower:
-        return "Rail"
-    if "air" in lower or "aviation" in lower:
-        return "Aviation"
-    if "water" in lower or "sea" in lower or "river" in lower or "maritime" in lower:
-        return "Water"
-    return "Other"
-
-
-def aggregate_dashboard_rows(rows, key_fn):
-    grouped = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0})
-    for row in rows:
-        key = key_fn(row) or "Unknown"
-        entry = grouped[key]
-        entry["commitment"] += row.get("commitment", 0.0)
-        entry["disbursement"] += row.get("disbursement", 0.0)
-        entry["commitment_defl"] += row.get("commitment_defl") or row.get("commitment", 0.0)
-        entry["disbursement_defl"] += row.get("disbursement_defl") or row.get("disbursement", 0.0)
-        entry["count"] += row.get("count", 0)
-
-    return [
-        {
-            "label": label,
-            "commitment": round(vals["commitment"], 4),
-            "disbursement": round(vals["disbursement"], 4),
-            "commitment_defl": round(vals["commitment_defl"], 4),
-            "disbursement_defl": round(vals["disbursement_defl"], 4),
-            "count": vals["count"],
-        }
-        for label, vals in sorted(grouped.items(), key=lambda item: (-item[1]["commitment"], item[0]))
-    ]
-
-
-def build_default_overview_snapshot(rows, country_coords):
-    sustainable_markers = ("climate_mitigation", "climate_adaptation", "gender", "drr", "biodiversity", "environment")
-    sustainable_rows = [
-        row for row in rows
-        if any((row.get(marker) or 0) > 0 for marker in sustainable_markers)
-    ]
-
-    stats = {
-        "commitment": round(sum(row.get("commitment", 0.0) for row in rows), 4),
-        "disbursement": round(sum(row.get("disbursement", 0.0) for row in rows), 4),
-        "commitment_defl": round(sum(row.get("commitment_defl") or row.get("commitment", 0.0) for row in rows), 4),
-        "disbursement_defl": round(sum(row.get("disbursement_defl") or row.get("disbursement", 0.0) for row in rows), 4),
-        "count": sum(row.get("count", 0) for row in rows),
-        "donorCount": len({row.get("donor") for row in rows}),
-        "recipientCount": len({row.get("recipient") for row in rows}),
-        "countryRecipientCount": len({row.get("recipient") for row in rows if row.get("recipient_scope") == "economy"}),
-        "regionalRecipientCount": len({row.get("recipient") for row in rows if row.get("recipient_scope") == "regional"}),
-        "sustainableCommitment": round(sum(row.get("commitment", 0.0) for row in sustainable_rows), 4),
-        "sustainableCommitmentDefl": round(sum(row.get("commitment_defl") or row.get("commitment", 0.0) for row in sustainable_rows), 4),
-        "sustainableCount": sum(row.get("count", 0) for row in sustainable_rows),
-    }
-
-    country_grouped = defaultdict(lambda: {"region": "", "commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0})
-    for row in rows:
-        recipient = row.get("recipient")
-        if row.get("recipient_scope") != "economy" or recipient not in country_coords:
-            continue
-        entry = country_grouped[recipient]
-        entry["region"] = row.get("region") or entry["region"]
-        entry["commitment"] += row.get("commitment", 0.0)
-        entry["disbursement"] += row.get("disbursement", 0.0)
-        entry["commitment_defl"] += row.get("commitment_defl") or row.get("commitment", 0.0)
-        entry["disbursement_defl"] += row.get("disbursement_defl") or row.get("disbursement", 0.0)
-        entry["count"] += row.get("count", 0)
-
-    country_points = []
-    for recipient, vals in country_grouped.items():
-        country_points.append({
-            "recipient": recipient,
-            "region": vals["region"],
-            "commitment": round(vals["commitment"], 4),
-            "disbursement": round(vals["disbursement"], 4),
-            "commitment_defl": round(vals["commitment_defl"], 4),
-            "disbursement_defl": round(vals["disbursement_defl"], 4),
-            "count": vals["count"],
-            "lat": country_coords[recipient]["lat"],
-            "lng": country_coords[recipient]["lng"],
-        })
-    country_points.sort(key=lambda row: (-row["commitment"], row["recipient"]))
-
-    year_mode = defaultdict(lambda: {"year": "", "Road": 0.0, "Rail": 0.0, "Aviation": 0.0, "Water": 0.0, "Other": 0.0})
-    for row in rows:
-        year = row.get("year")
-        if not year:
-            continue
-        entry = year_mode[year]
-        entry["year"] = str(year)
-        entry[normalize_mode_label(row.get("mode"))] += dashboard_value(row, "commitment_defl")
-
-    donor_seed = aggregate_dashboard_rows(rows, lambda row: row.get("donor"))[:8]
-    donor_mode = {
-        item["label"]: {
-            "label": item["label"],
-            "commitment": item["commitment"],
-            "disbursement": item["disbursement"],
-            "Road": 0.0,
-            "Rail": 0.0,
-            "Aviation": 0.0,
-            "Water": 0.0,
-            "Other": 0.0,
-        }
-        for item in donor_seed
-    }
-    for row in rows:
-        donor = row.get("donor")
-        if donor in donor_mode:
-            donor_mode[donor][normalize_mode_label(row.get("mode"))] += dashboard_value(row, "commitment_defl")
-
-    sector_marker_map = {
-        "Mitigation": "climate_mitigation",
-        "Adaptation": "climate_adaptation",
-        "Gender": "gender",
-        "DRR": "drr",
-        "Biodiversity": "biodiversity",
-        "Environment": "environment",
-    }
-    sector_rows = {
-        label: {"label": label, "commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0}
-        for label in sector_marker_map
-    }
-    for row in rows:
-        for label, marker in sector_marker_map.items():
-            if (row.get(marker) or 0) <= 0:
-                continue
-            entry = sector_rows[label]
-            entry["commitment"] += row.get("commitment", 0.0)
-            entry["disbursement"] += row.get("disbursement", 0.0)
-            entry["commitment_defl"] += row.get("commitment_defl") or row.get("commitment", 0.0)
-            entry["disbursement_defl"] += row.get("disbursement_defl") or row.get("disbursement", 0.0)
-            entry["count"] += row.get("count", 0)
-
-    def rounded_mapping_list(values):
-        return [
-            {key: (round(value, 4) if isinstance(value, float) else value) for key, value in row.items()}
-            for row in values
-        ]
-
-    return {
-        "stats": stats,
-        "countryPoints": country_points,
-        "yearModeStack": rounded_mapping_list([row for _year, row in sorted(year_mode.items())]),
-        "topRecipients": aggregate_dashboard_rows(rows, lambda row: row.get("recipient"))[:10],
-        "topDonors": aggregate_dashboard_rows(rows, lambda row: row.get("donor"))[:10],
-        "modeSeries": aggregate_dashboard_rows(rows, lambda row: row.get("mode"))[:10],
-        "sectorSeries": sorted(rounded_mapping_list(sector_rows.values()), key=lambda row: -row["commitment"]),
-        "donorModeStack": rounded_mapping_list(sorted(donor_mode.values(), key=lambda row: -row["commitment"])),
-        "financingSeries": aggregate_dashboard_rows(rows, lambda row: row.get("flow"))[:10],
-    }
-
-
 def main():
-    ato_economies = load_ato_economies()
     country_coords = load_country_coords()
 
     facts = defaultdict(lambda: {"commitment": 0.0, "disbursement": 0.0, "commitment_defl": 0.0, "disbursement_defl": 0.0, "count": 0})
@@ -635,10 +444,6 @@ def main():
     mode_options = sorted({row["mode"] for row in facts_list})
     region_options = sorted({row["region"] for row in facts_list if row["region"]} | {"Asia-Pacific (ATO)"})
     region_detail_options = sorted({row["recipient_region_detail"] for row in facts_list if row["recipient_region_detail"]})
-    ato_facts_list = [row for row in facts_list if is_ato_scoped_fact(row, ato_economies)]
-    ato_donor_options = sorted({row["donor"] for row in ato_facts_list})
-    ato_mode_options = sorted({row["mode"] for row in ato_facts_list})
-    default_overview_snapshot = build_default_overview_snapshot(ato_facts_list, country_coords)
 
     overview_stats = {
         "totalCommitment": round(sum(d["commitment"] for d in donor_summary), 2),
@@ -751,11 +556,22 @@ export interface CRSCountryRecord {{
 }}
 
 export const CRS_MODE_COLORS: Record<string, string> = {to_js(MODE_COLORS)};
-export const CRS_FACTS_URL = './data/crs-facts.json';
+export const CRS_OVERVIEW_STATS = {to_js(overview_stats)};
+export const CRS_FACTS: CRSFact[] = {to_js(facts_list)};
+export const CRS_YEAR_SERIES = {to_js(year_series)};
+export const CRS_DONOR_SUMMARY = {to_js(donor_summary)};
+export const CRS_RECIPIENT_SUMMARY: CRSRecipientSummary[] = {to_js(recipient_summary)};
+export const CRS_MODE_SUMMARY = {to_js(mode_summary)};
+export const CRS_REGION_DETAIL_SUMMARY = {to_js(region_detail_summary_list)};
 export const CRS_COUNTRY_MAP_POINTS: CRSRecipientSummary[] = {to_js(country_map_points)};
-export const CRS_DONOR_OPTIONS = {to_js(ato_donor_options or donor_options)};
-export const CRS_MODE_OPTIONS = {to_js(ato_mode_options or mode_options)};
-export const CRS_DEFAULT_OVERVIEW = {to_js(default_overview_snapshot)};
+export const CRS_REGIONAL_RECIPIENTS = {to_js(regional_flow_nodes)};
+export const CRS_DONOR_OPTIONS = {to_js(donor_options)};
+export const CRS_MODE_OPTIONS = {to_js(mode_options)};
+export const CRS_REGION_OPTIONS = {to_js(region_options)};
+export const CRS_REGION_DETAIL_OPTIONS = {to_js(region_detail_options)};
+export const CRS_TOP_RECORDS = {to_js(top_records)};
+export const CRS_COUNTRY_RECORDS: Record<string, CRSCountryRecord[]> = {to_js(country_records_export)};
+export const CRS_SANKEY_DATA = {to_js(sankey_data)};
 
 export const crsFmt = {{
   usdM: (v: number): string => {{
@@ -769,17 +585,11 @@ export const crsFmt = {{
 
     OUT_TS.write_text(file_text, encoding="utf-8")
     PUBLIC_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    OUT_FACTS_JSON.write_text(
-        json.dumps(ato_facts_list, ensure_ascii=False, separators=(",", ":")),
-        encoding="utf-8",
-    )
     records_index = shard_records(all_records)
     print(f"Wrote {OUT_TS}")
-    print(f"Wrote {OUT_FACTS_JSON}")
     print(f"Wrote {OUT_RECORDS_INDEX}")
     print(f"Record chunks: {len(records_index['chunks'])}")
     print(f"Facts: {len(facts_list)}")
-    print(f"ATO-scoped facts: {len(ato_facts_list)}")
 
 
 if __name__ == "__main__":

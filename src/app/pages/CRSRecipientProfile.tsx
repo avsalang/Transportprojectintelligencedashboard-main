@@ -14,12 +14,13 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { KPICard } from '../components/KPICard';
 import { CRSRankingCard } from '../components/CRSRankingCard';
 import { CRSFlowPanel } from '../components/CRSFlowPanel';
 import { CRSPageFilters } from '../components/CRSPageFilters';
 import { CRSPageIntro } from '../components/CRSPageIntro';
-import { ProjectRecordsTable, type ProjectRecordTableRecord } from '../components/ProjectRecordsTable';
+import { Sheet, SheetContent } from '../components/ui/sheet';
 import { crsFmt } from '../data/crsData';
 import { CRSDecadeRecord, CRSDecadeRecordIndex, CRS_DECADE_THEMES } from '../data/crsDecadeData';
 import { LOW_CARBON_SCREENER_BY_ECONOMY } from '../data/lowCarbonScreenerData';
@@ -76,6 +77,51 @@ const LOW_CARBON_PROFILE_LEGEND = [
 
 type CRSRecord = CRSDecadeRecord;
 
+type RecipientRecordSortKey = 'year' | 'record' | 'donor' | 'agency' | 'mode' | 'amount';
+type SortDirection = 'asc' | 'desc';
+type RecipientRecordColumnFilters = Record<RecipientRecordSortKey, string>;
+
+const RECIPIENT_RECORD_COLUMNS: Array<{ key: RecipientRecordSortKey; label: string; align?: 'right' }> = [
+  { key: 'year', label: 'Year' },
+  { key: 'record', label: 'Record' },
+  { key: 'donor', label: 'Donor' },
+  { key: 'agency', label: 'Agency' },
+  { key: 'mode', label: 'Mode' },
+  { key: 'amount', label: 'Amount', align: 'right' },
+];
+
+const EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS: RecipientRecordColumnFilters = {
+  year: '',
+  record: '',
+  donor: '',
+  agency: '',
+  mode: '',
+  amount: '',
+};
+
+const RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS = ['year', 'donor', 'mode'] as const;
+type RecipientRecordDropdownFilterKey = typeof RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS[number];
+
+function isRecipientRecordDropdownFilter(key: RecipientRecordSortKey): key is RecipientRecordDropdownFilterKey {
+  return (RECIPIENT_RECORD_DROPDOWN_FILTER_KEYS as readonly RecipientRecordSortKey[]).includes(key);
+}
+
+function ThemeFlag({ active, label }: { active: number; label: string }) {
+  return (
+    <div className={`px-2 py-1 rounded-lg text-[11px] border ${active > 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-400 border-slate-200'}`}>
+      {label}
+    </div>
+  );
+}
+
+function ATOThemeChip({ label }: { label: string }) {
+  return (
+    <span className="rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-medium text-blue-700 ring-1 ring-blue-100">
+      {label}
+    </span>
+  );
+}
+
 function ScreenerRadarTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload;
@@ -127,6 +173,13 @@ export function CRSRecipientProfile() {
   const measure = filters.measure;
   const [selectedRecipient, setSelectedRecipient] = useState('');
   const [records, setRecords] = useState<CRSRecord[]>([]);
+  const [recordSearch, setRecordSearch] = useState('');
+  const [activeRecord, setActiveRecord] = useState<CRSRecord | null>(null);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [recordSortKey, setRecordSortKey] = useState<RecipientRecordSortKey>('amount');
+  const [recordSortDirection, setRecordSortDirection] = useState<SortDirection>('desc');
+  const [recordColumnFilters, setRecordColumnFilters] = useState<RecipientRecordColumnFilters>(EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS);
 
   const profileRecipientGroups = useMemo(() => {
     const economyRecipients = new Set<string>();
@@ -202,58 +255,100 @@ export function CRSRecipientProfile() {
   const recordThemeLabels = (record: CRSRecord) =>
     CRS_DECADE_THEMES.filter((theme) => record[theme.id]).map((theme) => theme.label);
 
+  const recordColumnText = (record: CRSRecord, key: RecipientRecordSortKey) => {
+    switch (key) {
+      case 'year':
+        return String(record.year ?? '');
+      case 'record':
+        return [record.title, record.description, record.short_description, record.purpose].filter(Boolean).join(' ');
+      case 'donor':
+        return record.donor;
+      case 'agency':
+        return record.agency;
+      case 'mode':
+        return [record.mode, record.mode_detail].filter(Boolean).join(' ');
+      case 'amount':
+        return String(record[measure] ?? 0);
+    }
+  };
+
+  const recordSortValue = (record: CRSRecord, key: RecipientRecordSortKey) => {
+    if (key === 'year') return record.year ?? 0;
+    if (key === 'amount') return record[measure] ?? 0;
+    return recordColumnText(record, key).toLowerCase();
+  };
+
   const profileRecords = useMemo(
     () => records.filter((record) => matchesCRSFilters(record, filters, ATO_ECONOMIES) && record.recipient === selectedRecipient),
     [filters, records, selectedRecipient],
   );
-  const recipientProjectRecordRows = useMemo<ProjectRecordTableRecord[]>(
-    () => profileRecords.map((record) => {
-      const description = record.long_description || record.short_description || record.purpose || '';
-      return {
-        id: String(record.row_number),
-        rowNumber: record.row_number,
-        year: record.year,
-        title: record.title,
-        description,
-        donor: record.donor,
-        agency: record.agency,
-        recipient: record.recipient,
-        mode: record.mode,
-        flow: record.flow,
-        amount: Number(record[measure] ?? 0),
-        commitment: record.commitment,
-        disbursement: record.disbursement,
-        commitment_defl: record.commitment_defl,
-        disbursement_defl: record.disbursement_defl,
-        themes: recordThemeLabels(record).map((label) => ({ label })),
-        markers: [
-          ['Mitigation', record.climate_mitigation],
-          ['Adaptation', record.climate_adaptation],
-          ['Gender', record.gender],
-          ['DRR', record.drr],
-          ['Biodiversity', record.biodiversity],
-          ['Environment', record.environment],
-        ]
-          .filter(([, value]) => Number(value) > 0)
-          .map(([label]) => ({ label: String(label), color: '#059669' })),
-        searchText: [
-          record.title,
-          record.purpose,
-          record.short_description,
-          record.long_description,
-          record.donor,
-          record.agency,
-          record.recipient,
-          record.mode,
-          record.mode_detail,
-          record.flow,
-          record.year,
-          recordThemeLabels(record).join(' '),
-        ].filter(Boolean).join(' '),
-      };
-    }),
-    [measure, profileRecords],
-  );
+
+  const recordFilterOptions = useMemo<Record<RecipientRecordDropdownFilterKey, string[]>>(() => {
+    const unique = (values: string[]) => [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b));
+    const years = [...new Set(profileRecords.map((record) => String(record.year ?? '')).filter(Boolean))]
+      .sort((a, b) => Number(b) - Number(a));
+
+    return {
+      year: years,
+      donor: unique(profileRecords.map((record) => record.donor)),
+      mode: unique(profileRecords.map((record) => record.mode)),
+    };
+  }, [profileRecords]);
+
+  const filteredRecords = useMemo(() => {
+    const query = recordSearch.trim().toLowerCase();
+    const activeColumnFilters = Object.entries(recordColumnFilters)
+      .map(([key, value]) => [key as RecipientRecordSortKey, value.trim().toLowerCase()] as const)
+      .filter(([, value]) => value.length > 0);
+    const result = profileRecords.filter((record) => {
+      const matchesSearch = !query || (
+        (record.title || '').toLowerCase().includes(query) ||
+        (record.description || record.short_description || '').toLowerCase().includes(query) ||
+        (record.donor || '').toLowerCase().includes(query) ||
+        (record.agency || '').toLowerCase().includes(query) ||
+        (record.mode || '').toLowerCase().includes(query) ||
+        String(record.year || '').includes(query)
+      );
+      if (!matchesSearch) return false;
+      return activeColumnFilters.every(([key, value]) => recordColumnText(record, key).toLowerCase().includes(value));
+    });
+
+    return result.sort((a, b) => {
+      const aValue = recordSortValue(a, recordSortKey);
+      const bValue = recordSortValue(b, recordSortKey);
+      const direction = recordSortDirection === 'asc' ? 1 : -1;
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return (aValue - bValue) * direction;
+      }
+      return String(aValue).localeCompare(String(bValue)) * direction;
+    });
+  }, [measure, profileRecords, recordColumnFilters, recordSearch, recordSortDirection, recordSortKey]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [recordColumnFilters, recordSearch, selectedRecipient]);
+
+  function handleRecordSort(key: RecipientRecordSortKey) {
+    if (recordSortKey === key) {
+      setRecordSortDirection((current) => (current === 'asc' ? 'desc' : 'asc'));
+      return;
+    }
+    setRecordSortKey(key);
+    setRecordSortDirection(key === 'year' || key === 'amount' ? 'desc' : 'asc');
+  }
+
+  function sortIcon(key: RecipientRecordSortKey) {
+    if (recordSortKey !== key) {
+      return <ChevronUp size={12} className="text-slate-300" />;
+    }
+    return recordSortDirection === 'asc'
+      ? <ChevronUp size={12} className="text-blue-600" />
+      : <ChevronDown size={12} className="text-blue-600" />;
+  }
+
+  const pagedRecords = filteredRecords.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / rowsPerPage));
 
   return (
     <div className="p-6 bg-[#F8FAFC] min-h-screen">
@@ -490,13 +585,240 @@ export function CRSRecipientProfile() {
           </section>
         ) : null}
 
-        <ProjectRecordsTable
-          records={recipientProjectRecordRows}
-          columns={['year', 'record', 'donor', 'agency', 'mode', 'flow', 'themes', 'amount']}
-          subtitle="Records for the selected recipient. Recipient is fixed by the profile selection."
-          emptyMessage="No project records match the current recipient filters and search."
-          minWidthClass="min-w-[1180px]"
-        />
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200 bg-slate-50/50 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-slate-900 text-lg tracking-tight">Project Records</h2>
+              <p className="text-slate-500 text-[14px] mt-1">
+                Select a project record to view details.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+                <Search size={16} className="text-slate-400" />
+                <input
+                  value={recordSearch}
+                  onChange={(event) => setRecordSearch(event.target.value)}
+                  placeholder="Search project records"
+                  className="bg-transparent border-none focus:ring-0 text-[14px] w-48 placeholder:text-slate-400"
+                />
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-slate-500">
+                <span>Rows</span>
+                <select
+                  value={rowsPerPage}
+                  onChange={(event) => {
+                    setRowsPerPage(Number(event.target.value));
+                    setPage(1);
+                  }}
+                  className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-[13px] text-slate-700"
+                >
+                  {[25, 50, 100].map((value) => (
+                    <option key={value} value={value}>
+                      {value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2 text-[13px] text-slate-500">
+                <button
+                  onClick={() => setPage((current) => Math.max(1, current - 1))}
+                  disabled={page === 1}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40"
+                >
+                  Prev
+                </button>
+                <span>
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                  disabled={page >= totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white disabled:opacity-40"
+                >
+                  Next
+                </button>
+              </div>
+              {Object.values(recordColumnFilters).some(Boolean) ? (
+                <button
+                  onClick={() => setRecordColumnFilters(EMPTY_RECIPIENT_RECORD_COLUMN_FILTERS)}
+                  className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-[13px] font-medium text-slate-500 shadow-sm transition-colors hover:bg-slate-50 hover:text-slate-900"
+                >
+                  Clear column filters
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-slate-50/40 text-[12px] text-slate-500 border-b border-slate-200">
+                  {RECIPIENT_RECORD_COLUMNS.map((column) => (
+                    <th key={column.key} className={`px-6 pt-4 pb-2 ${column.align === 'right' ? 'text-right' : 'text-left'}`}>
+                      <button
+                        type="button"
+                        onClick={() => handleRecordSort(column.key)}
+                        className={`inline-flex items-center gap-1.5 font-semibold transition-colors hover:text-slate-800 ${
+                          column.align === 'right' ? 'justify-end' : 'justify-start'
+                        }`}
+                      >
+                        <span>{column.label}</span>
+                        {sortIcon(column.key)}
+                      </button>
+                    </th>
+                  ))}
+                </tr>
+                <tr className="border-b border-slate-200 bg-slate-50/40">
+                  {RECIPIENT_RECORD_COLUMNS.map((column) => (
+                    <th key={`${column.key}-filter`} className="px-6 pb-3 text-left">
+                      {column.key === 'amount' || column.key === 'agency' ? (
+                        <div className="h-8" aria-hidden="true" />
+                      ) : isRecipientRecordDropdownFilter(column.key) ? (
+                        <select
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          className="h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+                          <option value="">All</option>
+                          {recordFilterOptions[column.key].map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          value={recordColumnFilters[column.key]}
+                          onChange={(event) =>
+                            setRecordColumnFilters((current) => ({
+                              ...current,
+                              [column.key]: event.target.value,
+                            }))
+                          }
+                          placeholder="Filter"
+                          className={`h-8 w-full rounded-md border border-slate-200 bg-white px-2 text-[12px] font-medium normal-case tracking-normal text-slate-600 shadow-sm outline-none transition-colors placeholder:text-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
+                            column.align === 'right' ? 'text-right' : 'text-left'
+                          }`}
+                        />
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {pagedRecords.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-20 text-center text-slate-400">
+                      No project records match the current profile and search.
+                    </td>
+                  </tr>
+                ) : (
+                  pagedRecords.map((record) => (
+                    <tr
+                      key={record.row_number}
+                      onClick={() => setActiveRecord(record)}
+                      className="hover:bg-slate-50 cursor-pointer transition-colors"
+                    >
+                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.year}</td>
+                      <td className="px-6 py-4">
+                        <div className="max-w-[480px]">
+                          <p className="text-[14px] font-medium text-slate-900 line-clamp-1">{record.title}</p>
+                          <p className="text-[13px] text-slate-500 line-clamp-2 mt-1">
+                            {record.description || record.short_description || 'No description available.'}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.donor}</td>
+                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.agency}</td>
+                      <td className="px-6 py-4 text-[14px] text-slate-600">{record.mode}</td>
+                      <td className="px-6 py-4 text-right text-[14px] font-medium text-slate-900">
+                        {crsFmt.usdM(record[measure] || 0)}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <Sheet open={!!activeRecord} onOpenChange={() => setActiveRecord(null)}>
+          <SheetContent className="sm:max-w-2xl border-l border-slate-200 bg-white/95 backdrop-blur-xl p-0 shadow-2xl">
+            {activeRecord && (
+              <div className="h-full flex flex-col">
+                <div className="bg-slate-900 p-10 text-white">
+                  <span className="px-3 py-1 bg-blue-600 rounded-full text-[12px] font-semibold">
+                    Record detail
+                  </span>
+                  <h2 className="text-2xl text-white font-bold leading-tight mt-6 tracking-tight">{activeRecord.title}</h2>
+                </div>
+                <div className="flex-1 overflow-y-auto p-10 space-y-8">
+                  <div className="grid grid-cols-2 gap-4">
+                    <KPICard label="Commitment" value={crsFmt.usdM(activeRecord.commitment)} />
+                    <KPICard label="Disbursement" value={crsFmt.usdM(activeRecord.disbursement)} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-6">
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Donor</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.donor}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Agency</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.agency}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Recipient</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.recipient}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Flow</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.flow}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Mode</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.mode}</p>
+                    </div>
+                    <div>
+                      <p className="text-[12px] font-medium text-slate-500">Year</p>
+                      <p className="text-[15px] text-slate-900 mt-1">{activeRecord.year}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">ATO thematic tags</p>
+                    <div className="flex flex-wrap gap-2">
+                      {recordThemeLabels(activeRecord).length
+                        ? recordThemeLabels(activeRecord).map((label) => <ATOThemeChip key={label} label={label} />)
+                        : <span className="text-[13px] text-slate-400">No thematic tag assigned</span>}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">Sustainability-related Tags</p>
+                    <div className="flex flex-wrap gap-2">
+                      <ThemeFlag active={activeRecord.climate_mitigation} label="Mitigation" />
+                      <ThemeFlag active={activeRecord.climate_adaptation} label="Adaptation" />
+                      <ThemeFlag active={activeRecord.gender} label="Gender" />
+                      <ThemeFlag active={activeRecord.drr} label="DRR" />
+                      <ThemeFlag active={activeRecord.biodiversity} label="Biodiversity" />
+                      <ThemeFlag active={activeRecord.environment} label="Environment" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-medium text-slate-500 mb-3">Description</p>
+                    <div className="rounded-2xl bg-slate-50 border border-slate-200 p-6 text-[15px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+                      {activeRecord.description || activeRecord.short_description || 'Detailed descriptive metadata not available for this record.'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </SheetContent>
+        </Sheet>
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ CRS_RECORDS_INDEX = ROOT / "public" / "data" / "crs-decade-records" / "index.jso
 OUT_TS = ROOT / "src" / "app" / "data" / "themeData.ts"
 OUT_RECORDS_JSON = ROOT / "public" / "data" / "theme-records.json"
 ATO_ECONOMIES_TS = ROOT / "src" / "app" / "data" / "atoEconomies.ts"
-MANUAL_THEME_TAG_OVERRIDES_JSON = ROOT / "manual_theme_tag_overrides.json"
 
 RECIPIENT_ALIAS_MAP = {
     "China": "People's Republic of China",
@@ -118,46 +117,6 @@ def load_subtheme_labels():
         for subtheme in theme.get("subthemes", []):
             labels[subtheme["id"]] = subtheme["label"]
     return labels
-
-
-def load_manual_overrides():
-    if not MANUAL_THEME_TAG_OVERRIDES_JSON.exists():
-        return {
-            "remove_theme_rows": set(),
-            "remove_subtheme_rows": set(),
-            "replace_subtheme_rows": {},
-        }
-
-    data = json.loads(MANUAL_THEME_TAG_OVERRIDES_JSON.read_text(encoding="utf-8"))
-    remove_theme_rows = set()
-    remove_subtheme_rows = set()
-    replace_subtheme_rows = {}
-
-    for override in data.get("remove_theme_rows", []):
-        theme_id = clean(override.get("theme_id"))
-        for row_number in override.get("row_numbers", []):
-            remove_theme_rows.add((str(row_number), theme_id))
-
-    for override in data.get("remove_subtheme_rows", []):
-        theme_id = clean(override.get("theme_id"))
-        subtheme_ids = [clean(value) for value in override.get("subtheme_ids", [])]
-        for row_number in override.get("row_numbers", []):
-            for subtheme_id in subtheme_ids:
-                remove_subtheme_rows.add((str(row_number), theme_id, subtheme_id))
-
-    for override in data.get("replace_subtheme_rows", []):
-        theme_id = clean(override.get("theme_id"))
-        replacement = clean(override.get("replacement_subtheme_id"))
-        if not replacement:
-            continue
-        for row_number in override.get("row_numbers", []):
-            replace_subtheme_rows[(str(row_number), theme_id)] = replacement
-
-    return {
-        "remove_theme_rows": remove_theme_rows,
-        "remove_subtheme_rows": remove_subtheme_rows,
-        "replace_subtheme_rows": replace_subtheme_rows,
-    }
 
 
 def load_crs_record_lookup():
@@ -285,7 +244,6 @@ def build_emobility_sankey(theme_rows, top_donor_count=8, top_recipient_count=10
 def load_theme_rows():
     crs_records = load_crs_record_lookup()
     subtheme_labels = load_subtheme_labels()
-    manual_overrides = load_manual_overrides()
     grouped = {}
 
     with AI_THEME_TAGS_CSV.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -293,13 +251,6 @@ def load_theme_rows():
             row_number = clean(row.get("row_number"))
             theme_id = clean(row.get("theme_id"))
             if theme_id not in THEMES or not row_number:
-                continue
-            if (row_number, theme_id) in manual_overrides["remove_theme_rows"]:
-                continue
-
-            subtheme_id = clean(row.get("subtheme_id"))
-            subtheme_id = manual_overrides["replace_subtheme_rows"].get((row_number, theme_id), subtheme_id)
-            if (row_number, theme_id, subtheme_id) in manual_overrides["remove_subtheme_rows"]:
                 continue
 
             crs = crs_records.get(row_number)
@@ -341,6 +292,7 @@ def load_theme_rows():
                 }
                 grouped[key] = entry
 
+            subtheme_id = clean(row.get("subtheme_id"))
             tag_label = subtheme_labels.get(subtheme_id)
             if not tag_label:
                 tag_label = f"{THEMES[theme_id]['shortLabel']} tag"
